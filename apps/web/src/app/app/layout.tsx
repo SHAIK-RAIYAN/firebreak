@@ -1,6 +1,11 @@
+import type { Metadata } from "next";
 import { requireSession } from "@/lib/session";
 import { AppShell } from "@/components/app/app-shell";
 import { listIncidents, userCtx } from "@firebreak/core";
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export const dynamic = "force-dynamic";
 
