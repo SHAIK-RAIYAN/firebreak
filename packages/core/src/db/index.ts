@@ -1,3 +1,4 @@
 // @firebreak/core/db — database entry point
-// Will export the Drizzle client, schema, and repo modules.
-export {};
+export * from "./schema.js";
+export * as schema from "./schema.js";
+export * from "./client.js";
