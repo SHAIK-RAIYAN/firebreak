@@ -10,10 +10,12 @@ import { EvidenceSection } from "@/components/marketing/evidence-section";
 import { McpSection } from "@/components/marketing/mcp-section";
 import { SecuritySection } from "@/components/marketing/security-section";
 import { FaqSection } from "@/components/marketing/faq-section";
+import { SmoothScroll } from "@/components/marketing/smooth-scroll";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--fg)] selection:bg-[var(--accent)] selection:text-white">
+    <SmoothScroll>
+      <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--fg)] selection:bg-[var(--accent)] selection:text-white">
       {/* ─────────────────────────────────────────────────────────────
           1. Sticky Navigation Bar
       ───────────────────────────────────────────────────────────── */}
@@ -273,5 +275,6 @@ export default function HomePage() {
         </div>
       </footer>
     </div>
+    </SmoothScroll>
   );
 }

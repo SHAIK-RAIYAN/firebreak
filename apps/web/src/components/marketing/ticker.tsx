@@ -20,37 +20,37 @@ export function IncidentTicker() {
   }, []);
 
   return (
-    <div className="w-full bg-[var(--surface)] border border-[var(--line)] rounded-lg p-3 font-mono text-xs overflow-hidden shadow-inner">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--line)] text-[var(--fg-subtle)] text-[11px]">
+    <div className="w-full bg-neutral-900/60 dark:bg-neutral-900/80 border border-neutral-700/40 dark:border-neutral-800 rounded-xl p-3 font-mono text-xs overflow-hidden backdrop-blur-sm shadow-sm">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-neutral-700/40 dark:border-neutral-800 text-neutral-400 text-[11px]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[var(--ember)] animate-pulse" />
-          <span>LIVE INCIDENT STREAM</span>
+          <span className="font-semibold tracking-wider text-neutral-300">LIVE INCIDENT STREAM</span>
         </div>
-        <span className="text-[10px] uppercase tracking-wider text-[var(--fg-muted)]">REPLAY: INC-01</span>
+        <span className="text-[10px] uppercase tracking-wider text-neutral-400">REPLAY: INC-01</span>
       </div>
       <div className="space-y-1.5 min-h-[96px]">
         {TICKS.slice(0, activeCount).map((tick, idx) => {
           const colorClass =
             tick.tag === "danger"
-              ? "text-[var(--danger)] bg-[var(--danger)]/10 border-[var(--danger)]/20"
+              ? "text-red-400 bg-red-950/30 border-red-800/40"
               : tick.tag === "warn"
-              ? "text-[var(--warn)] bg-[var(--warn)]/10 border-[var(--warn)]/20"
+              ? "text-amber-400 bg-amber-950/30 border-amber-800/40"
               : tick.tag === "info"
-              ? "text-[var(--info)] bg-[var(--info)]/10 border-[var(--info)]/20"
-              : "text-[var(--ok)] bg-[var(--ok)]/10 border-[var(--ok)]/20";
+              ? "text-sky-400 bg-sky-950/30 border-sky-800/40"
+              : "text-emerald-400 bg-emerald-950/30 border-emerald-800/40";
 
           return (
             <div
               key={idx}
               className="flex items-center gap-3 transition-all duration-300 animate-in fade-in slide-in-from-left-2"
             >
-              <span className="text-[var(--fg-subtle)] font-mono shrink-0">{tick.time}</span>
+              <span className="text-neutral-500 font-mono shrink-0">{tick.time}</span>
               <span
                 className={`px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wider border shrink-0 ${colorClass}`}
               >
                 {tick.kind}
               </span>
-              <span className="text-[var(--fg)] truncate">{tick.text}</span>
+              <span className="text-neutral-200 truncate">{tick.text}</span>
             </div>
           );
         })}

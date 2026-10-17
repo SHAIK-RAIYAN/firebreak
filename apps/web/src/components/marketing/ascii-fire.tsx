@@ -4,7 +4,7 @@ import { useEffect, useRef } from "react";
 
 export function AsciiFire({
   className = "",
-  intensity = 0.65,
+  intensity = 0.5,
 }: {
   className?: string;
   intensity?: number;
@@ -27,6 +27,8 @@ export function AsciiFire({
     let cols = 0;
     let rows = 0;
     let fireBuffer: number[] = [];
+    let lastTime = 0;
+    const FRAME_INTERVAL = 65; // ~15 FPS physics step for slow, languid ember motion
 
     const CHARS = " .:-=+*#%@";
 
@@ -60,83 +62,89 @@ export function AsciiFire({
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener("mouseleave", handleMouseLeave);
 
-    const step = () => {
-      // 1. Seed the bottom row with fire
-      const bottomRowIndex = (rows - 1) * cols;
-      for (let x = 0; x < cols; x++) {
-        // Random flame sparks
-        if (Math.random() < intensity) {
-          fireBuffer[bottomRowIndex + x] = Math.floor(Math.random() * (CHARS.length - 1)) + 1;
-        } else {
-          const cur = fireBuffer[bottomRowIndex + x] ?? 0;
-          fireBuffer[bottomRowIndex + x] = Math.max(0, cur - 1);
-        }
-      }
+    const render = (time: number) => {
+      if (time - lastTime >= FRAME_INTERVAL) {
+        lastTime = time;
 
-      // 2. Propagate flames upwards with decay and wind
-      for (let y = 0; y < rows - 1; y++) {
+        // 1. Seed the bottom row with fire
+        const bottomRowIndex = (rows - 1) * cols;
         for (let x = 0; x < cols; x++) {
-          const fromIndex = (y + 1) * cols + x;
-          const decay = Math.floor(Math.random() * 2);
-          const wind = Math.floor(Math.random() * 3) - 1;
-          const toX = Math.min(Math.max(x + wind, 0), cols - 1);
-          const toIndex = y * cols + toX;
-
-          const baseVal = fireBuffer[fromIndex] || 0;
-          fireBuffer[toIndex] = Math.max(0, baseVal - decay);
+          if (Math.random() < intensity) {
+            fireBuffer[bottomRowIndex + x] = Math.floor(Math.random() * (CHARS.length - 1)) + 1;
+          } else {
+            const cur = fireBuffer[bottomRowIndex + x] ?? 0;
+            fireBuffer[bottomRowIndex + x] = Math.max(0, cur - 1);
+          }
         }
-      }
 
-      // 3. Clear the "firebreak" around mouse cursor
-      if (mousePos.current) {
-        const mouseCol = Math.floor(mousePos.current.x / charWidth);
-        const mouseRow = Math.floor(mousePos.current.y / charHeight);
-        const radius = 6;
+        // 2. Propagate flames upwards with slow decay and gentle wind
+        for (let y = 0; y < rows - 1; y++) {
+          for (let x = 0; x < cols; x++) {
+            const fromIndex = (y + 1) * cols + x;
+            const decay = Math.floor(Math.random() * 2);
+            const wind = Math.floor(Math.random() * 3) - 1;
+            const toX = Math.min(Math.max(x + wind, 0), cols - 1);
+            const toIndex = y * cols + toX;
 
-        for (let dy = -radius; dy <= radius; dy++) {
-          for (let dx = -radius; dx <= radius; dx++) {
-            if (dx * dx + dy * dy <= radius * radius) {
-              const cx = mouseCol + dx;
-              const cy = mouseRow + dy;
-              if (cx >= 0 && cx < cols && cy >= 0 && cy < rows) {
-                fireBuffer[cy * cols + cx] = 0;
+            const baseVal = fireBuffer[fromIndex] || 0;
+            fireBuffer[toIndex] = Math.max(0, baseVal - decay);
+          }
+        }
+
+        // 3. Clear the "firebreak" around mouse cursor (radius 3)
+        if (mousePos.current) {
+          const mouseCol = Math.floor(mousePos.current.x / charWidth);
+          const mouseRow = Math.floor(mousePos.current.y / charHeight);
+          const radius = 3;
+
+          for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+              if (dx * dx + dy * dy <= radius * radius) {
+                const cx = mouseCol + dx;
+                const cy = mouseRow + dy;
+                if (cx >= 0 && cx < cols && cy >= 0 && cy < rows) {
+                  fireBuffer[cy * cols + cx] = 0;
+                }
               }
             }
           }
         }
-      }
 
-      // 4. Render
-      ctx.clearRect(0, 0, width, height);
-      ctx.font = `${charHeight}px monospace`;
-      ctx.textBaseline = "top";
+        // 4. Draw
+        ctx.clearRect(0, 0, width, height);
+        ctx.font = `${charHeight}px monospace`;
+        ctx.textBaseline = "top";
 
-      const isDark = document.documentElement.classList.contains("dark");
+        const isDark = document.documentElement.classList.contains("dark");
 
-      for (let y = 0; y < rows; y++) {
-        for (let x = 0; x < cols; x++) {
-          const val = fireBuffer[y * cols + x] || 0;
-          if (val === 0) continue;
+        for (let y = 0; y < rows; y++) {
+          for (let x = 0; x < cols; x++) {
+            const val = fireBuffer[y * cols + x] || 0;
+            if (val === 0) continue;
 
-          const char = CHARS[val] ?? CHARS.charAt(CHARS.length - 1) ?? " ";
+            const char = CHARS[val] ?? CHARS.charAt(CHARS.length - 1) ?? " ";
 
-          // Dynamic ember coloring based on heat value
-          if (val > 6) {
-            ctx.fillStyle = isDark ? "#F0ABFC" : "#C026D3"; // Hot ember
-          } else if (val > 3) {
-            ctx.fillStyle = isDark ? "#A855F7" : "#7C3AED"; // Flame purple
-          } else {
-            ctx.fillStyle = isDark ? "#4C1D95" : "#A855F7"; // Cool flame edge
+            // Elegant, organic ember palette:
+            // Hot core: bright violet / lavender
+            // Mid flame: violet
+            // Edges: smoky muted neutral gray
+            if (val > 6) {
+              ctx.fillStyle = isDark ? "#E9D5FF" : "#9333EA"; // Soft lavender ember
+            } else if (val > 3) {
+              ctx.fillStyle = isDark ? "#A855F7" : "#7C3AED"; // Flame purple
+            } else {
+              ctx.fillStyle = isDark ? "#52525B" : "#A1A1AA"; // Subtle neutral ash smoke
+            }
+
+            ctx.fillText(char, x * charWidth, y * charHeight);
           }
-
-          ctx.fillText(char, x * charWidth, y * charHeight);
         }
       }
 
-      animFrame = requestAnimationFrame(step);
+      animFrame = requestAnimationFrame(render);
     };
 
-    animFrame = requestAnimationFrame(step);
+    animFrame = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animFrame);

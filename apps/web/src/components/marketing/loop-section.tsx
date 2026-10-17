@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Check, ShieldCheck, Flame, GitCommit, Play, RotateCcw, Activity } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const STEPS = [
   {
@@ -74,14 +75,21 @@ export function LoopSection() {
                 <button
                   key={step.num}
                   onClick={() => setActiveStep(idx)}
-                  className={`w-full text-left p-4 rounded-xl border transition-all duration-200 flex items-start gap-4 ${
+                  className={`w-full text-left p-4 rounded-xl border relative transition-all duration-200 flex items-start gap-4 ${
                     isActive
                       ? "bg-[var(--surface)] border-[var(--accent)] shadow-sm"
                       : "bg-transparent border-[var(--line)] hover:border-[var(--line-strong)] text-[var(--fg-muted)]"
                   }`}
                 >
+                  {isActive && (
+                    <motion.div
+                      layoutId="active-loop-tab"
+                      className="absolute inset-0 rounded-xl border border-[var(--accent)] bg-[var(--surface)] -z-10 shadow-sm"
+                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                    />
+                  )}
                   <span
-                    className={`font-mono text-sm font-bold px-2 py-0.5 rounded ${
+                    className={`font-mono text-sm font-bold px-2 py-0.5 rounded transition-colors ${
                       isActive
                         ? "bg-[var(--accent)] text-[var(--accent-fg)]"
                         : "bg-[var(--surface)] text-[var(--fg-subtle)]"
@@ -125,8 +133,16 @@ export function LoopSection() {
                 </div>
               </div>
 
-              {/* Dynamic Panel Content */}
+              {/* Dynamic Panel Content with AnimatePresence */}
               <div className="flex-1 flex flex-col justify-center">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeStep}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                  >
                 {activeStep === 0 && (
                   <div className="space-y-4 font-mono text-xs">
                     <div className="p-3 bg-[var(--bg-raised)] border border-[var(--ok)]/30 rounded-lg text-[var(--ok)] flex items-center justify-between">
@@ -301,6 +317,8 @@ export function LoopSection() {
                     </div>
                   </div>
                 )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
 
               {/* Step indicator footer */}
