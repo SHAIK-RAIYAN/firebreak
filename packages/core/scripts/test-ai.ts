@@ -1,3 +1,5 @@
+import dns from "node:dns";
+dns.setDefaultResultOrder("ipv4first");
 import { generateText, Output } from "ai";
 import { modelFor, INCIDENT_ANALYST_SYSTEM_PROMPT, AnalysisSchema } from "../src/ai";
 
@@ -39,7 +41,7 @@ async function main() {
       prompt: demoBundle,
       output: Output.object({ schema: AnalysisSchema }),
       maxOutputTokens: 1500,
-      abortSignal: AbortSignal.timeout(25_000),
+      abortSignal: AbortSignal.timeout(60_000),
     });
 
     console.log("Analysis output received:", JSON.stringify(output, null, 2));
@@ -48,6 +50,7 @@ async function main() {
     } else {
       console.warn("⚠ Test 1 returned unexpected suspect:", output.likelyCause?.suspectId);
     }
+    process.exit(0);
   } catch (err: any) {
     console.error("AI test error:", err.message);
     process.exit(1);

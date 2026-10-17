@@ -23,7 +23,8 @@ export const PROVIDERS = {
   google: {
     label: "Google",
     models: [
-      { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash", default: true },
+      { id: "gemini-3.5-flash", label: "Gemini 3.5 Flash", default: true },
+      { id: "gemini-3.8-flash", label: "Gemini 3.8 Flash" },
       { id: "gemini-4-argon", label: "Gemini 4 Argon" },
       { id: "gemini-3.5-flash-lite", label: "Gemini 3.5 Flash-Lite", cheap: true },
     ],
