@@ -7,7 +7,8 @@
     "break": "tsx src/break.ts",
     "fire": "tsx src/fire.ts",
     "static": "tsx src/static-alert.ts",
-    "reset": "tsx src/reset.ts"
+    "reset": "tsx src/reset.ts",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@firebreak/core": "*"

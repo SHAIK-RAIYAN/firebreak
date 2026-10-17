@@ -1,3 +1,7 @@
-// Fixture: static-alert — sends a pre-built alert JSON
-// Implemented in M4 (doc 11 §3)
-console.log("fixture:static — not yet implemented (M4)");
+import { runFire } from "./fire.js";
+
+// Run fire with --static flag forced
+runFire({ static: true }).catch((err) => {
+  console.error("Static alert fixture failed:", err);
+  process.exit(1);
+});

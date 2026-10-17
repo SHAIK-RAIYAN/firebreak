@@ -557,3 +557,46 @@ export const processed_webhooks = pgTable("processed_webhooks", {
     .notNull()
     .defaultNow(),
 });
+
+// CamelCase aliases for convenience
+export {
+  timeline_events as timelineEvents,
+  usage_counters as usageCounters,
+  github_installations as githubInstallations,
+  vercel_connections as vercelConnections,
+  workspace_members as workspaceMembers,
+  mcp_api_keys as mcpApiKeys,
+  ai_credentials as aiCredentials,
+  processed_webhooks as processedWebhooks,
+};
+
+export type AlertSeverity = "critical" | "high" | "medium" | "low";
+
+export type TimelineEventType =
+  | "alert_received"
+  | "alert_deduped"
+  | "incident_opened"
+  | "trace_started"
+  | "deployments_resolved"
+  | "suspects_ranked"
+  | "trace_failed"
+  | "analysis_ready"
+  | "analysis_failed"
+  | "analysis_skipped"
+  | "action_proposed"
+  | "preflight_failed"
+  | "action_approved"
+  | "approval_dispatch_failed"
+  | "action_rejected"
+  | "action_expired"
+  | "action_cancelled"
+  | "action_executing"
+  | "action_executed"
+  | "action_failed"
+  | "production_confirmed"
+  | "probe"
+  | "verified"
+  | "verification_failed"
+  | "incident_resolved"
+  | "incident_dismissed";
+

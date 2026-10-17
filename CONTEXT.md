@@ -8,11 +8,11 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M4 — Alert intake + Inngest incident workflow (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M3 Integrations (GitHub App, Vercel token, SSRF guard, Probe, Services wizard)
-- **Next task:** M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
+- **Current milestone:** M5 — Approve → execute → verify (see `docs/15_BUILD_PLAN.md`)
+- **Last completed task:** M4 Alert intake + Inngest incident workflow (intake route, HMAC, replay idempotency, traceIncident, ranking, proposeRollback, Inngest triggers, fixtures fire.ts, break.ts, reset.ts)
+- **Next task:** M5 Approve → execute → verify (approve/reject/execute action, Vercel rollback, probe polling, recovered state, manual incident controls)
 - **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 78 passed, `npm run lint`)
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 87 passed, `npm run lint`)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -20,7 +20,7 @@
 - [x] M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap)
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
 - [x] M3 Integrations (GitHub App, Vercel token, Services wizard)
-- [ ] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
+- [x] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
 - [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
 - [ ] M6 App UI polish (incident page live, settings/AI keys, MCP keys)
 - [ ] M7 NitroStack MCP server (tools, widgets, auth) + NitroStudio verified
@@ -59,6 +59,9 @@ Record every API shape you verified so you never guess twice. Format: `fact — 
 - `ipaddr.js` + Node DNS lookup reliably validates IPv4, IPv6, loopback, private ranges, and cloud metadata (169.254.169.254) — 2026-10-17
 - Next.js 16 App Router requires wrapping client components reading `useSearchParams()` in `<Suspense>` to allow static prerendering at build time — 2026-10-17
 - Vercel token encrypted with AES-256-GCM and AAD `${ws}:vercel` stored in DB with `token_last4` — 2026-10-17
+- Inngest v4 `createFunction` syntax takes triggers as `{ triggers: { event: ... } }` or `{ triggers: [{ event: ... }] }` — 2026-10-17
+- Next.js 16 App Router serves Inngest endpoint cleanly via `serve({ client, functions })` with `maxDuration = 60` — 2026-10-17
+- Windows CLI entry detection requires `path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)` to handle path normalization — 2026-10-17
 
 ## 5. Environment variables status
 
@@ -140,3 +143,16 @@ npx tsx packages/core/src/db/migrate.ts # apply migrations to Neon
 - `apps/web/src/app/app/integrations/page.tsx`: Integrations dashboard (GitHub App installation status + Vercel token management)
 - `apps/web/src/app/app/services/new/page.tsx`: 5-step Service creation wizard with live health probe test and one-time secret reveal
 - `packages/fixtures/package.json`: Alert & break fixture scripts runner
+- `packages/core/src/crypto/scrub.ts`: Secret scrubber redacting keys, tokens, auth headers, and env vars from diffs
+- `packages/core/src/services/timeline.ts`: Incident timeline event recording and querying
+- `packages/core/src/services/alerts.ts`: Alert intake with payload size check, timestamp drift check, HMAC verification, rate limit, replay idempotency, and active incident attachment
+- `packages/core/src/services/trace.ts`: Trace engine finding current production deployment, rollback target, fetching GitHub commit diffs, ranking suspects, scrubbing patches, and recording timeline
+- `packages/core/src/services/actions.ts`: Rollback proposal engine with preflight checks, health probe, and Inngest action dispatch
+- `packages/core/src/inngest/events.ts`: Strongly typed Inngest events with Zod schemas
+- `packages/core/src/inngest/client.ts`: Shared Inngest client instance
+- `apps/web/src/inngest/functions/pipeline.ts`: Inngest durable workflow functions `incident-pipeline` and `incident-retrace`
+- `apps/web/src/app/api/inngest/route.ts`: Next.js App Router Inngest serve endpoint
+- `apps/web/src/app/api/v1/alerts/[serviceId]/route.ts`: Alert intake HTTP endpoint
+- `packages/fixtures/src/fire.ts`: Fixture CLI for sending signed HMAC alert to Firebreak
+- `packages/fixtures/src/break.ts`: Fixture CLI introducing buggy pricing code to demo repo and waiting for 500
+- `packages/fixtures/src/reset.ts`: Fixture CLI restoring clean pricing code to demo repo and waiting for 200

@@ -1,3 +1,4 @@
+import dns from "node:dns/promises";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { validateHealthUrl } from "../src/adapters/ssrf.js";
 import { AppError } from "../src/domain/errors.js";
@@ -11,6 +12,7 @@ describe("SSRF guard (validateHealthUrl)", () => {
   });
 
   it("accepts a valid public https URL", async () => {
+    vi.spyOn(dns, "lookup").mockResolvedValue([{ address: "93.184.216.34", family: 4 }] as any);
     const url = await validateHealthUrl("https://example.com/api/health");
     expect(url.hostname).toBe("example.com");
   });

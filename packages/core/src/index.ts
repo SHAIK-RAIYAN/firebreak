@@ -20,6 +20,7 @@ export * from "./domain/ranking.js";
 export * from "./crypto/secrets.js";
 export * from "./crypto/hmac.js";
 export * from "./crypto/keys.js";
+export * from "./crypto/scrub.js";
 
 // Adapters
 export * from "./adapters/ssrf.js";
@@ -41,6 +42,13 @@ export * from "./services/context.js";
 export * from "./services/integrations.js";
 export * from "./services/services.js";
 export * from "./services/mcpKeys.js";
+export * from "./services/timeline.js";
+export * from "./services/alerts.js";
+export * from "./services/trace.js";
+export * from "./services/actions.js";
+
+// Inngest
+export * from "./inngest/index.js";
 
 // Database client & schema
 export { db, type Database } from "./db/client.js";

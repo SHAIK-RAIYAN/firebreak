@@ -1,0 +1,29 @@
+{
+  "fingerprint": "health:TypeError:applyDiscount",
+  "title": "Health check failing: TypeError",
+  "severity": "critical",
+  "source": "fixture",
+  "occurredAt": "2026-10-17T12:00:00.000Z",
+  "error": {
+    "type": "TypeError",
+    "message": "Cannot read properties of undefined (reading 'reduce')",
+    "frames": [
+      {
+        "file": "/var/task/.next/server/chunks/412.js",
+        "line": 1,
+        "function": "applyDiscount",
+        "source": "stack"
+      },
+      {
+        "file": "lib/pricing.ts",
+        "line": null,
+        "function": "applyDiscount",
+        "source": "hint"
+      }
+    ]
+  },
+  "observed": {
+    "url": "https://firebreak-demo.vercel.app/api/health",
+    "status": 500
+  }
+}
