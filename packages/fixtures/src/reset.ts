@@ -54,9 +54,15 @@ export async function runReset() {
   }
 
   // 1. Write pricing.good.ts over lib/pricing.ts
-  const goodTemplatePath = path.resolve(process.cwd(), "packages/fixtures/templates/pricing.good.ts");
-  if (!fs.existsSync(goodTemplatePath)) {
-    console.error(`Error: Template not found at ${goodTemplatePath}`);
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  const goodTemplateCandidates = [
+    path.resolve(currentDir, "../templates/pricing.good.ts"),
+    path.resolve(process.cwd(), "packages/fixtures/templates/pricing.good.ts"),
+    path.resolve(process.cwd(), "templates/pricing.good.ts"),
+  ];
+  const goodTemplatePath = goodTemplateCandidates.find((p) => fs.existsSync(p));
+  if (!goodTemplatePath) {
+    console.error(`Error: Template not found at any candidate: ${goodTemplateCandidates.join(", ")}`);
     process.exit(1);
   }
 

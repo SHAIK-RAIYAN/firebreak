@@ -34,19 +34,19 @@ Work protocol for every task: **read the referenced doc sections → implement �
 - **Verify:** `pnpm --filter @firebreak/core test` green.
 
 ### M3 · Integrations + services (≈ 1.5 h) — docs 03 §4–5, 12 A2 + B, 06 §5.2–5.3, 11 §2
-- [ ] Create the **dev GitHub App** (doc 12 A2). Install flow, callback, (webhook can wait for prod).
-- [ ] Vercel adapter + connect endpoint; GitHub adapter; probe + SSRF.
-- [ ] Services API + a plain wizard page (shadcn form, no polish).
-- [ ] Create **`firebreak-demo`** repo + Vercel project (doc 11 §2), baseline commit deployed, `/api/health` = 200.
-- [ ] Log raw Vercel `getProject` + one deployment once → confirm `targets.production` and `meta.githubCommitSha` → `CONTEXT.md` §4.
-- **Verify:** demo service created in the UI; secrets are ciphertext in DB.
+- [x] Create the **dev GitHub App** (doc 12 A2). Install flow, callback, (webhook can wait for prod).
+- [x] Vercel adapter + connect endpoint; GitHub adapter; probe + SSRF.
+- [x] Services API + a plain wizard page (shadcn form, no polish).
+- [x] Create **`firebreak-demo`** repo + Vercel project (doc 11 §2), baseline commit deployed, `/api/health` = 200.
+- [x] Log raw Vercel `getProject` + one deployment once → confirm `targets.production` and `meta.githubCommitSha` → `CONTEXT.md` §4.
+- **Verify:** demo service created in the UI; secrets are ciphertext in DB. (VERIFIED)
 
 ### M4 · Alert intake + incident pipeline (≈ 1.5 h) — docs 06 §4, 03 §7, §10, 11 §3
-- [ ] `/api/v1/alerts/[serviceId]` route; `ingestAlert`.
-- [ ] Inngest client/events in core; `/api/inngest`; functions `incident-pipeline`, `incident-retrace`; services `traceIncident`, `proposeRollback`.
-- [ ] Fixtures: `break.ts`, `fire.ts`, `static-alert.json`, templates.
-- [ ] Run Inngest Dev Server: `npx inngest-cli@latest dev -u http://localhost:3000/api/inngest`.
-- **Verify:** `pnpm fixture:break` then `pnpm fixture:fire` (FIREBREAK_URL=localhost) → incident with ranked suspects, top = the bad commit; action `awaiting_approval` in DB.
+- [x] `/api/v1/alerts/[serviceId]` route; `ingestAlert`.
+- [x] Inngest client/events in core; `/api/inngest`; functions `incident-pipeline`, `incident-retrace`; services `traceIncident`, `proposeRollback`.
+- [x] Fixtures: `break.ts`, `fire.ts`, `static-alert.json`, templates.
+- [x] Run Inngest Dev Server: `npx inngest-cli@latest dev -u http://localhost:3000/api/inngest`.
+- **Verify:** `pnpm fixture:break` then `pnpm fixture:fire` (FIREBREAK_URL=localhost) → incident with ranked suspects, top = the bad commit; action `awaiting_approval` in DB. (VERIFIED)
 
 ### M5 · Approve → execute → verify (≈ 1.5 h) — docs 03 §9, §10
 - [ ] Approve/reject routes; `action-execute` + `action-expiry` functions; `executeAction`, `confirmProduction`, `recordProbe`, `finishVerification`, `expireAction`; manual resolve/dismiss/retrace routes.

@@ -88,9 +88,15 @@ export async function runBreak() {
   console.log(`- Commit 1: docs: note on discounts (run ${runId})`);
 
   // Commit 2: refactor: support stacked discounts (THE BUG)
-  const badTemplatePath = path.resolve(process.cwd(), "packages/fixtures/templates/pricing.bad.ts");
-  if (!fs.existsSync(badTemplatePath)) {
-    console.error(`Error: Template not found at ${badTemplatePath}`);
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  const badTemplateCandidates = [
+    path.resolve(currentDir, "../templates/pricing.bad.ts"),
+    path.resolve(process.cwd(), "packages/fixtures/templates/pricing.bad.ts"),
+    path.resolve(process.cwd(), "templates/pricing.bad.ts"),
+  ];
+  const badTemplatePath = badTemplateCandidates.find((p) => fs.existsSync(p));
+  if (!badTemplatePath) {
+    console.error(`Error: Template not found at any candidate: ${badTemplateCandidates.join(", ")}`);
     process.exit(1);
   }
   const badContent = `// demo run ${runId}\n` + fs.readFileSync(badTemplatePath, "utf8");

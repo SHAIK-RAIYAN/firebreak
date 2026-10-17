@@ -8,20 +8,20 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M3 — Integrations + Services (Completing real GitHub App install & Demo Service creation)
-- **Last completed task:** M8 Marketing Homepage `/` fully built with ASCII Fire, Hero, Ticker, Problem Clock, 6-step Loop, Evidence DiffBlock, MCP tools, Security Bento, and FAQ. Dev server verified rendering 200 on `http://localhost:3000`.
-- **Next task:** Complete M3 demo service creation as soon as user installs GitHub App at `https://github.com/apps/firebreak-raiyan-2026/installations/new`, then run M4 & M5 full incident response loop against real Vercel deployment.
-- **Blockers:** GitHub App `firebreak-raiyan-2026` needs to be installed on user account `SHAIK-RAIYAN` (takes 1 click at `https://github.com/apps/firebreak-raiyan-2026/installations/new`).
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 106 passed)
+- **Current milestone:** M5 — Approve → execute → verify (Rollback confirmation required)
+- **Last completed task:** M4 Alert intake + Inngest incident pipeline verified end-to-end with real break commit on `SHAIK-RAIYAN/firebreak-demo` and signed alert. Culprit commit `refactor: support stacked discounts` ranked #1 (80 pts). Action `act_cdo8g2jf0okvcfjhg7gn` is `awaiting_approval`.
+- **Next task:** Await user confirmation, execute production rollback on Vercel project `prj_M5MaS6jYvODRdjIYhYMai6YWwxND`, verify 3x consecutive healthy probes (200 OK), and run `fixture:reset`.
+- **Blockers:** Awaiting user explicit confirmation before production rollback mutation.
+- **Last green check:** 2026-10-17 (Real alert accepted 202, incident `inc_6ob8js87ey5s4gpmuabk` created, suspects ranked with 80 pts, action proposed)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
 - [x] M0 Scaffold (monorepo, lint, typecheck, CI)
 - [x] M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap)
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
-- [ ] M3 Integrations (Vercel connected; demo baseline deployed 200; BLOCKED on GitHub App install to create service)
-- [ ] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
-- [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
+- [x] M3 Integrations (Vercel connected; demo service created in UI/API; GitHub App verified on SHAIK-RAIYAN; secrets ciphertext in DB)
+- [x] M4 Alert intake + incident pipeline (signed alert → Inngest pipeline → GitHub diff trace → suspect ranked #1 at 80 pts → rollback proposed)
+- [ ] M5 Approve → execute → verify (awaiting user confirmation for production rollback execution)
 - [x] M6 App UI + AI (app shell, incident page, settings/AI keys, MCP keys)
 - [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified)
 - [x] M8 Marketing site (Nav, ASCII fire, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer)
