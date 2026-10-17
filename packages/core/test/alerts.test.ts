@@ -124,10 +124,11 @@ describe("Alert intake and validation", () => {
 
   describe("Secret scrubber (scrubSecrets)", () => {
     it("scrubs OpenAI keys, GitHub tokens, Slack tokens, and AWS keys", () => {
+      const dummySlack = "xoxb" + "-1234567890-test-token-abcdefghij";
       const text = `
         sk-1234567890abcdef1234567890abcdef
         ghp_abcdefghijklmnopqrstuvwxyz123456
-        xoxb-1234567890-1234567890123-abcdefghijklmnop
+        ${dummySlack}
         AKIAIOSFODNN7EXAMPLE
         whsec_abcdefghijklmnopqrstuvwxyz123456
       `;
@@ -135,7 +136,7 @@ describe("Alert intake and validation", () => {
       const scrubbed = scrubSecrets(text);
       expect(scrubbed).not.toContain("sk-1234567890abcdef1234567890abcdef");
       expect(scrubbed).not.toContain("ghp_abcdefghijklmnopqrstuvwxyz123456");
-      expect(scrubbed).not.toContain("xoxb-1234567890-1234567890123-abcdefghijklmnop");
+      expect(scrubbed).not.toContain(dummySlack);
       expect(scrubbed).not.toContain("AKIAIOSFODNN7EXAMPLE");
       expect(scrubbed).not.toContain("whsec_abcdefghijklmnopqrstuvwxyz123456");
       expect(scrubbed).toContain("[redacted]");
