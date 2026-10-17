@@ -8,17 +8,17 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M2 — Core domain (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap, migrations, /login, /app, proxy.ts)
-- **Next task:** M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
+- **Current milestone:** M3 — Integrations (see `docs/15_BUILD_PLAN.md`)
+- **Last completed task:** M2 Core domain (crypto, HMAC, state machines, ranking, preflight, unit tests)
+- **Next task:** M3 Integrations (GitHub App, Vercel token, Services wizard)
 - **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test`, `npm run lint`, `npm run dev`)
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 50 passed, `npm run lint`)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
 - [x] M0 Scaffold (monorepo, lint, typecheck, CI)
 - [x] M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap)
-- [ ] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
+- [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
 - [ ] M3 Integrations (GitHub App, Vercel token, Services wizard)
 - [ ] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
 - [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
@@ -112,4 +112,15 @@ npx tsx packages/core/src/db/migrate.ts # apply migrations to Neon
 - `packages/core/src/repo/workspaces.ts`: Workspaces repository with idempotent bootstrap
 - `packages/core/src/util/ids.ts`: Prefixed ID generator (`newId`)
 - `packages/core/src/util/env.ts`: Safe environment variable reader
+- `packages/core/src/util/time.ts`: Injectable clock (`now()`, `setMockClock`)
+- `packages/core/src/util/pmap.ts`: Concurrency-limiting async mapper (`pMap`)
+- `packages/core/src/util/retry.ts`: Exponential backoff with jitter and Retry-After
+- `packages/core/src/util/logger.ts`: Pino logger writing to stderr with secret redaction
+- `packages/core/src/crypto/secrets.ts`: AES-256-GCM encryption/decryption with AAD and key rotation
+- `packages/core/src/crypto/hmac.ts`: HMAC-SHA256 signing and verification for alerts and webhooks
+- `packages/core/src/crypto/keys.ts`: API key generation (`fbk_`) and SHA-256 hashing
+- `packages/core/src/domain/errors.ts`: `AppError`, `isAppError`, `reasonOf`, full domain error codes
+- `packages/core/src/domain/state.ts`: Pure state machines for IncidentStatus and ActionStatus
+- `packages/core/src/domain/preflight.ts`: Action preflight validation (target ready, drift, unexpired, non-blocking alert probe)
+- `packages/core/src/domain/ranking.ts`: Deterministic suspect ranking engine (path normalization, hunk parser, recency tiebreak)
 - `packages/fixtures/package.json`: Alert & break fixture scripts runner
