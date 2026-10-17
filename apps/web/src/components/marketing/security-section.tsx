@@ -1,25 +1,53 @@
+"use client";
+
 import { Shield, Lock, Eye, FileText, CheckCircle2 } from "lucide-react";
+import { motion } from "motion/react";
 
 export function SecuritySection() {
   return (
-    <section id="security" className="py-24 border-t border-[var(--line)] bg-[var(--bg)] relative">
+    <section id="security" className="py-24 border-t border-[var(--line)] bg-[var(--bg)] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider"
+        >
           <span>[05]</span>
           <span>SECURITY &amp; CONTROL</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4">
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
+          className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4"
+        >
           Safe by construction.
-        </h2>
-        <p className="text-[var(--fg-muted)] max-w-2xl text-base sm:text-lg mb-12">
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="text-[var(--fg-muted)] max-w-2xl text-base sm:text-lg mb-12"
+        >
           Designed for high-consequence production environments. You stay in complete control at every step.
-        </p>
+        </motion.p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Tile 1: Human Approval */}
-          <div className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: 0.05 }}
+            whileHover={{ y: -4 }}
+            className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4 hover:border-[var(--line-strong)] transition-all shadow-sm group"
+          >
             <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--accent)]/10 text-[var(--accent)] flex items-center justify-center mb-3 transition-transform group-hover:scale-110">
                 <Shield className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-[var(--fg)]">Human approval, always.</h3>
@@ -34,12 +62,19 @@ export function SecuritySection() {
                 <span>EXPLICIT_APPROVAL</span>
               </span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Tile 2: Drift-checked */}
-          <div className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: 0.1 }}
+            whileHover={{ y: -4 }}
+            className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4 hover:border-[var(--line-strong)] transition-all shadow-sm group"
+          >
             <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-[var(--ok)]/10 text-[var(--ok)] flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--ok)]/10 text-[var(--ok)] flex items-center justify-center mb-3 transition-transform group-hover:scale-110">
                 <Eye className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-[var(--fg)]">Drift-checked before it runs.</h3>
@@ -51,12 +86,19 @@ export function SecuritySection() {
               <span>PREFLIGHT VALIDATION:</span>
               <span className="text-[var(--accent)] font-semibold">TARGET_READY &amp; NO_DRIFT</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Tile 3: Key sealing */}
-          <div className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: 0.15 }}
+            whileHover={{ y: -4 }}
+            className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4 hover:border-[var(--line-strong)] transition-all shadow-sm group"
+          >
             <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-[var(--ember)]/10 text-[var(--ember)] flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--ember)]/10 text-[var(--ember)] flex items-center justify-center mb-3 transition-transform group-hover:scale-110">
                 <Lock className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-[var(--fg)]">Keys sealed with AES-256-GCM.</h3>
@@ -68,12 +110,19 @@ export function SecuritySection() {
               <span>ENCRYPTION SPEC:</span>
               <span className="text-[var(--fg)] font-semibold">AES-256-GCM + WORKSPACE_AAD</span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Tile 4: Immutable Record */}
-          <div className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.45, delay: 0.2 }}
+            whileHover={{ y: -4 }}
+            className="p-6 bg-[var(--surface)] border border-[var(--line)] rounded-2xl flex flex-col justify-between space-y-4 hover:border-[var(--line-strong)] transition-all shadow-sm group"
+          >
             <div className="space-y-2">
-              <div className="w-10 h-10 rounded-xl bg-[var(--info)]/10 text-[var(--info)] flex items-center justify-center mb-3">
+              <div className="w-10 h-10 rounded-xl bg-[var(--info)]/10 text-[var(--info)] flex items-center justify-center mb-3 transition-transform group-hover:scale-110">
                 <FileText className="w-5 h-5" />
               </div>
               <h3 className="text-lg font-bold text-[var(--fg)]">Every step on the record.</h3>
@@ -85,7 +134,7 @@ export function SecuritySection() {
               <span>AUDIT RETENTION:</span>
               <span className="text-[var(--ok)] font-semibold">FULL_EVENT_TIMELINE</span>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

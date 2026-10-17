@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, HelpCircle } from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 const FAQS = [
   {
@@ -34,45 +35,76 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 border-t border-[var(--line)] bg-[var(--bg-raised)] relative">
+    <section id="faq" className="py-24 border-t border-[var(--line)] bg-[var(--bg-raised)] relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider">
-          <span>[06]</span>
-          <span>FREQUENTLY ASKED QUESTIONS</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4">
-          Answers to common questions.
-        </h2>
-        <p className="text-[var(--fg-muted)] text-base sm:text-lg mb-12">
-          Everything you need to know about safety, permissions, and rollback mechanics.
-        </p>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider">
+            <span>[06]</span>
+            <span>FREQUENTLY ASKED QUESTIONS</span>
+          </div>
+          <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4">
+            Answers to common questions.
+          </h2>
+          <p className="text-[var(--fg-muted)] text-base sm:text-lg mb-12">
+            Everything you need to know about safety, permissions, and rollback mechanics.
+          </p>
+        </motion.div>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           {FAQS.map((faq, idx) => {
             const isOpen = openIndex === idx;
             return (
-              <div
+              <motion.div
                 key={idx}
-                className="border border-[var(--line)] rounded-xl overflow-hidden bg-[var(--surface)] transition-all"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: idx * 0.05 }}
+                className="border border-[var(--line)] rounded-xl overflow-hidden bg-[var(--surface)] transition-colors hover:border-[var(--line-strong)]"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-5 text-left font-semibold text-base text-[var(--fg)] flex items-center justify-between gap-4 hover:bg-[var(--bg-raised)]/50 transition-colors"
+                  className="w-full p-5 text-left font-semibold text-base text-[var(--fg)] flex items-center justify-between gap-4 hover:bg-[var(--bg-raised)]/60 transition-colors"
                 >
-                  <span>{faq.q}</span>
-                  <ChevronDown
-                    className={`w-5 h-5 text-[var(--fg-subtle)] shrink-0 transition-transform duration-200 ${
-                      isOpen ? "rotate-180 text-[var(--accent)]" : ""
-                    }`}
-                  />
+                  <span className="flex items-center gap-3">
+                    <span className="font-mono text-xs text-[var(--fg-subtle)] font-normal">
+                      {(idx + 1).toString().padStart(2, "0")}
+                    </span>
+                    <span>{faq.q}</span>
+                  </span>
+                  <motion.div
+                    animate={{ rotate: isOpen ? 180 : 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <ChevronDown
+                      className={`w-5 h-5 transition-colors ${
+                        isOpen ? "text-[var(--accent)]" : "text-[var(--fg-subtle)]"
+                      }`}
+                    />
+                  </motion.div>
                 </button>
-                {isOpen && (
-                  <div className="px-5 pb-5 pt-1 text-sm text-[var(--fg-muted)] leading-relaxed border-t border-[var(--line)]/50 bg-[var(--bg-raised)]/30">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
+                <AnimatePresence initial={false}>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5 pt-1 text-sm text-[var(--fg-muted)] leading-relaxed border-t border-[var(--line)]/50 bg-[var(--bg-raised)]/30">
+                        {faq.a}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
             );
           })}
         </div>

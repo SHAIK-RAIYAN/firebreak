@@ -2,27 +2,52 @@
 
 import { useState } from "react";
 import { Sparkles, Terminal, ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
+import { motion } from "motion/react";
 
 export function EvidenceSection() {
   const [showExplanation, setShowExplanation] = useState(true);
 
   return (
-    <section id="evidence" className="py-24 border-t border-[var(--line)] bg-[var(--bg)] relative">
+    <section id="evidence" className="py-24 border-t border-[var(--line)] bg-[var(--bg)] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.4 }}
+          className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider"
+        >
           <span>[03]</span>
           <span>EVIDENCE, NOT GUESSES</span>
-        </div>
-        <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4">
+        </motion.div>
+        <motion.h2
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: 0.05 }}
+          className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4"
+        >
           Every suspect comes with receipts.
-        </h2>
-        <p className="text-[var(--fg-muted)] max-w-2xl text-base sm:text-lg mb-12">
+        </motion.h2>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="text-[var(--fg-muted)] max-w-2xl text-base sm:text-lg mb-12"
+        >
           Firebreak uses deterministic static analysis to score suspect commits before AI ever sees them.
-        </p>
+        </motion.p>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-8">
           {/* Left: Code Diff with highlighted error */}
-          <div className="lg:col-span-7 bg-[var(--surface)] border border-[var(--line)] rounded-xl overflow-hidden shadow-lg font-mono text-xs">
+          <motion.div
+            initial={{ opacity: 0, x: -16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="lg:col-span-7 bg-[var(--surface)] border border-[var(--line)] rounded-xl overflow-hidden shadow-lg font-mono text-xs"
+          >
             {/* Diff header */}
             <div className="bg-[var(--bg-raised)] px-4 py-3 border-b border-[var(--line)] flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -60,10 +85,16 @@ export function EvidenceSection() {
               <div className="text-[var(--fg-muted)]">   return Math.round(totalCents * (1 - totalPct / 100));</div>
               <div className="text-[var(--fg-muted)]"> &#125;</div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right: Deterministic point breakdown */}
-          <div className="lg:col-span-5 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl p-6 shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, x: 16 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+            className="lg:col-span-5 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl p-6 shadow-sm"
+          >
             <div className="flex items-center justify-between pb-3 border-b border-[var(--line)] mb-4">
               <span className="font-mono text-xs text-[var(--fg-subtle)] uppercase tracking-wider">
                 SCORE BREAKDOWN
@@ -72,19 +103,19 @@ export function EvidenceSection() {
             </div>
 
             <div className="space-y-3 font-mono text-xs">
-              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)]">
+              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)] hover:bg-[var(--line)]/50 transition-colors">
                 <span className="text-[var(--fg)]">file: lib/pricing.ts</span>
                 <span className="font-bold text-[var(--accent)]">+40 pts</span>
               </div>
-              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)]">
+              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)] hover:bg-[var(--line)]/50 transition-colors">
                 <span className="text-[var(--fg)]">symbol: applyDiscount</span>
                 <span className="font-bold text-[var(--accent)]">+25 pts</span>
               </div>
-              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)]">
+              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)] hover:bg-[var(--line)]/50 transition-colors">
                 <span className="text-[var(--fg)]">error token: &apos;reduce&apos;</span>
                 <span className="font-bold text-[var(--accent)]">+10 pts</span>
               </div>
-              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)]">
+              <div className="flex items-center justify-between p-2 rounded bg-[var(--surface)] hover:bg-[var(--line)]/50 transition-colors">
                 <span className="text-[var(--fg)]">recency: newest deployment</span>
                 <span className="font-bold text-[var(--accent)]">+4 pts</span>
               </div>
@@ -93,7 +124,7 @@ export function EvidenceSection() {
             <p className="text-[11px] text-[var(--fg-subtle)] font-mono mt-4">
               Deterministic ranking engine. Identical diffs and stack traces produce mathematically identical rankings.
             </p>
-          </div>
+          </motion.div>
         </div>
 
         {/* Collapsible Advisory Explanation */}
