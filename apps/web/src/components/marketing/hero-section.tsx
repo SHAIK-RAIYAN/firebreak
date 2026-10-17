@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Flame } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { motion } from "motion/react";
 import { AsciiFire } from "@/components/marketing/ascii-fire";
 import { IncidentTicker } from "@/components/marketing/ticker";

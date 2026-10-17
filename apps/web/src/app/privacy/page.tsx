@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, Shield } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
 
 export const metadata: Metadata = {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Check, ShieldCheck, Flame, GitCommit, Play, RotateCcw, Activity } from "lucide-react";
+import { Check, ShieldCheck, Flame, RotateCcw, Activity } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
 const STEPS = [

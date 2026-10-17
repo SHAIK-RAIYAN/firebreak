@@ -1,6 +1,6 @@
 "use client";
 
-import { Clock, ArrowRight, Zap, CheckCircle2 } from "lucide-react";
+import { Zap, CheckCircle2 } from "lucide-react";
 import { motion } from "motion/react";
 
 const COMPARISONS = [

@@ -93,19 +93,15 @@ export default async function IncidentsPage({
         </div>
 
         {allServices.length > 0 && (
-          <form className="flex items-center gap-2">
+          <form method="GET" action="/app/incidents" className="flex items-center gap-2">
+            <input type="hidden" name="status" value={currentTab} />
             <label htmlFor="service-filter" className="text-xs font-mono text-[var(--fg-muted)]">
               Service:
             </label>
             <select
               id="service-filter"
+              name="service"
               defaultValue={selectedService}
-              onChange={(e) => {
-                const targetUrl = `/app/incidents?status=${currentTab}${
-                  e.target.value ? `&service=${e.target.value}` : ""
-                }`;
-                window.location.href = targetUrl;
-              }}
               className="px-2.5 py-1.5 text-xs rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg)] font-mono outline-none focus:border-[var(--accent)]"
             >
               <option value="">All Services</option>
@@ -115,6 +111,12 @@ export default async function IncidentsPage({
                 </option>
               ))}
             </select>
+            <button
+              type="submit"
+              className="px-2.5 py-1.5 text-xs rounded-lg border border-[var(--line)] bg-[var(--bg-raised)] text-[var(--fg)] font-mono hover:bg-[var(--line)] transition"
+            >
+              Filter
+            </button>
           </form>
         )}
       </div>

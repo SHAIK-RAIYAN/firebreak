@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Sparkles, Terminal, ChevronDown, ChevronUp, Check, AlertCircle } from "lucide-react";
+import { ChevronDown, ChevronUp, AlertCircle } from "lucide-react";
 import { motion } from "motion/react";
 
 export function EvidenceSection() {

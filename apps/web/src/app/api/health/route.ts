@@ -13,12 +13,12 @@ export async function GET() {
       database: "connected",
       timestamp: new Date().toISOString(),
     });
-  } catch (err: any) {
+  } catch (err: unknown) {
     return NextResponse.json(
       {
         status: "error",
         database: "disconnected",
-        error: err.message,
+        error: (err as Error)?.message || "Database connection error",
       },
       { status: 500 },
     );

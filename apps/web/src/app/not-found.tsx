@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Flame, Home } from "lucide-react";
+import { ArrowLeft, Home } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
 
 export default function NotFound() {

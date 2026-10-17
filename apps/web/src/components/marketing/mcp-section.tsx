@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Terminal, Copy, Check, Cpu, Sparkles } from "lucide-react";
+import { Copy, Check, Cpu } from "lucide-react";
 import { motion } from "motion/react";
 
 const CLIENTS = [
