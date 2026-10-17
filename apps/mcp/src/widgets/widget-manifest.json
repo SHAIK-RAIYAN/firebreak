@@ -1,0 +1,176 @@
+{
+  "version": "1.0.0",
+  "widgets": [
+    {
+      "uri": "/incident-card",
+      "name": "Incident Card",
+      "description": "Displays Firebreak incident status, deployments comparison, and top suspect",
+      "examples": [
+        {
+          "name": "Production Incident Example",
+          "description": "Active incident with top suspect and proposed rollback",
+          "data": {
+            "id": "inc_01j9xexample1234567890",
+            "number": 12,
+            "title": "Payment Gateway 500 Spike",
+            "status": "awaiting_approval",
+            "severity": "critical",
+            "service": "checkout-api",
+            "openedAt": "2026-10-17T12:00:00.000Z",
+            "bad": { "shortSha": "a1b2c3d" },
+            "good": { "shortSha": "e5f6g7h" },
+            "topSuspect": {
+              "shortSha": "a1b2c3d",
+              "message": "fix(checkout): update stripe sdk config without retry",
+              "points": 92
+            },
+            "action": {
+              "id": "act_01j9xexample1234567890",
+              "status": "awaiting_approval"
+            },
+            "appUrl": "http://localhost:3000/app/incidents/inc_01j9xexample1234567890"
+          }
+        }
+      ],
+      "tags": ["firebreak", "incident", "card"]
+    },
+    {
+      "uri": "/suspect-list",
+      "name": "Suspect List",
+      "description": "Ranked commit suspects with deterministic evidence and affected files",
+      "examples": [
+        {
+          "name": "Checkout API Suspects",
+          "description": "Top ranked commit suspects for incident #12",
+          "data": {
+            "incident": {
+              "id": "inc_01j9xexample1234567890",
+              "number": 12,
+              "title": "Payment Gateway 500 Spike"
+            },
+            "deployments": {
+              "bad": { "id": "dpl_bad", "shortSha": "a1b2c3d" },
+              "good": { "id": "dpl_good", "shortSha": "e5f6g7h" }
+            },
+            "confidence": "high",
+            "suspects": [
+              {
+                "rank": 1,
+                "shortSha": "a1b2c3d",
+                "message": "fix(checkout): update stripe sdk config without retry",
+                "author": "alice",
+                "points": 92,
+                "score": 0.92,
+                "url": "https://github.com/firebreak-org/checkout-api/commit/a1b2c3d",
+                "evidence": [
+                  { "kind": "stack_frame", "label": "Frame match in src/api/stripe.ts" },
+                  { "kind": "recency", "label": "Deploy occurred 2m before spike" }
+                ],
+                "files": [
+                  { "path": "src/api/stripe.ts", "matched": true },
+                  { "path": "package.json", "matched": false }
+                ]
+              },
+              {
+                "rank": 2,
+                "shortSha": "c3d4e5f",
+                "message": "chore: bump dependencies",
+                "author": "bob",
+                "points": 45,
+                "score": 0.45,
+                "url": "https://github.com/firebreak-org/checkout-api/commit/c3d4e5f",
+                "evidence": [
+                  { "kind": "dependency", "label": "Package update in diff" }
+                ],
+                "files": [
+                  { "path": "package.json", "matched": false }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "tags": ["firebreak", "suspects", "commits"]
+    },
+    {
+      "uri": "/action-status",
+      "name": "Action Status",
+      "description": "Rollback execution step rail, preflight safety checklist, and recovery probe strip",
+      "examples": [
+        {
+          "name": "Verifying Recovery Example",
+          "description": "Rollback executed, verifying health check recovery with probes",
+          "data": {
+            "id": "act_01j9xexample1234567890",
+            "incident": {
+              "id": "inc_01j9xexample1234567890",
+              "number": 12,
+              "title": "Payment Gateway 500 Spike"
+            },
+            "status": "verifying",
+            "target": {
+              "id": "dpl_target",
+              "shortSha": "e5f6g7h",
+              "url": "https://checkout-api-target.vercel.app",
+              "createdAt": "2026-10-17T11:00:00.000Z"
+            },
+            "from": {
+              "id": "dpl_bad",
+              "shortSha": "a1b2c3d"
+            },
+            "preflight": [
+              {
+                "id": "target_exists",
+                "name": "Target deployment exists",
+                "ok": true,
+                "blocking": true,
+                "detail": "Target e5f6g7h exists on Vercel"
+              },
+              {
+                "id": "not_current",
+                "name": "Target differs from broken",
+                "ok": true,
+                "blocking": true,
+                "detail": "Target differs from current deployment"
+              },
+              {
+                "id": "no_drift",
+                "name": "No unmanaged production drift",
+                "ok": true,
+                "blocking": false,
+                "detail": "Observed SHA matches bad deployment"
+              }
+            ],
+            "expiresAt": "2026-10-17T12:15:00.000Z",
+            "approveUrl": "http://localhost:3000/app/incidents/inc_01j9xexample1234567890?action=act_01j9xexample1234567890",
+            "decidedVia": "mcp",
+            "probes": [
+              {
+                "seq": 1,
+                "at": "2026-10-17T12:05:00.000Z",
+                "ok": true,
+                "httpStatus": 200,
+                "latencyMs": 120,
+                "observedSha": "e5f6g7h",
+                "error": null
+              },
+              {
+                "seq": 2,
+                "at": "2026-10-17T12:05:10.000Z",
+                "ok": true,
+                "httpStatus": 200,
+                "latencyMs": 95,
+                "observedSha": "e5f6g7h",
+                "error": null
+              }
+            ],
+            "verdict": "pending",
+            "message": "Rollback applied, verifying production health"
+          }
+        }
+      ],
+      "tags": ["firebreak", "action", "rollback", "probes"]
+    }
+  ],
+  "generatedAt": "2026-10-17T12:00:00.000Z"
+}
