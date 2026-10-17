@@ -1,186 +1,402 @@
-import Image from "next/image";
 import Link from "next/link";
 import { requireSession } from "@/lib/session";
-import { SignOutButton } from "@/components/app/sign-out-button";
-import { listIncidents, userCtx, type IncidentListItem } from "@firebreak/core";
+import {
+  listIncidents,
+  userCtx,
+  type IncidentListItem,
+  db,
+  services as servicesTable,
+  github_installations as githubInstallationsTable,
+  vercel_connections as vercelConnectionsTable,
+} from "@firebreak/core";
+import { eq } from "drizzle-orm";
+import { StatusPill } from "@/components/ui/status-pill";
+import {
+  ShieldAlert,
+  CheckCircle2,
+  Circle,
+  ArrowRight,
+  Flame,
+  PlusCircle,
+  Activity,
+  CheckCheck,
+} from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-async function ActiveIncidentsList({ workspaceId, userId }: { workspaceId: string; userId: string }) {
-  const ctx = userCtx(workspaceId, userId);
-  let items: IncidentListItem[] = [];
+export default async function OverviewPage() {
+  const { user, workspace } = await requireSession("/app");
+  const ctx = userCtx(workspace.id, user.id);
+  const database = db();
+
+  // Fetch incidents
+  let incidents: IncidentListItem[] = [];
   try {
     const res = await listIncidents(ctx, { status: "all", limit: 10 });
-    items = res.items;
+    incidents = res.items;
   } catch (err) {
     console.error("Failed to load incidents:", err);
   }
 
-  if (items.length === 0) {
-    return (
-      <div className="p-6 text-center text-xs font-mono text-[var(--fg-muted)] border border-dashed border-[var(--line)] rounded-lg">
-        No incidents yet. Trigger an alert or use <code className="text-[var(--accent)]">npm run fixture:fire</code> to simulate one.
-      </div>
-    );
-  }
+  // Fetch connections & services to compute onboarding state
+  const [githubList, vercelConn, svcList] = await Promise.all([
+    database
+      .select({ id: githubInstallationsTable.id })
+      .from(githubInstallationsTable)
+      .where(eq(githubInstallationsTable.workspace_id, workspace.id)),
+    database
+      .select({ id: vercelConnectionsTable.id })
+      .from(vercelConnectionsTable)
+      .where(eq(vercelConnectionsTable.workspace_id, workspace.id))
+      .limit(1),
+    database
+      .select()
+      .from(servicesTable)
+      .where(eq(servicesTable.workspace_id, workspace.id)),
+  ]);
 
-  return (
-    <div className="divide-y divide-[var(--line)]">
-      {items.map((inc) => (
-        <Link
-          key={inc.id}
-          href={`/app/incidents/${inc.id}`}
-          className="flex items-center justify-between p-3.5 hover:bg-[var(--surface)] transition rounded-lg group"
-        >
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <span className="font-mono text-xs font-bold text-[var(--accent)]">
-                INC-{inc.number}
-              </span>
-              <span className="text-sm font-semibold text-[var(--fg)] group-hover:text-[var(--accent)] transition">
-                {inc.title}
-              </span>
-              <span className="text-xs px-2 py-0.5 rounded-full font-mono uppercase bg-[var(--surface)] border border-[var(--line)] text-[var(--fg-muted)]">
-                {inc.status}
-              </span>
-            </div>
-            <div className="text-xs text-[var(--fg-muted)] font-mono flex items-center gap-2">
-              <span>Service: {inc.service.name}</span>
-              {inc.topSuspect && (
-                <span>&bull; Suspect: {inc.topSuspect.shortSha} ({inc.topSuspect.message})</span>
-              )}
-            </div>
-          </div>
-          <div className="text-right text-xs font-mono text-[var(--fg-muted)] flex items-center gap-2">
-            <span>{new Date(inc.openedAt).toLocaleTimeString()}</span>
-            <span className="text-[var(--fg-subtle)] group-hover:translate-x-0.5 transition">&rarr;</span>
-          </div>
-        </Link>
-      ))}
-    </div>
+  const hasGithub = githubList.length > 0;
+  const hasVercel = vercelConn.length > 0;
+  const hasService = svcList.length > 0;
+  const hasIncident = workspace.incident_seq > 0 || incidents.length > 0;
+  const allOnboarded = hasGithub && hasVercel && hasService && hasIncident;
+
+  const activeIncidents = incidents.filter(
+    (i) => i.status !== "resolved" && i.status !== "dismissed",
   );
-}
-
-export default async function ConsolePage() {
-  const { user, workspace } = await requireSession("/app");
+  const resolvedCount = incidents.filter((i) => i.status === "resolved").length;
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] flex flex-col">
-      {/* Top bar */}
-      <header className="border-b border-[var(--line)] bg-[var(--bg-raised)] px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-[var(--ok)] shadow-[0_0_8px_var(--ok)]" />
-          <span className="font-mono text-sm font-semibold tracking-tight">
-            firebreak
-          </span>
-          <span className="text-[var(--line-strong)]">/</span>
-          <span className="text-xs font-mono text-[var(--fg-muted)]">
-            console
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-xs">
-            {user.image && (
-              <Image
-                src={user.image}
-                alt={user.name ?? "User"}
-                width={24}
-                height={24}
-                unoptimized
-                className="w-6 h-6 rounded-full border border-[var(--line)]"
-              />
-            )}
-            <span className="font-medium text-[var(--fg)]">{user.name}</span>
-            <span className="text-[var(--fg-subtle)] font-mono">
-              ({user.email})
-            </span>
-          </div>
-          <SignOutButton />
-        </div>
-      </header>
-
-      {/* Main content */}
-      <main className="flex-1 max-w-4xl w-full mx-auto p-6 space-y-6">
+    <div className="space-y-8">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight mb-1">
-            Operator Console
+          <h1 className="text-2xl font-bold tracking-tight text-[var(--fg)]">
+            Overview
           </h1>
           <p className="text-sm text-[var(--fg-muted)]">
-            Production incident mitigation & rollback system
+            Production incident mitigation and verified rollback system
+          </p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/app/services/new"
+            className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition shadow-xs"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>New Service</span>
+          </Link>
+        </div>
+      </div>
+
+      {/* Onboarding Checklist (shown if any step incomplete) */}
+      {!allOnboarded && (
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
+          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+            <div>
+              <h2 className="text-sm font-semibold text-[var(--fg)]">
+                Getting Started with Firebreak
+              </h2>
+              <p className="text-xs text-[var(--fg-muted)]">
+                Complete these 4 steps to enable automated rollback protection
+              </p>
+            </div>
+            <span className="font-mono text-xs font-semibold text-[var(--accent)]">
+              {[hasGithub, hasVercel, hasService, hasIncident].filter(Boolean).length} / 4 completed
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {/* Step 1: GitHub */}
+            <Link
+              href="/app/integrations"
+              className={`p-3.5 rounded-lg border transition flex flex-col justify-between group ${
+                hasGithub
+                  ? "bg-emerald-950/10 border-emerald-800/30 text-[var(--ok)]"
+                  : "bg-[var(--surface)] border-[var(--line)] hover:border-[var(--line-strong)] text-[var(--fg)]"
+              }`}
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase font-bold text-[var(--fg-subtle)]">
+                    Step 1
+                  </span>
+                  {hasGithub ? (
+                    <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-[var(--fg-subtle)] group-hover:text-[var(--accent)]" />
+                  )}
+                </div>
+                <div className="font-medium text-xs">Connect GitHub</div>
+                <p className="text-[11px] text-[var(--fg-muted)]">
+                  Install GitHub App for repository access
+                </p>
+              </div>
+              <span className="text-[11px] font-mono mt-3 inline-flex items-center gap-1 text-[var(--accent)]">
+                {hasGithub ? "Connected" : "Connect →"}
+              </span>
+            </Link>
+
+            {/* Step 2: Vercel */}
+            <Link
+              href="/app/integrations"
+              className={`p-3.5 rounded-lg border transition flex flex-col justify-between group ${
+                hasVercel
+                  ? "bg-emerald-950/10 border-emerald-800/30 text-[var(--ok)]"
+                  : "bg-[var(--surface)] border-[var(--line)] hover:border-[var(--line-strong)] text-[var(--fg)]"
+              }`}
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase font-bold text-[var(--fg-subtle)]">
+                    Step 2
+                  </span>
+                  {hasVercel ? (
+                    <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-[var(--fg-subtle)] group-hover:text-[var(--accent)]" />
+                  )}
+                </div>
+                <div className="font-medium text-xs">Connect Vercel</div>
+                <p className="text-[11px] text-[var(--fg-muted)]">
+                  Add deployment token for rollbacks
+                </p>
+              </div>
+              <span className="text-[11px] font-mono mt-3 inline-flex items-center gap-1 text-[var(--accent)]">
+                {hasVercel ? "Connected" : "Connect →"}
+              </span>
+            </Link>
+
+            {/* Step 3: Create Service */}
+            <Link
+              href="/app/services/new"
+              className={`p-3.5 rounded-lg border transition flex flex-col justify-between group ${
+                hasService
+                  ? "bg-emerald-950/10 border-emerald-800/30 text-[var(--ok)]"
+                  : "bg-[var(--surface)] border-[var(--line)] hover:border-[var(--line-strong)] text-[var(--fg)]"
+              }`}
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase font-bold text-[var(--fg-subtle)]">
+                    Step 3
+                  </span>
+                  {hasService ? (
+                    <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-[var(--fg-subtle)] group-hover:text-[var(--accent)]" />
+                  )}
+                </div>
+                <div className="font-medium text-xs">Create a Service</div>
+                <p className="text-[11px] text-[var(--fg-muted)]">
+                  Link repository, Vercel &amp; health URL
+                </p>
+              </div>
+              <span className="text-[11px] font-mono mt-3 inline-flex items-center gap-1 text-[var(--accent)]">
+                {hasService ? "Configured" : "Create →"}
+              </span>
+            </Link>
+
+            {/* Step 4: Test Alert */}
+            <div
+              className={`p-3.5 rounded-lg border flex flex-col justify-between ${
+                hasIncident
+                  ? "bg-emerald-950/10 border-emerald-800/30 text-[var(--ok)]"
+                  : "bg-[var(--surface)] border-[var(--line)] text-[var(--fg)]"
+              }`}
+            >
+              <div className="space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="font-mono text-[10px] uppercase font-bold text-[var(--fg-subtle)]">
+                    Step 4
+                  </span>
+                  {hasIncident ? (
+                    <CheckCircle2 className="w-4 h-4 text-[var(--ok)]" />
+                  ) : (
+                    <Circle className="w-4 h-4 text-[var(--fg-subtle)]" />
+                  )}
+                </div>
+                <div className="font-medium text-xs">Fire Test Alert</div>
+                <p className="text-[11px] text-[var(--fg-muted)]">
+                  Run <code className="text-[var(--accent)] font-mono">npm run fixture:fire</code>
+                </p>
+              </div>
+              <span className="text-[11px] font-mono mt-3 text-[var(--fg-subtle)]">
+                {hasIncident ? "Alert Tested" : "Waiting for alert"}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* 3 Stats Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="p-5 rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] space-y-2">
+          <div className="flex items-center justify-between text-xs font-mono text-[var(--fg-muted)]">
+            <span>ACTIVE INCIDENTS</span>
+            <ShieldAlert className="w-4 h-4 text-rose-400" />
+          </div>
+          <div className="text-2xl font-bold font-mono text-[var(--fg)]">
+            {activeIncidents.length}
+          </div>
+          <p className="text-[11px] text-[var(--fg-subtle)]">
+            {activeIncidents.length === 0
+              ? "All systems operational"
+              : "Requires operator attention"}
           </p>
         </div>
 
-        {/* Actions bar */}
-        <div className="flex items-center gap-3">
-          <a
-            href="/app/integrations"
-            className="px-4 py-2 bg-[var(--surface)] border border-[var(--line-strong)] text-[var(--fg)] rounded-lg text-sm font-medium hover:bg-[var(--line)] transition"
+        <div className="p-5 rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] space-y-2">
+          <div className="flex items-center justify-between text-xs font-mono text-[var(--fg-muted)]">
+            <span>TOTAL RECOVERED</span>
+            <CheckCheck className="w-4 h-4 text-[var(--ok)]" />
+          </div>
+          <div className="text-2xl font-bold font-mono text-[var(--fg)]">
+            {resolvedCount}
+          </div>
+          <p className="text-[11px] text-[var(--fg-subtle)]">
+            Rollbacks verified with health probes
+          </p>
+        </div>
+
+        <div className="p-5 rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] space-y-2">
+          <div className="flex items-center justify-between text-xs font-mono text-[var(--fg-muted)]">
+            <span>PROTECTED SERVICES</span>
+            <Activity className="w-4 h-4 text-[var(--accent)]" />
+          </div>
+          <div className="text-2xl font-bold font-mono text-[var(--fg)]">
+            {svcList.length}
+          </div>
+          <p className="text-[11px] text-[var(--fg-subtle)]">
+            Active health checks monitored
+          </p>
+        </div>
+      </div>
+
+      {/* Incidents Section */}
+      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+          <div>
+            <h2 className="text-base font-bold text-[var(--fg)]">
+              Recent Incidents
+            </h2>
+            <p className="text-xs text-[var(--fg-muted)]">
+              Deploys identified, suspect commits ranked, and actions verified
+            </p>
+          </div>
+          <Link
+            href="/app/incidents"
+            className="text-xs font-mono text-[var(--accent)] hover:underline flex items-center gap-1"
           >
-            Manage Integrations &rarr;
-          </a>
-          <a
-            href="/app/services/new"
-            className="px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-sm font-medium hover:opacity-90 transition"
+            <span>View all</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+
+        {incidents.length === 0 ? (
+          <div className="py-12 text-center space-y-2 border border-dashed border-[var(--line)] rounded-lg">
+            <Flame className="w-8 h-8 text-[var(--fg-subtle)] mx-auto opacity-50" />
+            <div className="font-mono text-sm font-semibold text-[var(--fg)]">
+              No fires detected.
+            </div>
+            <p className="text-xs text-[var(--fg-muted)] max-w-sm mx-auto">
+              Simulate an incident using the fixtures CLI:{" "}
+              <code className="text-[var(--accent)] font-mono">
+                npm run fixture:fire
+              </code>
+            </p>
+          </div>
+        ) : (
+          <div className="divide-y divide-[var(--line)]">
+            {incidents.slice(0, 5).map((inc) => (
+              <Link
+                key={inc.id}
+                href={`/app/incidents/${inc.id}`}
+                className="flex items-center justify-between p-3.5 hover:bg-[var(--surface)] transition rounded-lg group"
+              >
+                <div className="space-y-1">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-xs font-bold text-[var(--accent)]">
+                      INC-{inc.number}
+                    </span>
+                    <span className="text-sm font-semibold text-[var(--fg)] group-hover:text-[var(--accent)] transition">
+                      {inc.title}
+                    </span>
+                    <StatusPill status={inc.status} size="sm" />
+                  </div>
+                  <div className="text-xs text-[var(--fg-muted)] font-mono flex items-center gap-2">
+                    <span>{inc.service.name}</span>
+                    {inc.topSuspect && (
+                      <span>
+                        &bull; Suspect: {inc.topSuspect.shortSha} ({inc.topSuspect.message})
+                      </span>
+                    )}
+                  </div>
+                </div>
+                <div className="text-right text-xs font-mono text-[var(--fg-muted)] flex items-center gap-3">
+                  <span>{new Date(inc.openedAt).toLocaleTimeString()}</span>
+                  <ArrowRight className="w-4 h-4 text-[var(--fg-subtle)] group-hover:translate-x-0.5 transition" />
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Services List Preview */}
+      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+          <div>
+            <h2 className="text-base font-bold text-[var(--fg)]">
+              Configured Services
+            </h2>
+            <p className="text-xs text-[var(--fg-muted)]">
+              Repositories and production branches protected by Firebreak
+            </p>
+          </div>
+          <Link
+            href="/app/services"
+            className="text-xs font-mono text-[var(--accent)] hover:underline flex items-center gap-1"
           >
-            + New Service
-          </a>
+            <span>Manage services</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
         </div>
 
-        {/* Workspace Card */}
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-[var(--line)] pb-4">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-subtle)]">
-                Active Workspace
-              </span>
-              <h2 className="text-lg font-semibold mt-0.5">{workspace.name}</h2>
-            </div>
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-mono bg-emerald-950/20 text-[var(--ok)] border border-emerald-900/30">
-              <span className="w-1.5 h-1.5 rounded-full bg-[var(--ok)]" />
-              Connected
-            </span>
+        {svcList.length === 0 ? (
+          <div className="py-8 text-center text-xs font-mono text-[var(--fg-muted)] border border-dashed border-[var(--line)] rounded-lg">
+            No services configured yet.{" "}
+            <Link
+              href="/app/services/new"
+              className="text-[var(--accent)] hover:underline"
+            >
+              Add your first service &rarr;
+            </Link>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
-            <div className="p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg">
-              <span className="text-[var(--fg-subtle)] block mb-1">Workspace ID</span>
-              <span className="text-[var(--accent)] font-semibold select-all">
-                {workspace.id}
-              </span>
-            </div>
-
-            <div className="p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg">
-              <span className="text-[var(--fg-subtle)] block mb-1">Owner User ID</span>
-              <span className="text-[var(--fg)] select-all">{workspace.owner_user_id}</span>
-            </div>
-
-            <div className="p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg">
-              <span className="text-[var(--fg-subtle)] block mb-1">AI Mode</span>
-              <span className="text-[var(--fg)] capitalize">{workspace.ai_mode}</span>
-            </div>
-
-            <div className="p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg">
-              <span className="text-[var(--fg-subtle)] block mb-1">Incidents Handled</span>
-              <span className="text-[var(--fg)] font-bold">{workspace.incident_seq}</span>
-            </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            {svcList.map((svc: (typeof svcList)[0]) => (
+              <div
+                key={svc.id}
+                className="p-4 rounded-lg bg-[var(--surface)] border border-[var(--line)] space-y-2"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="font-semibold text-sm text-[var(--fg)]">
+                    {svc.name}
+                  </span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[var(--ok)]">
+                    Active
+                  </span>
+                </div>
+                <div className="text-xs font-mono text-[var(--fg-muted)] space-y-1">
+                  <div>Repo: {svc.repo_owner}/{svc.repo_name}</div>
+                  <div className="truncate">Health: {svc.health_url}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
-
-        {/* Active Incidents Section */}
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
-            <div>
-              <h2 className="text-lg font-bold">Recent & Active Incidents</h2>
-              <p className="text-xs text-[var(--fg-muted)]">
-                Live production alerts and rollback workflows
-              </p>
-            </div>
-          </div>
-
-          <ActiveIncidentsList workspaceId={workspace.id} userId={user.id} />
-        </div>
-      </main>
+        )}
+      </div>
     </div>
   );
 }

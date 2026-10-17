@@ -8,11 +8,11 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M6 — App UI + AI (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M5 Approve → execute → verify (action lifecycle, Vercel rollback, probe verification, incident room UI, manual controls)
-- **Next task:** M6 App UI polish + AI analysis (incident room components, DiffBlock, HoldToConfirm, AI keys & analysis pipeline)
+- **Current milestone:** M7 — NitroStack MCP server (see `docs/15_BUILD_PLAN.md`)
+- **Last completed task:** M6 App UI + AI (App shell, sidebar, top bar, ⌘K, theme toggle, overview checklist + stats, incidents list, services list, AI keys settings & pipeline with 4 providers, MCP keys settings, and incident room signature components: LoopRail, HoldToConfirm, ProbeStrip, DiffBlock, ExplanationCard)
+- **Next task:** M7 NitroStack MCP server (scaffold, 9 tools, 3 widgets, KeyService + guard, NitroStudio verification)
 - **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 98 passed, `npm run lint`)
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 106 passed, `npm run lint` 0 errors)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -22,7 +22,7 @@
 - [x] M3 Integrations (GitHub App, Vercel token, Services wizard)
 - [x] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
 - [x] M5 Approve → execute → verify (core loop complete, demo passes in local)
-- [ ] M6 App UI polish (incident page live, settings/AI keys, MCP keys)
+- [x] M6 App UI + AI (incident page live, settings/AI keys, MCP keys)
 - [ ] M7 NitroStack MCP server (tools, widgets, auth) + NitroStudio verified
 - [ ] M8 Marketing site (loader, ASCII fire, scroll story, SEO files)
 - [ ] M9 Deploy (Vercel + MCP host + Neon + Inngest Cloud) + production demo passes

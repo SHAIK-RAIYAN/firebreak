@@ -10,26 +10,26 @@ export function scrubSecrets(text: string): string {
   // Private keys
   scrubbed = scrubbed.replace(
     /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g,
-    "[redacted-private-key]",
+    "[redacted]",
   );
 
   // OpenAI / generic sk- keys
-  scrubbed = scrubbed.replace(/\bsk-[a-zA-Z0-9_\-]{20,}\b/g, "[redacted-key]");
+  scrubbed = scrubbed.replace(/\bsk-[a-zA-Z0-9_\-]{20,}\b/g, "[redacted]");
 
   // GitHub tokens
-  scrubbed = scrubbed.replace(/\bghp_[a-zA-Z0-9]{30,}\b/g, "[redacted-token]");
-  scrubbed = scrubbed.replace(/\bgithub_pat_[a-zA-Z0-9_]{20,}\b/g, "[redacted-token]");
+  scrubbed = scrubbed.replace(/\bghp_[a-zA-Z0-9]{30,}\b/g, "[redacted]");
+  scrubbed = scrubbed.replace(/\bgithub_pat_[a-zA-Z0-9_]{20,}\b/g, "[redacted]");
 
   // Slack tokens
-  scrubbed = scrubbed.replace(/\bxox[abp]-[a-zA-Z0-9\-]{10,}\b/g, "[redacted-token]");
+  scrubbed = scrubbed.replace(/\bxox[abp]-[a-zA-Z0-9\-]{10,}\b/g, "[redacted]");
 
   // AWS Access Key ID
-  scrubbed = scrubbed.replace(/\bAKIA[0-9A-Z]{16}\b/g, "[redacted-aws-key]");
+  scrubbed = scrubbed.replace(/\bAKIA[0-9A-Z]{16}\b/g, "[redacted]");
 
   // Firebreak & Vercel secrets
-  scrubbed = scrubbed.replace(/\bwhsec_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted-secret]");
-  scrubbed = scrubbed.replace(/\bvcp_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted-token]");
-  scrubbed = scrubbed.replace(/\bfbk_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted-key]");
+  scrubbed = scrubbed.replace(/\bwhsec_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted]");
+  scrubbed = scrubbed.replace(/\bvcp_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted]");
+  scrubbed = scrubbed.replace(/\bfbk_[a-zA-Z0-9_\-]{20,}\b/g, "[redacted]");
 
   // .env style lines: KEY=value where key contains SECRET, TOKEN, KEY, PASSWORD
   scrubbed = scrubbed.replace(

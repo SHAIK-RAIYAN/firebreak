@@ -46,6 +46,7 @@ export * from "./services/timeline.js";
 export * from "./services/alerts.js";
 export * from "./services/trace.js";
 export * from "./services/actions.js";
+export * from "./services/ai.js";
 
 // Inngest
 export * from "./inngest/index.js";
@@ -59,7 +60,7 @@ export * as schema from "./db/schema.js";
 export * from "./views/types.js";
 
 // AI
-export * from "./ai/schema.js";
+export * from "./ai/index.js";
 
 // Repos
 export * from "./repo/workspaces.js";

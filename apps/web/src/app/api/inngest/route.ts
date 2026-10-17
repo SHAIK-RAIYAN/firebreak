@@ -8,6 +8,7 @@ import {
   actionExecute,
   actionExpiry,
 } from "@/inngest/functions/actions";
+import { incidentAnalysis } from "@/inngest/functions/analysis";
 
 export const maxDuration = 60;
 
@@ -18,5 +19,6 @@ export const { GET, POST, PUT } = serve({
     incidentRetrace,
     actionExecute,
     actionExpiry,
+    incidentAnalysis,
   ],
 });

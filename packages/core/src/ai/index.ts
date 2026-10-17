@@ -1,3 +1,6 @@
 // @firebreak/core/ai — AI analysis entry point
-// Will export the analysis runner, model config, and sanitizer.
-export {};
+export * from "./schema.js";
+export * from "./models.js";
+export * from "./prompts/incident-analyst.js";
+export * from "./sanitize.js";
+export * from "./bundle.js";

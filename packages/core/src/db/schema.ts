@@ -520,11 +520,14 @@ export const ai_credentials = pgTable(
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
     provider: text("provider").notNull(),
-    api_key_ciphertext: text("api_key_ciphertext").notNull(),
-    api_key_iv: text("api_key_iv").notNull(),
-    api_key_auth_tag: text("api_key_auth_tag").notNull(),
-    api_key_key_version: integer("api_key_key_version").notNull(),
-    api_key_last4: text("api_key_last4").notNull(),
+    model: text("model"),
+    ciphertext: text("ciphertext").notNull(),
+    iv: text("iv").notNull(),
+    auth_tag: text("auth_tag").notNull(),
+    key_version: integer("key_version").notNull(),
+    last4: text("last4").notNull(),
+    status: text("status").notNull().default("active"), // 'active' | 'invalid'
+    validated_at: timestamp("validated_at", { withTimezone: true }),
     created_at: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),

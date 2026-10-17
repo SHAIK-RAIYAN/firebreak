@@ -3,6 +3,19 @@
 import { useEffect, useState, useCallback, use } from "react";
 import Link from "next/link";
 import type { IncidentDetail } from "@firebreak/core";
+import { StatusPill } from "@/components/ui/status-pill";
+import { LoopRail, getStepIndexFromStatus } from "@/components/ui/loop-rail";
+import { HoldToConfirm } from "@/components/ui/hold-to-confirm";
+import { ProbeStrip } from "@/components/ui/probe-strip";
+import { DiffBlock } from "@/components/ui/diff-block";
+import { ExplanationCard } from "@/components/ui/explanation-card";
+import {
+  ExternalLink,
+  Check,
+  RefreshCw,
+  ChevronDown,
+  ChevronRight,
+} from "lucide-react";
 
 export default function IncidentRoomPage({
   params,
@@ -14,6 +27,8 @@ export default function IncidentRoomPage({
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [expandedSuspects, setExpandedSuspects] = useState<Record<string, boolean>>({});
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
 
   const fetchIncident = useCallback(async () => {
     try {
@@ -26,7 +41,16 @@ export default function IncidentRoomPage({
         throw new Error(`Failed to load incident (${res.status})`);
       }
       const json = await res.json();
-      setDetail(json.data);
+      const newDetail: IncidentDetail = json.data;
+
+      // Announce status changes
+      if (detail && detail.incident.status !== newDetail.incident.status) {
+        setLiveAnnouncement(
+          `Incident status changed to ${newDetail.incident.status}`,
+        );
+      }
+
+      setDetail(newDetail);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -34,7 +58,7 @@ export default function IncidentRoomPage({
     } finally {
       setLoading(false);
     }
-  }, [id]);
+  }, [id, detail]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -58,6 +82,8 @@ export default function IncidentRoomPage({
       if (!res.ok) {
         const data = await res.json();
         alert(data.error?.message || "Failed to approve action");
+      } else {
+        setLiveAnnouncement("Rollback approved. Vercel deployment triggered.");
       }
       await fetchIncident();
     } catch (err) {
@@ -99,6 +125,8 @@ export default function IncidentRoomPage({
       if (!res.ok) {
         const data = await res.json();
         alert(data.error?.message || "Failed to resolve incident");
+      } else {
+        setLiveAnnouncement("Incident marked as resolved.");
       }
       await fetchIncident();
     } catch (err) {
@@ -139,414 +167,502 @@ export default function IncidentRoomPage({
     }
   };
 
+  const toggleSuspect = (suspectId: string) => {
+    setExpandedSuspects((prev) => ({
+      ...prev,
+      [suspectId]: !prev[suspectId],
+    }));
+  };
+
   if (loading && !detail) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] flex items-center justify-center p-6 font-mono text-sm">
-        <div className="flex items-center gap-3">
-          <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-ping" />
-          <span>Connecting to Incident Room #{id}...</span>
-        </div>
+      <div className="py-24 flex items-center justify-center font-mono text-xs text-[var(--fg-muted)] space-x-3">
+        <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-ping" />
+        <span>Connecting to Incident Room #{id}…</span>
       </div>
     );
   }
 
   if (error || !detail) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] p-6">
-        <div className="max-w-2xl mx-auto border border-rose-900/50 bg-rose-950/20 rounded-xl p-6 text-center space-y-4">
-          <h2 className="text-lg font-semibold text-rose-400">Error Loading Incident</h2>
-          <p className="text-sm text-[var(--fg-muted)]">{error || "Unknown error"}</p>
-          <Link
-            href="/app"
-            className="inline-block px-4 py-2 bg-[var(--surface)] text-xs font-mono rounded-lg hover:bg-[var(--line)]"
-          >
-            &larr; Back to Console
-          </Link>
+      <div className="py-16 max-w-lg mx-auto text-center space-y-4">
+        <div className="p-6 rounded-xl border border-rose-900/40 bg-rose-950/20 text-rose-300 space-y-2">
+          <h2 className="text-base font-bold">Error Loading Incident</h2>
+          <p className="text-xs font-mono">{error || "Incident not found"}</p>
         </div>
+        <Link
+          href="/app/incidents"
+          className="inline-block px-4 py-2 text-xs font-mono rounded-lg bg-[var(--surface)] border border-[var(--line)] text-[var(--fg)] hover:bg-[var(--line)]"
+        >
+          &larr; Back to Incidents
+        </Link>
       </div>
     );
   }
 
-  const { incident, service, suspects, action, timeline } = detail;
-  const isTerminal = incident.status === "resolved" || incident.status === "dismissed";
+  const { incident, service, suspects, action, timeline, analysis } = detail;
+  const isTerminal =
+    incident.status === "resolved" || incident.status === "dismissed";
+  const stepIndex = getStepIndexFromStatus(incident.status, action?.status);
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] flex flex-col font-sans">
-      {/* Top Header */}
-      <header className="border-b border-[var(--line)] bg-[var(--bg-raised)] px-6 py-4 flex items-center justify-between sticky top-0 z-20 backdrop-blur-md">
-        <div className="flex items-center gap-3">
-          <Link
-            href="/app"
-            className="text-xs font-mono text-[var(--fg-muted)] hover:text-[var(--fg)] transition flex items-center gap-1"
-          >
-            &larr; Console
-          </Link>
-          <span className="text-[var(--line-strong)]">/</span>
-          <span className="font-mono text-sm font-semibold tracking-tight text-[var(--accent)]">
-            INC-{incident.number}
-          </span>
-          <span className="text-xs px-2 py-0.5 rounded-full font-mono uppercase bg-[var(--surface)] border border-[var(--line)] text-[var(--fg-muted)]">
-            {incident.status}
-          </span>
-          <span
-            className={`text-xs px-2 py-0.5 rounded-full font-mono uppercase ${
-              incident.severity === "critical"
-                ? "bg-rose-950/40 text-rose-400 border border-rose-800/40"
-                : "bg-amber-950/40 text-amber-400 border border-amber-800/40"
-            }`}
-          >
-            {incident.severity}
-          </span>
+    <div className="space-y-6">
+      {/* Live Region for Screen Readers */}
+      <div className="sr-only" aria-live="polite" role="status">
+        {liveAnnouncement}
+      </div>
+
+      {/* Incident Header */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[var(--line)]">
+        <div className="space-y-1.5">
+          <div className="flex items-center gap-2.5 flex-wrap">
+            <span className="font-mono text-sm font-bold text-[var(--accent)]">
+              INC-{incident.number}
+            </span>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--fg)]">
+              {incident.title}
+            </h1>
+            <StatusPill status={incident.status} />
+          </div>
+
+          <div className="flex items-center gap-3 text-xs font-mono text-[var(--fg-muted)] flex-wrap">
+            <span>
+              Service:{" "}
+              <strong className="text-[var(--fg)]">{service.name}</strong> (
+              {service.repoOwner}/{service.repoName})
+            </span>
+            <span>&bull;</span>
+            <span>Opened {new Date(incident.openedAt).toLocaleTimeString()} UTC</span>
+            <span>&bull;</span>
+            <span className="uppercase font-semibold px-2 py-0.5 rounded bg-[var(--surface)] text-[var(--fg)]">
+              {incident.severity}
+            </span>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        {/* Action Controls */}
+        <div className="flex items-center gap-2 self-start lg:self-auto">
           {!isTerminal && (
             <>
-              {(incident.traceStatus === "failed" || incident.traceStatus === "pending") && (
+              {(incident.traceStatus === "failed" ||
+                incident.traceStatus === "pending") && (
                 <button
+                  type="button"
                   onClick={handleRetrace}
-                  className="px-3 py-1.5 text-xs font-mono rounded bg-[var(--surface)] border border-[var(--line-strong)] hover:bg-[var(--line)]"
+                  className="px-3 py-1.5 text-xs font-mono rounded-lg bg-[var(--surface)] border border-[var(--line)] hover:bg-[var(--line)] text-[var(--fg)]"
                 >
                   Retry Trace
                 </button>
               )}
               <button
+                type="button"
                 onClick={handleResolve}
-                className="px-3 py-1.5 text-xs font-mono rounded bg-emerald-950/40 text-emerald-400 border border-emerald-800/40 hover:bg-emerald-900/40"
+                className="px-3.5 py-1.5 text-xs font-mono font-semibold rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-[var(--ok)] hover:bg-emerald-500/20"
               >
                 Mark Resolved
               </button>
               <button
+                type="button"
                 onClick={handleDismiss}
-                className="px-3 py-1.5 text-xs font-mono rounded bg-[var(--surface)] text-[var(--fg-muted)] border border-[var(--line)] hover:bg-[var(--line)]"
+                className="px-3 py-1.5 text-xs font-mono rounded-lg bg-[var(--surface)] text-[var(--fg-muted)] border border-[var(--line)] hover:bg-[var(--line)]"
               >
                 Dismiss
               </button>
             </>
           )}
         </div>
-      </header>
+      </div>
 
-      {/* Main Grid */}
-      <main className="flex-1 max-w-6xl w-full mx-auto p-6 space-y-6">
-        {/* Incident Summary Card */}
-        <div className="border border-[var(--line)] bg-[var(--bg-raised)] rounded-xl p-6 space-y-4">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <span className="text-xs font-mono text-[var(--fg-muted)]">
-                Service: <strong className="text-[var(--fg)]">{service.name}</strong> ({service.repoOwner}/{service.repoName})
-              </span>
-              <h1 className="text-2xl font-bold tracking-tight mt-1">{incident.title}</h1>
-            </div>
-            <div className="text-right text-xs font-mono text-[var(--fg-muted)]">
-              <div>Opened: {new Date(incident.openedAt).toLocaleTimeString()}</div>
-              <div>Alerts: {incident.alertCount}</div>
-            </div>
-          </div>
+      {/* 6-step LoopRail */}
+      <LoopRail currentStep={stepIndex} />
 
-          {/* Deployments Rail */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-            <div className="p-3 bg-[var(--surface)] border border-rose-900/30 rounded-lg">
-              <span className="text-xs font-mono text-rose-400 block mb-1">
-                &bull; Bad Deployment (Live at alert)
-              </span>
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-[var(--fg)] font-semibold">
-                  {incident.badDeployment?.sha ? incident.badDeployment.sha.slice(0, 7) : incident.badDeployment?.id ?? "Unknown"}
-                </span>
+      {/* 2-Column Responsive Layout (8 cols Main + 4 cols Sticky Rail) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        {/* Main Column (8 cols) */}
+        <div className="lg:col-span-8 space-y-6">
+          {/* 1. Deployments Strip */}
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-3">
+            <h2 className="text-xs font-mono font-bold text-[var(--fg-subtle)] uppercase tracking-wider">
+              Deployments Boundary
+            </h2>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-mono text-xs">
+              {/* Bad deployment */}
+              <div className="p-3.5 rounded-lg bg-rose-950/15 border border-rose-900/30 space-y-1.5">
+                <div className="flex items-center justify-between text-rose-400 font-semibold">
+                  <span>PRODUCTION (Bad)</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-950/40">
+                    Live at alert
+                  </span>
+                </div>
+                <div className="text-[var(--fg)] font-bold text-sm">
+                  {incident.badDeployment?.sha
+                    ? incident.badDeployment.sha.slice(0, 7)
+                    : incident.badDeployment?.id ?? "Unknown"}
+                </div>
                 {incident.badDeployment?.url && (
                   <a
-                    href={incident.badDeployment.url.startsWith("http") ? incident.badDeployment.url : `https://${incident.badDeployment.url}`}
+                    href={
+                      incident.badDeployment.url.startsWith("http")
+                        ? incident.badDeployment.url
+                        : `https://${incident.badDeployment.url}`
+                    }
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[var(--accent)] hover:underline"
+                    className="text-xs text-[var(--accent)] hover:underline flex items-center gap-1 pt-1"
                   >
-                    View on Vercel &rarr;
+                    <span>View deployment</span>
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
               </div>
-            </div>
 
-            <div className="p-3 bg-[var(--surface)] border border-emerald-900/30 rounded-lg">
-              <span className="text-xs font-mono text-emerald-400 block mb-1">
-                &bull; Rollback Target (Last Good)
-              </span>
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-[var(--fg)] font-semibold">
-                  {incident.goodDeployment?.sha ? incident.goodDeployment.sha.slice(0, 7) : incident.goodDeployment?.id ?? "None"}
-                </span>
+              {/* Last Good deployment */}
+              <div className="p-3.5 rounded-lg bg-emerald-950/15 border border-emerald-900/30 space-y-1.5">
+                <div className="flex items-center justify-between text-[var(--ok)] font-semibold">
+                  <span>LAST GOOD</span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/40">
+                    Target
+                  </span>
+                </div>
+                <div className="text-[var(--fg)] font-bold text-sm">
+                  {incident.goodDeployment?.sha
+                    ? incident.goodDeployment.sha.slice(0, 7)
+                    : incident.goodDeployment?.id ?? "Unknown"}
+                </div>
                 {incident.goodDeployment?.url && (
                   <a
-                    href={incident.goodDeployment.url.startsWith("http") ? incident.goodDeployment.url : `https://${incident.goodDeployment.url}`}
+                    href={
+                      incident.goodDeployment.url.startsWith("http")
+                        ? incident.goodDeployment.url
+                        : `https://${incident.goodDeployment.url}`
+                    }
                     target="_blank"
                     rel="noreferrer"
-                    className="text-[var(--accent)] hover:underline"
+                    className="text-xs text-[var(--accent)] hover:underline flex items-center gap-1 pt-1"
                   >
-                    View on Vercel &rarr;
+                    <span>View deployment</span>
+                    <ExternalLink className="w-3 h-3" />
                   </a>
                 )}
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Action Hero Card */}
-        {action && (
-          <div
-            className={`border rounded-xl p-6 shadow-sm transition-all ${
-              action.status === "awaiting_approval"
-                ? "border-amber-600/40 bg-amber-950/10"
-                : action.status === "verified"
-                ? "border-emerald-600/40 bg-emerald-950/10"
-                : action.status === "executing" || action.status === "verifying"
-                ? "border-blue-600/40 bg-blue-950/10"
-                : action.status === "failed" || action.status === "verification_failed"
-                ? "border-rose-600/40 bg-rose-950/10"
-                : "border-[var(--line)] bg-[var(--bg-raised)]"
-            }`}
-          >
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[var(--line)] pb-4 mb-4">
+          {/* 2. Suspect Commits Card */}
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
               <div>
-                <span className="text-xs font-mono uppercase tracking-wider text-[var(--fg-muted)]">
-                  Automated Mitigation Plan
-                </span>
-                <h2 className="text-lg font-bold flex items-center gap-2 mt-0.5">
-                  <span>{action.message}</span>
+                <h2 className="text-base font-bold text-[var(--fg)]">
+                  Ranked Suspect Commits
                 </h2>
+                <p className="text-xs text-[var(--fg-muted)]">
+                  Deterministic scoring between bad and last-good deployments
+                </p>
               </div>
-              <div className="flex items-center gap-3">
-                <span className="text-xs font-mono px-3 py-1 rounded-full uppercase bg-[var(--surface)] border border-[var(--line)]">
-                  Status: {action.status}
-                </span>
-              </div>
+              <span className="text-xs font-mono text-[var(--fg-subtle)]">
+                {suspects.length} commits
+              </span>
             </div>
 
-            {/* Preflight Checks */}
-            {action.preflight && action.preflight.length > 0 && (
-              <div className="mb-4">
-                <span className="text-xs font-mono text-[var(--fg-muted)] block mb-2">
-                  Preflight Safety Checks:
-                </span>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2 text-xs font-mono">
-                  {action.preflight.map((check) => (
+            {suspects.length === 0 ? (
+              <div className="py-8 text-center text-xs font-mono text-[var(--fg-muted)]">
+                {incident.traceStatus === "pending"
+                  ? "Tracing commits between deployments…"
+                  : "No suspect commits found."}
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {suspects.map((suspect) => {
+                  const isExpanded = !!expandedSuspects[suspect.id];
+                  const hasFiles = suspect.files && suspect.files.length > 0;
+
+                  return (
                     <div
-                      key={check.id}
-                      className={`p-2 rounded border flex items-center gap-2 ${
-                        check.ok
-                          ? "bg-emerald-950/20 border-emerald-900/30 text-emerald-300"
-                          : check.blocking
-                          ? "bg-rose-950/20 border-rose-900/30 text-rose-300"
-                          : "bg-amber-950/20 border-amber-900/30 text-amber-300"
+                      key={suspect.id}
+                      className={`rounded-lg border transition-all ${
+                        suspect.rank === 1
+                          ? "border-rose-900/40 bg-rose-950/10"
+                          : "border-[var(--line)] bg-[var(--surface)]"
                       }`}
                     >
-                      <span>{check.ok ? "✓" : "✗"}</span>
-                      <span className="truncate">{check.id}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+                      {/* Suspect Header */}
+                      <div className="p-4 space-y-2.5">
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span
+                                className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold ${
+                                  suspect.rank === 1
+                                    ? "bg-rose-500/20 text-rose-300"
+                                    : "bg-[var(--bg)] text-[var(--fg-muted)]"
+                                }`}
+                              >
+                                #{suspect.rank}
+                              </span>
+                              <a
+                                href={`https://github.com/${service.repoOwner}/${service.repoName}/commit/${suspect.sha}`}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="font-mono text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1"
+                              >
+                                <span>{suspect.shortSha}</span>
+                                <ExternalLink className="w-3 h-3" />
+                              </a>
+                              <span className="text-xs font-medium text-[var(--fg)]">
+                                {suspect.message}
+                              </span>
+                            </div>
+                            <div className="text-[11px] font-mono text-[var(--fg-muted)]">
+                              by {suspect.author} &bull;{" "}
+                              {new Date(suspect.committedAt).toLocaleTimeString()}
+                            </div>
+                          </div>
 
-            {/* Action Buttons for Awaiting Approval */}
-            {action.status === "awaiting_approval" && (
-              <div className="flex items-center gap-4 pt-2">
-                <button
-                  disabled={actionLoading}
-                  onClick={() => handleApprove(action.id)}
-                  className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-sm rounded-lg shadow-md transition disabled:opacity-50 flex items-center gap-2"
-                >
-                  {actionLoading ? "Dispatching..." : "Approve Rollback"}
-                </button>
-                <button
-                  disabled={actionLoading}
-                  onClick={() => handleReject(action.id)}
-                  className="px-4 py-2.5 bg-[var(--surface)] hover:bg-[var(--line)] border border-[var(--line-strong)] text-sm font-medium rounded-lg transition disabled:opacity-50"
-                >
-                  Reject
-                </button>
-                <span className="text-xs font-mono text-[var(--fg-muted)]">
-                  Expires in: {new Date(action.expiresAt).toLocaleTimeString()}
-                </span>
-              </div>
-            )}
-
-            {/* Health Probes Live Strip */}
-            {action.probes && action.probes.length > 0 && (
-              <div className="mt-4 pt-4 border-t border-[var(--line)]">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-mono text-[var(--fg-muted)]">
-                    Health Verification Probes (Target: 3 consecutive healthy checks):
-                  </span>
-                </div>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2 font-mono text-xs">
-                  {action.probes.map((probe) => (
-                    <div
-                      key={probe.seq}
-                      className={`p-2 rounded border text-center ${
-                        probe.ok
-                          ? "bg-emerald-950/30 border-emerald-800/40 text-emerald-400"
-                          : "bg-rose-950/30 border-rose-800/40 text-rose-400"
-                      }`}
-                    >
-                      <div className="font-bold">
-                        #{probe.seq} {probe.ok ? "OK" : "FAIL"}
-                      </div>
-                      <div className="text-[10px] text-[var(--fg-muted)]">
-                        {probe.latencyMs ?? 0}ms &bull; {probe.httpStatus ?? "err"}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Suspect Commits Section */}
-        <div className="border border-[var(--line)] bg-[var(--bg-raised)] rounded-xl p-6 space-y-4">
-          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
-            <div>
-              <h2 className="text-lg font-bold">Ranked Suspect Commits</h2>
-              <p className="text-xs text-[var(--fg-muted)]">
-                Analyzed diffs between {incident.goodDeployment?.sha?.slice(0, 7) ?? "good"} and {incident.badDeployment?.sha?.slice(0, 7) ?? "bad"}
-              </p>
-            </div>
-            <span className="text-xs font-mono text-[var(--fg-muted)]">
-              {suspects.length} commits analyzed
-            </span>
-          </div>
-
-          {suspects.length === 0 ? (
-            <div className="p-6 text-center text-xs font-mono text-[var(--fg-muted)]">
-              {incident.traceStatus === "pending"
-                ? "Tracing commits between deployments..."
-                : "No suspect commits found."}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {suspects.map((suspect) => (
-                <div
-                  key={suspect.id}
-                  className={`border rounded-lg p-4 space-y-3 ${
-                    suspect.rank === 1
-                      ? "border-rose-900/40 bg-rose-950/10"
-                      : "border-[var(--line)] bg-[var(--surface)]"
-                  }`}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span
-                          className={`text-xs font-mono px-2 py-0.5 rounded font-bold ${
-                            suspect.rank === 1
-                              ? "bg-rose-600 text-white"
-                              : "bg-[var(--line)] text-[var(--fg-muted)]"
-                          }`}
-                        >
-                          #{suspect.rank}
-                        </span>
-                        <a
-                          href={suspect.url}
-                          target="_blank"
-                          rel="noreferrer"
-                          className="font-mono text-sm font-semibold hover:underline text-[var(--accent)]"
-                        >
-                          {suspect.shortSha}
-                        </a>
-                        <span className="text-sm font-medium text-[var(--fg)]">
-                          {suspect.message}
-                        </span>
-                      </div>
-                      <div className="text-xs text-[var(--fg-muted)] font-mono">
-                        by {suspect.author} &bull; {new Date(suspect.committedAt).toLocaleTimeString()}
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-xs font-mono font-bold text-rose-400 block">
-                        {suspect.points} pts
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Evidence Tags */}
-                  {suspect.evidence && suspect.evidence.length > 0 && (
-                    <div className="flex flex-wrap gap-1.5 pt-1">
-                      {suspect.evidence.map((ev) => (
-                        <span
-                          key={ev.id}
-                          className="text-[11px] font-mono px-2 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[var(--fg-muted)]"
-                        >
-                          {ev.label} (+{ev.points})
-                        </span>
-                      ))}
-                    </div>
-                  )}
-
-                  {/* Patch Excerpt */}
-                  {suspect.files && suspect.files.length > 0 && (
-                    <div className="space-y-2 pt-2 border-t border-[var(--line)]">
-                      {suspect.files.map((file) => (
-                        <div key={file.path} className="text-xs font-mono space-y-1">
-                          <div className="flex items-center justify-between text-[var(--fg-muted)]">
-                            <span className={file.matched ? "text-amber-400 font-semibold" : ""}>
-                              {file.path}
-                            </span>
-                            <span>
-                              +{file.additions} -{file.deletions}
+                          <div className="text-right shrink-0">
+                            <span className="text-xs font-mono font-bold text-rose-400 block">
+                              {suspect.points} pts
                             </span>
                           </div>
-                          {file.patchExcerpt && (
-                            <pre className="p-3 bg-[var(--bg)] border border-[var(--line)] rounded overflow-x-auto text-[11px] leading-relaxed text-[var(--fg-muted)]">
-                              {file.patchExcerpt.split("\n").map((line, idx) => (
-                                <div
-                                  key={idx}
-                                  className={
-                                    line.startsWith("+")
-                                      ? "text-emerald-400 bg-emerald-950/20"
-                                      : line.startsWith("-")
-                                      ? "text-rose-400 bg-rose-950/20"
-                                      : ""
-                                  }
-                                >
-                                  {line}
-                                </div>
-                              ))}
-                            </pre>
-                          )}
                         </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
 
-        {/* Timeline */}
-        <div className="border border-[var(--line)] bg-[var(--bg-raised)] rounded-xl p-6 space-y-4">
-          <h2 className="text-lg font-bold border-b border-[var(--line)] pb-3">
-            Incident Timeline
-          </h2>
-          <div className="space-y-3 font-mono text-xs">
-            {timeline.length === 0 ? (
-              <p className="text-[var(--fg-muted)]">No timeline events recorded yet.</p>
-            ) : (
-              timeline.map((evt) => (
-                <div key={evt.id} className="flex items-start gap-4 pb-2 border-b border-[var(--line)]/40 last:border-0">
-                  <span className="text-[var(--fg-muted)] w-20 shrink-0">
-                    {new Date(evt.at).toLocaleTimeString()}
-                  </span>
-                  <span className="px-1.5 py-0.5 rounded bg-[var(--surface)] text-[10px] uppercase text-[var(--accent)] shrink-0">
-                    {evt.actorType}
-                  </span>
-                  <span className="text-[var(--fg)] flex-1">{evt.summary}</span>
-                </div>
-              ))
+                        {/* Evidence Chips */}
+                        {suspect.evidence && suspect.evidence.length > 0 && (
+                          <div className="flex items-center gap-1.5 flex-wrap pt-1">
+                            {suspect.evidence.map((ev) => (
+                              <span
+                                key={ev.id}
+                                className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[var(--fg-muted)]"
+                              >
+                                {ev.label} (+{ev.points})
+                              </span>
+                            ))}
+                          </div>
+                        )}
+
+                        {/* Expand Diffs Button */}
+                        {hasFiles && (
+                          <button
+                            type="button"
+                            onClick={() => toggleSuspect(suspect.id)}
+                            className="flex items-center gap-1 text-[11px] font-mono text-[var(--accent)] hover:underline pt-1"
+                          >
+                            {isExpanded ? (
+                              <>
+                                <ChevronDown className="w-3.5 h-3.5" />
+                                <span>Hide diffs ({suspect.files.length} files)</span>
+                              </>
+                            ) : (
+                              <>
+                                <ChevronRight className="w-3.5 h-3.5" />
+                                <span>View diffs ({suspect.files.length} files)</span>
+                              </>
+                            )}
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Expanded Diffs */}
+                      {isExpanded && hasFiles && (
+                        <div className="p-4 border-t border-[var(--line)] space-y-3 bg-[var(--bg-raised)]">
+                          {suspect.files.map((file) => (
+                            <DiffBlock
+                              key={file.path}
+                              filename={file.path}
+                              patch={file.patchExcerpt}
+                              matched={file.matched}
+                            />
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </div>
+
+          {/* 3. AI Explanation Card */}
+          <ExplanationCard incidentId={incident.id} analysis={analysis} />
+
+          {/* 4. Timeline */}
+          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
+            <h2 className="text-base font-bold text-[var(--fg)] border-b border-[var(--line)] pb-3">
+              Incident Timeline
+            </h2>
+
+            <div className="space-y-3 font-mono text-xs">
+              {timeline.length === 0 ? (
+                <p className="text-[var(--fg-muted)]">No events logged yet.</p>
+              ) : (
+                timeline.map((evt) => {
+                  const actorBadge =
+                    evt.actorType === "system"
+                      ? "S"
+                      : evt.actorType === "user"
+                      ? "U"
+                      : evt.actorType === "mcp"
+                      ? "M"
+                      : "A";
+
+                  return (
+                    <div
+                      key={evt.id}
+                      className="flex items-start gap-3 pb-2 border-b border-[var(--line)]/40 last:border-0"
+                    >
+                      <span className="text-[var(--fg-subtle)] w-18 shrink-0">
+                        {new Date(evt.at).toLocaleTimeString()}
+                      </span>
+                      <span
+                        className="w-5 h-5 rounded flex items-center justify-center font-bold text-[10px] bg-[var(--surface)] text-[var(--accent)] border border-[var(--line)] shrink-0"
+                        title={`Actor: ${evt.actorType}`}
+                      >
+                        {actorBadge}
+                      </span>
+                      <span className="text-[var(--fg)] flex-1 leading-relaxed">
+                        {evt.summary}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
+            </div>
+          </div>
         </div>
-      </main>
+
+        {/* Rail Column (4 cols, Sticky) */}
+        <aside className="lg:col-span-4 sticky top-6 space-y-6">
+          {action ? (
+            <div
+              className={`rounded-xl border p-5 shadow-sm space-y-4 ${
+                action.status === "awaiting_approval"
+                  ? "border-amber-500/40 bg-amber-950/10"
+                  : action.status === "verified"
+                  ? "border-emerald-500/40 bg-emerald-950/10"
+                  : action.status === "executing" || action.status === "verifying"
+                  ? "border-indigo-500/40 bg-indigo-950/10"
+                  : action.status === "failed" || action.status === "verification_failed"
+                  ? "border-rose-500/40 bg-rose-950/10"
+                  : "border-[var(--line)] bg-[var(--bg-raised)]"
+              }`}
+            >
+              <div className="border-b border-[var(--line)] pb-3 space-y-1">
+                <div className="text-[10px] font-mono uppercase font-bold text-[var(--fg-subtle)]">
+                  Action Plan
+                </div>
+                <h3 className="text-base font-bold text-[var(--fg)]">
+                  {action.message}
+                </h3>
+                <div className="text-xs font-mono text-[var(--fg-muted)]">
+                  Target: {action.target?.shortSha ?? action.target?.id?.slice(0, 10)}
+                </div>
+              </div>
+
+              {/* Preflight Safety Checks */}
+              {action.preflight && action.preflight.length > 0 && (
+                <div className="space-y-2">
+                  <div className="text-[11px] font-mono uppercase font-semibold text-[var(--fg-muted)]">
+                    Preflight Safety Checks
+                  </div>
+                  <div className="space-y-1 font-mono text-xs">
+                    {action.preflight.map((check) => (
+                      <div
+                        key={check.id}
+                        className="flex items-center justify-between p-2 rounded bg-[var(--surface)] border border-[var(--line)]"
+                      >
+                        <span className="truncate">{check.id}</span>
+                        {check.ok ? (
+                          <span className="text-[var(--ok)] font-bold">✓ PASS</span>
+                        ) : (
+                          <span className="text-[var(--danger)] font-bold">
+                            ✕ {check.blocking ? "BLOCK" : "WARN"}
+                          </span>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* State 1: Awaiting Approval */}
+              {action.status === "awaiting_approval" && (
+                <div className="space-y-3 pt-2">
+                  <HoldToConfirm
+                    onConfirm={() => handleApprove(action.id)}
+                    label="Approve rollback"
+                    disabled={actionLoading}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleReject(action.id)}
+                    disabled={actionLoading}
+                    className="w-full py-2 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono text-[var(--fg-muted)] transition"
+                  >
+                    Reject rollback
+                  </button>
+                  <div className="text-[11px] font-mono text-[var(--fg-subtle)] text-center">
+                    Expires at {new Date(action.expiresAt).toLocaleTimeString()}
+                  </div>
+                </div>
+              )}
+
+              {/* State 2: Executing */}
+              {action.status === "executing" && (
+                <div className="py-4 text-center space-y-2">
+                  <RefreshCw className="w-6 h-6 text-[var(--info)] animate-spin mx-auto" />
+                  <div className="text-sm font-semibold text-[var(--fg)]">
+                    Rolling back on Vercel…
+                  </div>
+                  <p className="text-xs font-mono text-[var(--fg-muted)]">
+                    Deploying last-good SHA to production alias
+                  </p>
+                </div>
+              )}
+
+              {/* State 3: Verifying with ProbeStrip */}
+              {action.status === "verifying" && (
+                <div className="space-y-3">
+                  <div className="text-xs font-mono font-semibold text-[var(--info)] flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-[var(--info)] animate-pulse" />
+                    <span>Verifying Health Check…</span>
+                  </div>
+                  <ProbeStrip probes={action.probes} max={18} />
+                </div>
+              )}
+
+              {/* State 4: Verified */}
+              {action.status === "verified" && (
+                <div className="space-y-3 text-center py-2">
+                  <div className="w-10 h-10 rounded-full bg-emerald-500/20 text-[var(--ok)] flex items-center justify-center mx-auto">
+                    <Check className="w-6 h-6" strokeWidth={2.5} />
+                  </div>
+                  <div className="text-sm font-bold text-[var(--ok)]">
+                    Production Recovered
+                  </div>
+                  <p className="text-xs text-[var(--fg-muted)]">
+                    Health probes returned healthy responses. Vercel deployment restored.
+                  </p>
+                </div>
+              )}
+
+              {/* State 5: Failure */}
+              {(action.status === "failed" ||
+                action.status === "verification_failed" ||
+                action.status === "rejected" ||
+                action.status === "expired") && (
+                <div className="p-3 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs font-mono text-rose-300 space-y-1">
+                  <div className="font-bold uppercase">{action.status}</div>
+                  <p>{action.message}</p>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 text-center text-xs font-mono text-[var(--fg-muted)]">
+              No rollback action proposed.
+            </div>
+          )}
+        </aside>
+      </div>
     </div>
   );
 }

@@ -138,10 +138,7 @@ describe("Alert intake and validation", () => {
       expect(scrubbed).not.toContain("xoxb-1234567890-1234567890123-abcdefghijklmnop");
       expect(scrubbed).not.toContain("AKIAIOSFODNN7EXAMPLE");
       expect(scrubbed).not.toContain("whsec_abcdefghijklmnopqrstuvwxyz123456");
-      expect(scrubbed).toContain("[redacted-key]");
-      expect(scrubbed).toContain("[redacted-token]");
-      expect(scrubbed).toContain("[redacted-aws-key]");
-      expect(scrubbed).toContain("[redacted-secret]");
+      expect(scrubbed).toContain("[redacted]");
     });
 
     it("scrubs .env style secret lines", () => {
