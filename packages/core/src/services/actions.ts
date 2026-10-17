@@ -874,9 +874,39 @@ export async function confirmProduction(
   const vercel = await getVercelClientForWorkspace(ctx);
   const target = action.target_deployment as DeploymentRef;
 
-  // Poll alias job up to 45 s every 3 s (15 iterations)
+  // Poll alias job or current production up to 45 s every 3 s (15 iterations)
   const maxAttempts = 15;
   for (let attempt = 0; attempt < maxAttempts; attempt++) {
+    const currentProd = await vercel.getCurrentProduction(service.vercel_project_id);
+    if (currentProd.id === target.id) {
+      const verifyStartedAt = now();
+      await db
+        .update(actions)
+        .set({
+          status: "verifying",
+          verify_started_at: verifyStartedAt,
+          updated_at: verifyStartedAt,
+        })
+        .where(and(eq(actions.id, action.id), eq(actions.status, "executing")));
+
+      await db
+        .update(incidents)
+        .set({ status: "verifying", updated_at: verifyStartedAt })
+        .where(and(eq(incidents.id, action.incident_id), eq(incidents.status, "mitigating")));
+
+      const targetSha = target.sha ? target.sha.slice(0, 7) : target.id;
+      await recordTimelineEvent(db, {
+        workspaceId: ctx.workspaceId,
+        incidentId: action.incident_id,
+        type: "production_confirmed",
+        actorType: "system",
+        summary: `Vercel now serves ${targetSha}`,
+        data: { actionId: action.id, targetDeploymentId: target.id, targetSha },
+      });
+
+      return { stop: false };
+    }
+
     const job = await vercel.getAliasJob(service.vercel_project_id);
 
     if (job && job.type === "rollback" && job.toDeploymentId === target.id) {
@@ -906,38 +936,6 @@ export async function confirmProduction(
         });
 
         return { stop: true };
-      }
-
-      if (job.jobStatus === "succeeded") {
-        const currentProd = await vercel.getCurrentProduction(service.vercel_project_id);
-        if (currentProd.id === target.id) {
-          const verifyStartedAt = now();
-          await db
-            .update(actions)
-            .set({
-              status: "verifying",
-              verify_started_at: verifyStartedAt,
-              updated_at: verifyStartedAt,
-            })
-            .where(and(eq(actions.id, action.id), eq(actions.status, "executing")));
-
-          await db
-            .update(incidents)
-            .set({ status: "verifying", updated_at: verifyStartedAt })
-            .where(and(eq(incidents.id, action.incident_id), eq(incidents.status, "mitigating")));
-
-          const targetSha = target.sha ? target.sha.slice(0, 7) : target.id;
-          await recordTimelineEvent(db, {
-            workspaceId: ctx.workspaceId,
-            incidentId: action.incident_id,
-            type: "production_confirmed",
-            actorType: "system",
-            summary: `Vercel now serves ${targetSha}`,
-            data: { actionId: action.id, targetDeploymentId: target.id, targetSha },
-          });
-
-          return { stop: false };
-        }
       }
     }
 

@@ -49,11 +49,11 @@ Work protocol for every task: **read the referenced doc sections → implement �
 - **Verify:** `pnpm fixture:break` then `pnpm fixture:fire` (FIREBREAK_URL=localhost) → incident with ranked suspects, top = the bad commit; action `awaiting_approval` in DB. (VERIFIED)
 
 ### M5 · Approve → execute → verify (≈ 1.5 h) — docs 03 §9, §10
-- [ ] Approve/reject routes; `action-execute` + `action-expiry` functions; `executeAction`, `confirmProduction`, `recordProbe`, `finishVerification`, `expireAction`; manual resolve/dismiss/retrace routes.
-- [ ] Minimal incident page: status, suspects list, action card with Approve/Reject, probes list; polling every 2 s.
-- [ ] `reset.ts` fixture.
-- [ ] Tests: doc 14 §2 items 5–8 (DB-backed ones if a test branch is available).
-- **Verify (MILESTONE):** local full loop: break → fire → approve → Vercel rolls back → 3 healthy probes → Recovered → reset. **Commit and tag `loop-works`.**
+- [x] Approve/reject routes; `action-execute` + `action-expiry` functions; `executeAction`, `confirmProduction`, `recordProbe`, `finishVerification`, `expireAction`; manual resolve/dismiss/retrace routes.
+- [x] Minimal incident page: status, suspects list, action card with Approve/Reject, probes list; polling every 2 s.
+- [x] `reset.ts` fixture.
+- [x] Tests: doc 14 §2 items 5–8 (DB-backed ones if a test branch is available).
+- **Verify (MILESTONE):** local full loop: break → fire → approve → Vercel rolls back → 3 healthy probes → Recovered → reset. **Commit and tag `loop-works`.** (VERIFIED)
 
 ---
 
