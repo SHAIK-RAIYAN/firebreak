@@ -39,16 +39,24 @@ export const PROVIDERS = {
 
 export type ProviderId = keyof typeof PROVIDERS;
 
-export function modelFor(provider: ProviderId, apiKey: string, modelId: string) {
+export function defaultModelFor(provider: ProviderId): string {
+  const prov = PROVIDERS[provider];
+  if (!prov) return "";
+  const def = prov.models.find((m: any) => m.default) || prov.models[0];
+  return def.id;
+}
+
+export function modelFor(provider: ProviderId, apiKey: string, modelId?: string) {
+  const targetModel = modelId || defaultModelFor(provider);
   switch (provider) {
     case "anthropic":
-      return createAnthropic({ apiKey })(modelId);
+      return createAnthropic({ apiKey })(targetModel);
     case "openai":
-      return createOpenAI({ apiKey })(modelId);
+      return createOpenAI({ apiKey })(targetModel);
     case "google":
-      return createGoogleGenerativeAI({ apiKey })(modelId);
+      return createGoogleGenerativeAI({ apiKey })(targetModel);
     case "xai":
-      return createXai({ apiKey })(modelId);
+      return createXai({ apiKey })(targetModel);
     default:
       throw new Error(`Unsupported AI provider: ${String(provider)}`);
   }

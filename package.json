@@ -16,7 +16,10 @@
     "fixture:break": "npm -w @firebreak/fixtures run break",
     "fixture:fire": "npm -w @firebreak/fixtures run fire",
     "fixture:static": "npm -w @firebreak/fixtures run static",
-    "fixture:reset": "npm -w @firebreak/fixtures run reset"
+    "fixture:reset": "npm -w @firebreak/fixtures run reset",
+    "ops:reencrypt": "npx tsx --env-file=.env packages/core/scripts/ops-reencrypt.ts",
+    "ops:cancel-action": "npx tsx --env-file=.env packages/core/scripts/ops-cancel-action.ts",
+    "test:ai": "npx tsx --env-file=.env packages/core/scripts/test-ai.ts"
   },
   "devDependencies": {
     "turbo": "^2"
