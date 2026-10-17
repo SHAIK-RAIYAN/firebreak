@@ -19,6 +19,20 @@ export type ErrorDetails = {
   [key: string]: unknown;
 };
 
+export const DEFAULT_STATUS_MAP: Record<ErrorCode, number> = {
+  UNAUTHENTICATED: 401,
+  FORBIDDEN: 403,
+  NOT_FOUND: 404,
+  VALIDATION_FAILED: 422,
+  CONFLICT: 409,
+  PRECONDITION_FAILED: 412,
+  RATE_LIMITED: 429,
+  UPSTREAM_ERROR: 502,
+  INTERNAL: 500,
+  INVALID_SIGNATURE: 401,
+  PAYLOAD_TOO_LARGE: 413,
+};
+
 export class AppError extends Error {
   readonly code: ErrorCode;
   readonly status: number;
@@ -27,17 +41,34 @@ export class AppError extends Error {
 
   constructor(
     code: ErrorCode,
-    status: number,
-    message: string,
-    details?: ErrorDetails,
+    statusOrMessage: number | string,
+    messageOrDetails?: string | ErrorDetails,
+    detailsOrRetriable?: ErrorDetails | boolean,
     retriable: boolean = false,
   ) {
+    let status: number;
+    let message: string;
+    let details: ErrorDetails | undefined;
+    let isRetriable = retriable;
+
+    if (typeof statusOrMessage === "number") {
+      status = statusOrMessage;
+      message = typeof messageOrDetails === "string" ? messageOrDetails : String(statusOrMessage);
+      details = typeof detailsOrRetriable === "object" ? detailsOrRetriable : undefined;
+      isRetriable = typeof detailsOrRetriable === "boolean" ? detailsOrRetriable : retriable;
+    } else {
+      status = DEFAULT_STATUS_MAP[code] ?? 500;
+      message = statusOrMessage;
+      details = typeof messageOrDetails === "object" ? (messageOrDetails as ErrorDetails) : undefined;
+      isRetriable = typeof detailsOrRetriable === "boolean" ? detailsOrRetriable : false;
+    }
+
     super(message);
     this.name = "AppError";
     this.code = code;
     this.status = status;
     this.details = details;
-    this.retriable = retriable;
+    this.retriable = isRetriable;
     Object.setPrototypeOf(this, AppError.prototype);
   }
 }

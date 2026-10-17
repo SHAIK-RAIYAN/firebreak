@@ -8,18 +8,18 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M3 — Integrations (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M2 Core domain (crypto, HMAC, state machines, ranking, preflight, unit tests)
-- **Next task:** M3 Integrations (GitHub App, Vercel token, Services wizard)
+- **Current milestone:** M4 — Alert intake + Inngest incident workflow (see `docs/15_BUILD_PLAN.md`)
+- **Last completed task:** M3 Integrations (GitHub App, Vercel token, SSRF guard, Probe, Services wizard)
+- **Next task:** M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
 - **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 50 passed, `npm run lint`)
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 78 passed, `npm run lint`)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
 - [x] M0 Scaffold (monorepo, lint, typecheck, CI)
 - [x] M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap)
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
-- [ ] M3 Integrations (GitHub App, Vercel token, Services wizard)
+- [x] M3 Integrations (GitHub App, Vercel token, Services wizard)
 - [ ] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
 - [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
 - [ ] M6 App UI polish (incident page live, settings/AI keys, MCP keys)
@@ -54,6 +54,11 @@ Record every API shape you verified so you never guess twice. Format: `fact — 
 - All 20 tables successfully created in Neon Postgres public schema — 2026-10-17
 - Next 16 requires `proxy.ts` and bans simultaneous `middleware.ts` — 2026-10-17
 - Better Auth 1.7 `toNextJsHandler` works at `/api/auth/[...all]/route.ts` with Next.js 16 App Router — 2026-10-17
+- `Vercel /v9/projects/{id}` returns `targets: {}` when no production deployment exists yet — 2026-10-17
+- `Vercel /v2/user` returns `username: shaikraiyan` with bearer token — 2026-10-17
+- `ipaddr.js` + Node DNS lookup reliably validates IPv4, IPv6, loopback, private ranges, and cloud metadata (169.254.169.254) — 2026-10-17
+- Next.js 16 App Router requires wrapping client components reading `useSearchParams()` in `<Suspense>` to allow static prerendering at build time — 2026-10-17
+- Vercel token encrypted with AES-256-GCM and AAD `${ws}:vercel` stored in DB with `token_last4` — 2026-10-17
 
 ## 5. Environment variables status
 
@@ -123,4 +128,15 @@ npx tsx packages/core/src/db/migrate.ts # apply migrations to Neon
 - `packages/core/src/domain/state.ts`: Pure state machines for IncidentStatus and ActionStatus
 - `packages/core/src/domain/preflight.ts`: Action preflight validation (target ready, drift, unexpired, non-blocking alert probe)
 - `packages/core/src/domain/ranking.ts`: Deterministic suspect ranking engine (path normalization, hunk parser, recency tiebreak)
+- `packages/core/src/adapters/ssrf.ts`: SSRF protection with ipaddr.js, DNS resolution, private/loopback/cloud metadata blocks
+- `packages/core/src/adapters/probe.ts`: Non-throwing HTTP health probe with latency measurement and observedSha extraction
+- `packages/core/src/adapters/vercel.ts`: Vercel REST API client (user, projects, deployments, current production, rollback, alias)
+- `packages/core/src/adapters/github.ts`: GitHub App Octokit client (verifyInstallation, repos, compare commits, commit files)
+- `packages/core/src/services/context.ts`: ServiceContext types and factory functions (systemCtx, userCtx, mcpCtx)
+- `packages/core/src/services/integrations.ts`: Integrations service (GitHub App install/callback/webhooks, Vercel token connect/disconnect)
+- `packages/core/src/services/services.ts`: Services service (create, list, get, update, archive, rotate alert secret, probe health URL)
+- `packages/core/src/services/mcpKeys.ts`: MCP API keys service (create, revoke, list, validate)
+- `apps/web/src/app/api/v1/`: Next.js REST API routes for integrations, services, and health probes
+- `apps/web/src/app/app/integrations/page.tsx`: Integrations dashboard (GitHub App installation status + Vercel token management)
+- `apps/web/src/app/app/services/new/page.tsx`: 5-step Service creation wizard with live health probe test and one-time secret reveal
 - `packages/fixtures/package.json`: Alert & break fixture scripts runner

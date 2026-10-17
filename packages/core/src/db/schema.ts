@@ -24,6 +24,8 @@ export type DeploymentRef = {
   createdAt: string;
   state: string;
   branch: string | null;
+  created?: number;
+  uid?: string;
 };
 
 export type SuspectFile = {

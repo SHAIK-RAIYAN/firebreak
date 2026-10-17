@@ -21,8 +21,32 @@ export * from "./crypto/secrets.js";
 export * from "./crypto/hmac.js";
 export * from "./crypto/keys.js";
 
+// Adapters
+export * from "./adapters/ssrf.js";
+export * from "./adapters/probe.js";
+export * from "./adapters/vercel.js";
+export {
+  githubApp,
+  setGithubApp,
+  githubForInstallation,
+  verifyInstallation,
+  type RepoRef,
+  type CommitRef,
+  type CompareResult,
+  type VerifiedInstallation,
+} from "./adapters/github.js";
+
+// Services & Context
+export * from "./services/context.js";
+export * from "./services/integrations.js";
+export * from "./services/services.js";
+export * from "./services/mcpKeys.js";
+
 // Database client & schema
-export * from "./db/index.js";
+export { db, type Database } from "./db/client.js";
+export * from "./db/schema.js";
+export * as schema from "./db/schema.js";
 
 // Repos
 export * from "./repo/workspaces.js";
+

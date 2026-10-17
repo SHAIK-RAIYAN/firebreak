@@ -54,6 +54,22 @@ export default async function ConsolePage() {
           </p>
         </div>
 
+        {/* Actions bar */}
+        <div className="flex items-center gap-3">
+          <a
+            href="/app/integrations"
+            className="px-4 py-2 bg-[var(--surface)] border border-[var(--line-strong)] text-[var(--fg)] rounded-lg text-sm font-medium hover:bg-[var(--line)] transition"
+          >
+            Manage Integrations &rarr;
+          </a>
+          <a
+            href="/app/services/new"
+            className="px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-sm font-medium hover:opacity-90 transition"
+          >
+            + New Service
+          </a>
+        </div>
+
         {/* Workspace Card */}
         <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 shadow-sm space-y-4">
           <div className="flex items-center justify-between border-b border-[var(--line)] pb-4">
