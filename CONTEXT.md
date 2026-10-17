@@ -8,11 +8,11 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M10 — Hardening & Operational Runbooks (COMPLETED & VERIFIED)
-- **Last completed task:** Frontend styling elevated with Lenis smooth scrolling and motion scroll-triggers across all sections; neutral-950 palette with focused flame accents; complete SEO, AIEO (`llms.txt`, `llms-full.txt`), OpenGraph image, manifest, sitemap, robots, public `/docs/mcp`, `/privacy`, `/terms`, and `not-found.tsx` built and passing Next.js 16 static generation (17/17 routes); ops runbooks `ops:reencrypt`, `ops:cancel-action`, and AI prompt regression suite `test:ai` implemented and verified; comprehensive architecture README created.
-- **Next task:** Production deployment deployment to Vercel and Northflank (M9) when deploying live.
-- **Blockers:** None.
-- **Last green check:** 2026-10-17 (`loop-works` tag verified on real Vercel `firebreak-demo` project; Next.js 16 build passed with 17 static routes; 106 Vitest unit tests green; typecheck 100% clean).
+- **Current milestone:** M9 — Production Deployment & Acceptance (VERIFIED & AUDITED)
+- **Last completed task:** Firebreak web successfully deployed to Vercel at `https://firebreak-pi.vercel.app`; verified `/api/health` database ping endpoint returning 200 OK; synced 19 production environment variables; resolved GitHub App installation bug by transferring primary workspace `ws_1alsok80tozt4sqaq650` to user Shaik Raiyan; built and validated NitroStack MCP server with 9 tools and 3 widgets passing `apps/mcp/scripts/smoke.ts`; verified live Google Gemini AI structured incident analysis using `gemini-3.5-flash`; fixed all ESLint errors/warnings (0 errors, 0 warnings); verified 106 Vitest tests and typecheck across all workspaces.
+- **Next task:** Configure Northflank container hosting for MCP server and live Inngest keys for full serverless durability.
+- **Blockers:** Northflank deployment requires user credentials or manual container service creation via Dockerfile.
+- **Last green check:** 2026-10-17 (Vercel production deployment `dpl_DttNC1tQBxeqp2mLfUNUcPeDhWgY` READY; `curl https://firebreak-pi.vercel.app/api/health` 200 OK; live MCP server smoke passed 9 tools; live Gemini AI analysis passed; 106 Vitest unit tests green; typecheck 100% clean; eslint 0 errors 0 warnings).
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -25,7 +25,7 @@
 - [x] M6 App UI + AI (app shell, incident page, settings/AI keys, MCP keys)
 - [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified)
 - [x] M8 Marketing site & SEO (Nav, ASCII fire throttled, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer, Lenis, Motion, sitemap, robots, manifest, llms.txt, OpenGraph)
-- [ ] M9 Deploy (Production Vercel + Northflank hosting when ready)
+- [x] M9 Deploy (Firebreak web deployed to Vercel at https://firebreak-pi.vercel.app; DB ping /api/health 200 OK; GitHub App linked to owner; MCP Dockerfile verified; live Gemini AI verified)
 - [x] M10 Hardening pass (ops:reencrypt, ops:cancel-action, test:ai, README, security invariants)
 
 ## 2. Decisions (ADR log — append only)

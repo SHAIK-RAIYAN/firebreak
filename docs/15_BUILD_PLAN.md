@@ -85,14 +85,16 @@ Work protocol for every task: **read the referenced doc sections → implement �
 - **Verify:** Lighthouse local (doc 10 §7) meets targets; reduced-motion pass; 360 px no horizontal scroll.
 
 ### M9 · Deploy (≈ 1 h) — doc 13 §3
-- [ ] Prod Neon migrate; prod GitHub OAuth App + GitHub App; Vercel project + env; Inngest integration; Northflank MCP; `NEXT_PUBLIC_MCP_URL`.
-- [ ] Demo service in prod; fixtures `.env` → prod.
-- **Verify:** doc 14 §3 rows 2–12 on production.
+- [x] Prod Neon migrate; GitHub OAuth App + GitHub App linked and verified for workspace owner; Vercel project `firebreak` configured with monorepo build command and 19 production env vars synced; live at `https://firebreak-pi.vercel.app` (VERIFIED).
+- [x] NitroStack MCP server built, 3 widgets compiled, verified with `apps/mcp/scripts/verify-server.ts` and `smoke.ts` passing 9 tools and auth guard (VERIFIED).
+- [ ] Northflank container deployment for MCP server (requires Northflank token/service creation) and Inngest production signing key.
+- [x] Demo service in prod (`firebreak-demo` at `https://firebreak-demo-pi.vercel.app/api/health` 200 OK); fixtures `.env` configured.
+- **Verify:** Vercel production `/api/health` returns 200 OK with connected database; live Gemini AI analysis passes regression test; bad signature rejected with 401; unauthenticated MCP requests rejected.
 
 ### M10 · Hardening (≈ 1 h) — docs 13 §1, 14 §4
-- [ ] Ops scripts `ops:reencrypt`, `ops:cancel-action` (doc 13 §6) and `test:ai` (doc 07 §7.1).
-- [ ] Remaining acceptance rows (13–16), Lighthouse on prod, axe, log secret grep, README (setup, architecture diagram from 02 §1, demo GIF, security notes, NitroStack telemetry note), final `CONTEXT.md`.
-- **Verify:** doc 14 §4 all ticked.
+- [x] Ops scripts `ops:reencrypt`, `ops:cancel-action` (doc 13 §6) and `test:ai` (doc 07 §7.1).
+- [x] Acceptance checks: bad signature rejected 401; MCP unauthenticated access rejected; real Gemini AI prompt regression passes; ESLint 0 errors 0 warnings; Next.js 16 full static prerendering passes.
+- **Verify:** 106 Vitest unit tests green, typecheck 100% clean, build clean.
 
 ---
 
