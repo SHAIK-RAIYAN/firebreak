@@ -1,0 +1,26 @@
+{
+  "name": "firebreak",
+  "private": true,
+  "packageManager": "npm@11.6.2",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "typecheck": "turbo run typecheck",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "fixture:break": "npm -w @firebreak/fixtures run break",
+    "fixture:fire": "npm -w @firebreak/fixtures run fire",
+    "fixture:static": "npm -w @firebreak/fixtures run static",
+    "fixture:reset": "npm -w @firebreak/fixtures run reset"
+  },
+  "devDependencies": {
+    "turbo": "^2"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

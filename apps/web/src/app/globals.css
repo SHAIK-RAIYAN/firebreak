@@ -1,0 +1,81 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #F6F4F0;
+  --bg-raised: #FFFFFF;
+  --surface: #EFECE6;
+  --line: #E2DDD5;
+  --line-strong: #CBC4B8;
+  --fg: #17141D;
+  --fg-muted: #5A5363;
+  --fg-subtle: #6E6777;
+  --accent: #6D28D9;
+  --accent-solid: #7C3AED;
+  --accent-fg: #FFFFFF;
+  --ember: #C026D3;
+  --ok: #0B7A4C;
+  --warn: #9A5B00;
+  --danger: #C21F3A;
+  --info: #2E58C9;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 120ms;
+  --dur-2: 200ms;
+}
+
+.dark {
+  --bg: #0B0A0F;
+  --bg-raised: #121019;
+  --surface: #18151F;
+  --line: #262130;
+  --line-strong: #3A3346;
+  --fg: #F3F0F7;
+  --fg-muted: #A8A0B6;
+  --fg-subtle: #847C93;
+  --accent: #B57BFF;
+  --accent-solid: #7C3AED;
+  --accent-fg: #FFFFFF;
+  --ember: #F0ABFC;
+  --ok: #3DDC97;
+  --warn: #F5B841;
+  --danger: #FF5D73;
+  --info: #7CA7FF;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-bg-raised: var(--bg-raised);
+  --color-surface: var(--surface);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-solid: var(--accent-solid);
+  --color-accent-fg: var(--accent-fg);
+  --color-ember: var(--ember);
+  --color-ok: var(--ok);
+  --color-warn: var(--warn);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+
+  --font-sans: var(--font-geist-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: var(--font-display), var(--font-geist-sans), sans-serif;
+  --font-pixel: var(--font-pixel), ui-monospace, monospace;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

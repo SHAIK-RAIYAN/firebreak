@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: postgresql://build:build@localhost/build
+      BETTER_AUTH_SECRET: ci-dummy-secret-at-least-32chars
+      ENCRYPTION_KEY: ci-dummy-encryption-key-32chars!
+      STATE_SECRET: ci-dummy-state-secret-32-chars!
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx turbo run build typecheck test lint

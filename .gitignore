@@ -1,0 +1,39 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+.next/
+out/
+src/widgets/out/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Turbo
+.turbo/
+
+# Logs
+*.log
+pino-*.log
+
+# Test
+coverage/
+
+# Misc
+firebreak_plan/
+PROMPT.md
+backend/
+frontend/

@@ -1,0 +1,20 @@
+{
+  "name": "@firebreak/fixtures",
+  "version": "0.1.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "break": "tsx src/break.ts",
+    "fire": "tsx src/fire.ts",
+    "static": "tsx src/static-alert.ts",
+    "reset": "tsx src/reset.ts"
+  },
+  "dependencies": {
+    "@firebreak/core": "*"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.0",
+    "typescript": "^5.8.0",
+    "dotenv": "^16.4.0"
+  }
+}
