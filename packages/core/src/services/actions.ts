@@ -33,6 +33,7 @@ import type {
   ProbeView,
   TimelineEventView,
   AnalysisView,
+  IncidentCard,
 } from "../views/types.js";
 import type { IncidentStatus, ActionStatus as ActionStatusEnum } from "../domain/state.js";
 import type { Analysis } from "../ai/schema.js";
@@ -1482,32 +1483,33 @@ export async function getAction(
     message = `Verification failed after rollback`;
   }
 
-  return {
-    id: action.id,
-    incident: {
-      id: incident.id,
-      number: incident.number,
-      title: incident.title,
-    },
-    status: action.status as ActionStatusEnum,
-    target: {
-      id: target.id,
-      shortSha: target.sha ? target.sha.slice(0, 7) : null,
-      url: target.url,
-      createdAt: target.createdAt,
-    },
-    from: {
-      id: from.id,
-      shortSha: from.sha ? from.sha.slice(0, 7) : null,
-    },
-    preflight: (action.preflight as PreflightCheck[]) ?? [],
-    expiresAt: action.expires_at.toISOString(),
-    approveUrl: `/api/v1/actions/${action.id}/approve`,
-    decidedVia: (action.decided_via as "web" | "mcp" | null) ?? null,
-    probes: probeViews,
-    verdict,
-    message,
-  };
+    const appUrl = process.env.FIREBREAK_APP_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+    return {
+      id: action.id,
+      incident: {
+        id: incident.id,
+        number: incident.number,
+        title: incident.title,
+      },
+      status: action.status as ActionStatusEnum,
+      target: {
+        id: target.id,
+        shortSha: target.sha ? target.sha.slice(0, 7) : null,
+        url: target.url,
+        createdAt: target.createdAt,
+      },
+      from: {
+        id: from.id,
+        shortSha: from.sha ? from.sha.slice(0, 7) : null,
+      },
+      preflight: (action.preflight as PreflightCheck[]) ?? [],
+      expiresAt: action.expires_at.toISOString(),
+      approveUrl: `${appUrl}/app/incidents/${incident.id}?action=${action.id}`,
+      decidedVia: (action.decided_via as "web" | "mcp" | null) ?? null,
+      probes: probeViews,
+      verdict,
+      message,
+    };
 }
 
 export async function getIncidentDetail(
@@ -1749,3 +1751,95 @@ export async function listIncidents(
 
   return { items, nextCursor };
 }
+
+export async function resolveIncidentId(
+  ctx: ServiceContext,
+  incidentRef: string,
+  customDb?: Database,
+): Promise<string> {
+  const db = customDb ?? defaultDb();
+  const trimmed = incidentRef.trim();
+
+  if (trimmed.startsWith("inc_")) {
+    const [inc] = await db
+      .select({ id: incidents.id })
+      .from(incidents)
+      .where(and(eq(incidents.id, trimmed), eq(incidents.workspace_id, ctx.workspaceId)))
+      .limit(1);
+
+    if (inc) return inc.id;
+  } else {
+    // Try parsing as incident number: e.g. "INC-12", "inc-12", "#12", "12"
+    const cleaned = trimmed.replace(/^(INC|inc)[-#]?/i, "").replace(/^#/, "").trim();
+    const num = parseInt(cleaned, 10);
+    if (!isNaN(num)) {
+      const [inc] = await db
+        .select({ id: incidents.id })
+        .from(incidents)
+        .where(and(eq(incidents.number, num), eq(incidents.workspace_id, ctx.workspaceId)))
+        .limit(1);
+
+      if (inc) return inc.id;
+    }
+  }
+
+  throw new AppError("NOT_FOUND", 404, `Incident '${incidentRef}' not found`);
+}
+
+export async function getIncidentCard(
+  ctx: ServiceContext,
+  input: { incident: string },
+  customDb?: Database,
+): Promise<IncidentCard> {
+  const db = customDb ?? defaultDb();
+  const incidentId = await resolveIncidentId(ctx, input.incident, db);
+
+  const [incident] = await db
+    .select()
+    .from(incidents)
+    .where(and(eq(incidents.id, incidentId), eq(incidents.workspace_id, ctx.workspaceId)))
+    .limit(1);
+
+  if (!incident) {
+    throw new AppError("NOT_FOUND", 404, "Incident not found");
+  }
+
+  const [service] = await db
+    .select()
+    .from(services)
+    .where(and(eq(services.id, incident.service_id), eq(services.workspace_id, ctx.workspaceId)))
+    .limit(1);
+
+  const [topSuspect] = await db
+    .select()
+    .from(suspects)
+    .where(and(eq(suspects.incident_id, incident.id), eq(suspects.workspace_id, ctx.workspaceId), eq(suspects.rank, 1)))
+    .limit(1);
+
+  const [latestAction] = await db
+    .select()
+    .from(actions)
+    .where(and(eq(actions.incident_id, incident.id), eq(actions.workspace_id, ctx.workspaceId)))
+    .orderBy(desc(actions.created_at))
+    .limit(1);
+
+  const appUrl = process.env.FIREBREAK_APP_URL || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
+  const badDeployment = incident.bad_deployment as DeploymentRef | null;
+  const goodDeployment = incident.good_deployment as DeploymentRef | null;
+
+  return {
+    id: incident.id,
+    number: incident.number,
+    title: incident.title,
+    status: incident.status as IncidentStatus,
+    severity: incident.severity as Severity,
+    service: service?.name ?? "Unknown Service",
+    openedAt: incident.opened_at.toISOString(),
+    bad: badDeployment ? { shortSha: badDeployment.sha ? badDeployment.sha.slice(0, 7) : null } : null,
+    good: goodDeployment ? { shortSha: goodDeployment.sha ? goodDeployment.sha.slice(0, 7) : null } : null,
+    topSuspect: topSuspect ? { shortSha: topSuspect.short_sha, message: topSuspect.message, points: topSuspect.points } : null,
+    action: latestAction ? { id: latestAction.id, status: latestAction.status as ActionStatusEnum } : null,
+    appUrl: `${appUrl}/app/incidents/${incident.id}`,
+  };
+}
+

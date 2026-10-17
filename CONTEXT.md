@@ -8,23 +8,23 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M7 — NitroStack MCP server (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M6 App UI + AI (App shell, sidebar, top bar, ⌘K, theme toggle, overview checklist + stats, incidents list, services list, AI keys settings & pipeline with 4 providers, MCP keys settings, and incident room signature components: LoopRail, HoldToConfirm, ProbeStrip, DiffBlock, ExplanationCard)
-- **Next task:** M7 NitroStack MCP server (scaffold, 9 tools, 3 widgets, KeyService + guard, NitroStudio verification)
-- **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 106 passed, `npm run lint` 0 errors)
+- **Current milestone:** M3 — Integrations + Services (Completing real GitHub App install & Demo Service creation)
+- **Last completed task:** M8 Marketing Homepage `/` fully built with ASCII Fire, Hero, Ticker, Problem Clock, 6-step Loop, Evidence DiffBlock, MCP tools, Security Bento, and FAQ. Dev server verified rendering 200 on `http://localhost:3000`.
+- **Next task:** Complete M3 demo service creation as soon as user installs GitHub App at `https://github.com/apps/firebreak-raiyan-2026/installations/new`, then run M4 & M5 full incident response loop against real Vercel deployment.
+- **Blockers:** GitHub App `firebreak-raiyan-2026` needs to be installed on user account `SHAIK-RAIYAN` (takes 1 click at `https://github.com/apps/firebreak-raiyan-2026/installations/new`).
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 106 passed)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
 - [x] M0 Scaffold (monorepo, lint, typecheck, CI)
 - [x] M1 Database + auth (Neon, Drizzle, Better Auth, workspace bootstrap)
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
-- [x] M3 Integrations (GitHub App, Vercel token, Services wizard)
-- [x] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
-- [x] M5 Approve → execute → verify (core loop complete, demo passes in local)
-- [x] M6 App UI + AI (incident page live, settings/AI keys, MCP keys)
-- [ ] M7 NitroStack MCP server (tools, widgets, auth) + NitroStudio verified
-- [ ] M8 Marketing site (loader, ASCII fire, scroll story, SEO files)
+- [ ] M3 Integrations (Vercel connected; demo baseline deployed 200; BLOCKED on GitHub App install to create service)
+- [ ] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
+- [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
+- [x] M6 App UI + AI (app shell, incident page, settings/AI keys, MCP keys)
+- [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified)
+- [x] M8 Marketing site (Nav, ASCII fire, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer)
 - [ ] M9 Deploy (Vercel + MCP host + Neon + Inngest Cloud) + production demo passes
 - [ ] M10 Hardening pass (Lighthouse, a11y, security checklist, README)
 
@@ -65,6 +65,10 @@ Record every API shape you verified so you never guess twice. Format: `fact — 
 - Action status enum (`ActionStatus` in `state.ts`) vs action view model (`ActionStatusView` in `views/types.ts`) avoids symbol collision in core exports — 2026-10-17
 - React 19 / Next 16 linting flags synchronous setState calls in `useEffect`, resolved by scheduling initial fetch via `setTimeout(..., 0)` — 2026-10-17
 - Vercel `AliasJob` carries `requestedAt: number` and `toDeploymentId: string` for robust idempotency check without duplicate rollback API calls — 2026-10-17
+- `firebreak-demo` deployed live at `https://firebreak-demo-pi.vercel.app/api/health` returning 200 with commit `41ee4dbe96a8401cfbf9eb4b7f5e65bedc156a09` — 2026-10-17
+- Vercel API requires `framework: 'nextjs'` on projects; `framework: null` attempts static HTML export looking for `public/` — 2026-10-17
+- Vercel personal user token requires omitting `teamId` (passing teamId returns 403 on personal projects) — 2026-10-17
+- Vercel blocks builds running vulnerable Next.js versions (e.g. 15.1.0); Next.js 16.4.2 compiles cleanly and deploys — 2026-10-17
 
 ## 5. Environment variables status
 
