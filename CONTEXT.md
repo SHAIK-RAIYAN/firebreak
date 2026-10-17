@@ -8,11 +8,11 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M5 — Approve → execute → verify (COMPLETED & VERIFIED)
-- **Last completed task:** Complete real incident response loop verified end-to-end on live Vercel project `prj_M5MaS6jYvODRdjIYhYMai6YWwxND` (`firebreak-demo`): broke with pricing bug (`d63d7e8` returning 500), signed HMAC alert intake opened `inc_6ob8js87ey5s4gpmuabk`, Inngest pipeline retrieved git compare and ranked `1300d48` #1 (80 pts), rollback proposed `act_cdo8g2jf0okvcfjhg7gn`, human operator confirmed approval, Vercel alias rollback executed to `d09eaea`, 3 consecutive healthy probes (200 OK) verified recovery in DB, incident transitioned to `resolved`, and demo repo cleanly reset with `fixture:reset`.
-- **Next task:** M9 Production Deploy / M10 Hardening pass.
+- **Current milestone:** M10 — Hardening & Operational Runbooks (COMPLETED & VERIFIED)
+- **Last completed task:** Frontend styling elevated with Lenis smooth scrolling and motion scroll-triggers across all sections; neutral-950 palette with focused flame accents; complete SEO, AIEO (`llms.txt`, `llms-full.txt`), OpenGraph image, manifest, sitemap, robots, public `/docs/mcp`, `/privacy`, `/terms`, and `not-found.tsx` built and passing Next.js 16 static generation (17/17 routes); ops runbooks `ops:reencrypt`, `ops:cancel-action`, and AI prompt regression suite `test:ai` implemented and verified; comprehensive architecture README created.
+- **Next task:** Production deployment deployment to Vercel and Northflank (M9) when deploying live.
 - **Blockers:** None.
-- **Last green check:** 2026-10-17 (`loop-works` tag verified: live incident opened, ranked, approved, Vercel rolled back, 3x 200 OK probe streak recorded, incident resolved, reset clean)
+- **Last green check:** 2026-10-17 (`loop-works` tag verified on real Vercel `firebreak-demo` project; Next.js 16 build passed with 17 static routes; 106 Vitest unit tests green; typecheck 100% clean).
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -21,12 +21,12 @@
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
 - [x] M3 Integrations (Vercel connected; demo service created in UI/API; GitHub App verified on SHAIK-RAIYAN; secrets ciphertext in DB)
 - [x] M4 Alert intake + incident pipeline (signed alert → Inngest pipeline → GitHub diff trace → suspect ranked #1 at 80 pts → rollback proposed)
-- [x] M5 Approve → execute → verify (Verified real loop: break → fire → approve → Vercel rollback → 3x healthy probes → resolved → reset)
+- [x] M5 Approve → execute → verify (Verified real loop: break → fire → approve → Vercel rollback → 3x healthy probes → resolved → reset, tagged `loop-works`)
 - [x] M6 App UI + AI (app shell, incident page, settings/AI keys, MCP keys)
 - [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified)
-- [x] M8 Marketing site (Nav, ASCII fire, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer)
-- [ ] M9 Deploy (Vercel + MCP host + Neon + Inngest Cloud) + production demo passes
-- [ ] M10 Hardening pass (Lighthouse, a11y, security checklist, README)
+- [x] M8 Marketing site & SEO (Nav, ASCII fire throttled, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer, Lenis, Motion, sitemap, robots, manifest, llms.txt, OpenGraph)
+- [ ] M9 Deploy (Production Vercel + Northflank hosting when ready)
+- [x] M10 Hardening pass (ops:reencrypt, ops:cancel-action, test:ai, README, security invariants)
 
 ## 2. Decisions (ADR log — append only)
 
