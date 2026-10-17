@@ -8,11 +8,11 @@
 
 ## 0. Status line (update every task)
 
-- **Current milestone:** M5 — Approve → execute → verify (see `docs/15_BUILD_PLAN.md`)
-- **Last completed task:** M4 Alert intake + Inngest incident workflow (intake route, HMAC, replay idempotency, traceIncident, ranking, proposeRollback, Inngest triggers, fixtures fire.ts, break.ts, reset.ts)
-- **Next task:** M5 Approve → execute → verify (approve/reject/execute action, Vercel rollback, probe polling, recovered state, manual incident controls)
+- **Current milestone:** M6 — App UI + AI (see `docs/15_BUILD_PLAN.md`)
+- **Last completed task:** M5 Approve → execute → verify (action lifecycle, Vercel rollback, probe verification, incident room UI, manual controls)
+- **Next task:** M6 App UI polish + AI analysis (incident room components, DiffBlock, HoldToConfirm, AI keys & analysis pipeline)
 - **Blockers:** —
-- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 87 passed, `npm run lint`)
+- **Last green check:** 2026-10-17 (`npm run build`, `npm run typecheck`, `npm run test` 98 passed, `npm run lint`)
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -21,7 +21,7 @@
 - [x] M2 Core domain (crypto, HMAC, state machines, ranking, preflight) + unit tests
 - [x] M3 Integrations (GitHub App, Vercel token, Services wizard)
 - [x] M4 Alert intake + Inngest incident workflow (trace → analyse → propose)
-- [ ] M5 Approve → execute → verify (core loop complete, demo passes in local)
+- [x] M5 Approve → execute → verify (core loop complete, demo passes in local)
 - [ ] M6 App UI polish (incident page live, settings/AI keys, MCP keys)
 - [ ] M7 NitroStack MCP server (tools, widgets, auth) + NitroStudio verified
 - [ ] M8 Marketing site (loader, ASCII fire, scroll story, SEO files)
@@ -62,6 +62,9 @@ Record every API shape you verified so you never guess twice. Format: `fact — 
 - Inngest v4 `createFunction` syntax takes triggers as `{ triggers: { event: ... } }` or `{ triggers: [{ event: ... }] }` — 2026-10-17
 - Next.js 16 App Router serves Inngest endpoint cleanly via `serve({ client, functions })` with `maxDuration = 60` — 2026-10-17
 - Windows CLI entry detection requires `path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)` to handle path normalization — 2026-10-17
+- Action status enum (`ActionStatus` in `state.ts`) vs action view model (`ActionStatusView` in `views/types.ts`) avoids symbol collision in core exports — 2026-10-17
+- React 19 / Next 16 linting flags synchronous setState calls in `useEffect`, resolved by scheduling initial fetch via `setTimeout(..., 0)` — 2026-10-17
+- Vercel `AliasJob` carries `requestedAt: number` and `toDeploymentId: string` for robust idempotency check without duplicate rollback API calls — 2026-10-17
 
 ## 5. Environment variables status
 
@@ -156,3 +159,9 @@ npx tsx packages/core/src/db/migrate.ts # apply migrations to Neon
 - `packages/fixtures/src/fire.ts`: Fixture CLI for sending signed HMAC alert to Firebreak
 - `packages/fixtures/src/break.ts`: Fixture CLI introducing buggy pricing code to demo repo and waiting for 500
 - `packages/fixtures/src/reset.ts`: Fixture CLI restoring clean pricing code to demo repo and waiting for 200
+- `packages/core/src/ai/schema.ts`: Analysis Zod schema and TypeScript types
+- `packages/core/src/views/types.ts`: Shared DTO view types (IncidentDetail, SuspectView, ProbeView, ActionStatusView)
+- `apps/web/src/inngest/functions/actions.ts`: Durable Inngest functions `action-execute` (rollback + probe loop) and `action-expiry`
+- `apps/web/src/app/api/v1/incidents/`: Incident REST routes (list, detail, resolve, dismiss, retrace, rollback)
+- `apps/web/src/app/api/v1/actions/`: Action REST routes (get, approve, reject)
+- `apps/web/src/app/app/incidents/[id]/page.tsx`: Reactive Incident Room with 2s polling, preflight check status, ranked suspect diffs, and rollback controls

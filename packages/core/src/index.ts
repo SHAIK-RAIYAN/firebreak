@@ -55,6 +55,12 @@ export { db, type Database } from "./db/client.js";
 export * from "./db/schema.js";
 export * as schema from "./db/schema.js";
 
+// Views & DTOs
+export * from "./views/types.js";
+
+// AI
+export * from "./ai/schema.js";
+
 // Repos
 export * from "./repo/workspaces.js";
 

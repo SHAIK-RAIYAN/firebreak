@@ -571,6 +571,7 @@ export {
 };
 
 export type AlertSeverity = "critical" | "high" | "medium" | "low";
+export type Severity = AlertSeverity;
 
 export type TimelineEventType =
   | "alert_received"

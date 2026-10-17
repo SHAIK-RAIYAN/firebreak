@@ -1,8 +1,65 @@
 import Image from "next/image";
+import Link from "next/link";
 import { requireSession } from "@/lib/session";
 import { SignOutButton } from "@/components/app/sign-out-button";
+import { listIncidents, userCtx, type IncidentListItem } from "@firebreak/core";
 
 export const dynamic = "force-dynamic";
+
+async function ActiveIncidentsList({ workspaceId, userId }: { workspaceId: string; userId: string }) {
+  const ctx = userCtx(workspaceId, userId);
+  let items: IncidentListItem[] = [];
+  try {
+    const res = await listIncidents(ctx, { status: "all", limit: 10 });
+    items = res.items;
+  } catch (err) {
+    console.error("Failed to load incidents:", err);
+  }
+
+  if (items.length === 0) {
+    return (
+      <div className="p-6 text-center text-xs font-mono text-[var(--fg-muted)] border border-dashed border-[var(--line)] rounded-lg">
+        No incidents yet. Trigger an alert or use <code className="text-[var(--accent)]">npm run fixture:fire</code> to simulate one.
+      </div>
+    );
+  }
+
+  return (
+    <div className="divide-y divide-[var(--line)]">
+      {items.map((inc) => (
+        <Link
+          key={inc.id}
+          href={`/app/incidents/${inc.id}`}
+          className="flex items-center justify-between p-3.5 hover:bg-[var(--surface)] transition rounded-lg group"
+        >
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-xs font-bold text-[var(--accent)]">
+                INC-{inc.number}
+              </span>
+              <span className="text-sm font-semibold text-[var(--fg)] group-hover:text-[var(--accent)] transition">
+                {inc.title}
+              </span>
+              <span className="text-xs px-2 py-0.5 rounded-full font-mono uppercase bg-[var(--surface)] border border-[var(--line)] text-[var(--fg-muted)]">
+                {inc.status}
+              </span>
+            </div>
+            <div className="text-xs text-[var(--fg-muted)] font-mono flex items-center gap-2">
+              <span>Service: {inc.service.name}</span>
+              {inc.topSuspect && (
+                <span>&bull; Suspect: {inc.topSuspect.shortSha} ({inc.topSuspect.message})</span>
+              )}
+            </div>
+          </div>
+          <div className="text-right text-xs font-mono text-[var(--fg-muted)] flex items-center gap-2">
+            <span>{new Date(inc.openedAt).toLocaleTimeString()}</span>
+            <span className="text-[var(--fg-subtle)] group-hover:translate-x-0.5 transition">&rarr;</span>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
 
 export default async function ConsolePage() {
   const { user, workspace } = await requireSession("/app");
@@ -108,6 +165,20 @@ export default async function ConsolePage() {
               <span className="text-[var(--fg)] font-bold">{workspace.incident_seq}</span>
             </div>
           </div>
+        </div>
+
+        {/* Active Incidents Section */}
+        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 shadow-sm space-y-4">
+          <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+            <div>
+              <h2 className="text-lg font-bold">Recent & Active Incidents</h2>
+              <p className="text-xs text-[var(--fg-muted)]">
+                Live production alerts and rollback workflows
+              </p>
+            </div>
+          </div>
+
+          <ActiveIncidentsList workspaceId={workspace.id} userId={user.id} />
         </div>
       </main>
     </div>
