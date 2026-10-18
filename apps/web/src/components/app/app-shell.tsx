@@ -1,29 +1,29 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import { motion, AnimatePresence, useReducedMotion } from "motion/react";
-import {
-  Flame,
-  Layers,
-  Sliders,
-  Cpu,
-  Key,
-  User,
-  PanelLeftClose,
-  PanelLeft,
-  Menu,
-  X,
-  LogOut,
-  ChevronRight,
-  ShieldAlert,
-} from "lucide-react";
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { CommandPalette } from "./command-palette";
 import { authClient } from "@/lib/auth-client";
+import {
+  ChevronRight,
+  Cpu,
+  Flame,
+  Key,
+  Layers,
+  LogOut,
+  Menu,
+  PanelLeft,
+  PanelLeftClose,
+  ShieldAlert,
+  Sliders,
+  User,
+  X,
+} from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { CommandPalette } from "./command-palette";
 
 type NavItem = {
   href: string;
@@ -154,9 +154,8 @@ export function AppShell({
 
       {/* Sidebar Desktop & Mobile */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-bg-raised transition-all duration-300 ease-in-out lg:static ${
-          collapsed ? "lg:w-16" : "lg:w-60"
-        } ${mobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}`}
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-bg-raised transition-all duration-300 ease-in-out lg:static ${collapsed ? "lg:w-16" : "lg:w-60"
+          } ${mobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand Header */}
         <div className="flex h-14 items-center justify-between border-b border-line px-3.5">
@@ -195,13 +194,11 @@ export function AppShell({
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`relative flex items-center gap-3 rounded-lg py-2 text-xs font-medium transition-colors group focus-visible:outline-2 focus-visible:outline-(--accent) ${
-                  collapsed ? "justify-center px-2" : "px-3"
-                } ${
-                  isActive
+                className={`relative flex items-center gap-3 rounded-lg py-2 text-xs font-medium transition-colors group focus-visible:outline-2 focus-visible:outline-(--accent) ${collapsed ? "justify-center px-2" : "px-3"
+                  } ${isActive
                     ? "text-(--fg) font-semibold"
                     : "text-(--fg-muted) hover:text-(--fg) hover:bg-(--surface)/40"
-                }`}
+                  }`}
                 title={collapsed ? item.label : undefined}
               >
                 {/* Gliding Active Background Pill */}
@@ -231,11 +228,10 @@ export function AppShell({
                 )}
 
                 <Icon
-                  className={`w-4 h-4 shrink-0 transition-colors relative z-10 ${
-                    isActive
+                  className={`w-4 h-4 shrink-0 transition-colors relative z-10 ${isActive
                       ? "text-(--accent)"
                       : "text-(--fg-muted) group-hover:text-(--fg)"
-                  }`}
+                    }`}
                 />
                 {!collapsed && (
                   <span className="flex-1 truncate relative z-10">{item.label}</span>
@@ -266,9 +262,8 @@ export function AppShell({
           )}
 
           <div
-            className={`flex items-center justify-between ${
-              collapsed ? "flex-col gap-2" : "gap-2"
-            }`}
+            className={`flex items-center justify-between ${collapsed ? "flex-col gap-2" : "gap-2"
+              }`}
           >
             <div className="flex items-center gap-2 truncate" title={userEmail || userName}>
               {userAvatar ? (
@@ -438,9 +433,6 @@ export function AppShell({
                     <h3 id="signout-dialog-title" className="text-base font-bold text-(--fg)">
                       Confirm Sign Out
                     </h3>
-                    <p className="text-xs font-mono text-(--fg-subtle)">
-                      Operator session termination
-                    </p>
                   </div>
                 </div>
 
@@ -457,7 +449,7 @@ export function AppShell({
 
               {/* Description */}
               <p id="signout-dialog-desc" className="text-sm text-(--fg-muted) leading-relaxed">
-                Are you sure you want to sign out of Firebreak? Your active session will be ended and you will be returned to the home screen.
+                Are you sure you want to sign out of Firebreak?
               </p>
 
               {/* Operator details box */}
@@ -486,9 +478,6 @@ export function AppShell({
                     </div>
                   )}
                 </div>
-                <span className="shrink-0 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-mono text-emerald-400">
-                  active
-                </span>
               </div>
 
               {/* Actions Footer */}

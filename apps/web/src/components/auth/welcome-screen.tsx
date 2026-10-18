@@ -14,10 +14,10 @@ interface WelcomeScreenProps {
 
 /**
  * Continuous cursive handwritten SVG path for "Welcome".
- * Coordinates: 640x160 viewBox, flowing cursive strokes from W to e.
+ * Coordinates: 490x120 viewBox, elegant calligraphic script with authentic cursive anatomy.
  */
 const CURSIVE_WELCOME_PATH =
-  "M 55 42 C 45 28, 30 38, 35 62 C 40 92, 62 122, 76 122 C 92 122, 106 82, 116 52 C 124 90, 138 122, 154 122 C 170 122, 182 86, 192 54 C 196 40, 208 44, 206 60 C 204 80, 184 86, 192 72 C 198 58, 214 58, 218 72 C 224 88, 235 96, 246 96 C 258 96, 272 18, 284 18 C 294 18, 282 80, 276 106 C 274 118, 286 122, 296 114 C 308 104, 320 88, 330 76 C 336 68, 348 70, 342 80 C 335 90, 322 92, 325 108 C 328 118, 340 120, 352 112 C 362 104, 372 88, 380 76 C 388 62, 408 62, 408 82 C 408 106, 386 114, 376 102 C 368 92, 375 72, 390 66 C 405 60, 415 66, 428 70 C 434 76, 430 115, 435 115 C 440 115, 448 78, 458 72 C 468 66, 465 115, 472 115 C 478 115, 488 78, 498 72 C 508 66, 505 112, 515 112 C 522 112, 530 96, 538 80 C 542 66, 528 60, 520 70 C 512 80, 518 108, 534 108 C 550 108, 576 92, 602 80";
+  "M 28 34 C 22 42, 24 54, 34 54 C 44 54, 48 36, 52 24 C 54 18, 60 18, 62 26 C 65 38, 65 68, 67 95 C 68 101, 76 101, 80 94 C 88 80, 94 48, 98 32 C 101 22, 107 24, 108 34 C 111 48, 112 76, 115 95 C 117 101, 125 101, 129 93 C 135 80, 137 54, 142 48 C 145 44, 147 48, 146 56 C 145 68, 142 86, 148 95 C 151 98, 156 97, 160 91 C 166 82, 170 66, 173 58 C 176 50, 184 52, 183 62 C 182 72, 173 78, 167 82 C 162 86, 164 96, 172 96 C 178 96, 184 90, 188 80 C 195 64, 204 32, 210 20 C 214 12, 220 14, 218 24 C 215 38, 209 74, 208 95 C 208 101, 215 101, 220 94 C 225 86, 229 76, 233 68 C 238 58, 246 56, 249 58 C 251 60, 246 66, 240 70 C 234 76, 232 88, 238 94 C 243 98, 250 97, 256 88 C 261 80, 265 70, 269 62 C 274 54, 282 56, 282 64 C 282 74, 271 80, 268 88 C 267 94, 272 97, 279 97 C 286 97, 292 88, 294 76 C 295 64, 290 58, 282 58 C 288 58, 296 62, 303 62 C 306 72, 310 86, 312 95 C 314 84, 318 62, 326 58 C 331 56, 336 76, 338 95 C 340 84, 344 62, 352 58 C 358 56, 362 76, 364 95 C 365 101, 372 101, 377 92 C 382 82, 386 68, 389 62 C 393 52, 401 54, 400 64 C 399 74, 389 80, 383 84 C 378 88, 380 96, 388 96 C 396 96, 412 90, 428 82 C 438 76, 450 70, 460 68";
 
 export function WelcomeScreen({ user, nextUrl = "/app" }: WelcomeScreenProps) {
   const { triggerTransition } = useAsciiFireTransition();
@@ -30,14 +30,6 @@ export function WelcomeScreen({ user, nextUrl = "/app" }: WelcomeScreenProps) {
     user.email?.split("@")[0]?.trim() ||
     "Operator";
 
-  // Clean URL query params immediately so refreshing doesn't replay
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const cleanUrl = window.location.pathname;
-      window.history.replaceState({}, "", cleanUrl);
-    }
-  }, []);
-
   // Sequence: handwritten cursive animation -> name reveal -> trigger ASCII fire
   useEffect(() => {
     if (hasTriggeredRef.current) return;
@@ -45,6 +37,9 @@ export function WelcomeScreen({ user, nextUrl = "/app" }: WelcomeScreenProps) {
     const delayMs = shouldReduceMotion ? 600 : 2300;
     const timer = setTimeout(() => {
       hasTriggeredRef.current = true;
+      if (typeof window !== "undefined") {
+        window.history.replaceState({}, "", window.location.pathname);
+      }
       triggerTransition(nextUrl);
     }, delayMs);
 
@@ -73,7 +68,7 @@ export function WelcomeScreen({ user, nextUrl = "/app" }: WelcomeScreenProps) {
       {/* Elegant Handwritten Cursive "Welcome" SVG */}
       <div className="w-full max-w-[340px] sm:max-w-[380px] mx-auto px-2">
         <svg
-          viewBox="0 0 640 150"
+          viewBox="0 0 490 125"
           className="w-full h-auto overflow-visible text-(--accent)"
           aria-label="Welcome"
         >

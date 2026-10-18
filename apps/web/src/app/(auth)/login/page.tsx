@@ -26,9 +26,14 @@ export default async function LoginPage({
     redirect(nextUrl);
   }
 
+  const paramName = typeof params.name === "string" ? params.name : null;
+  const initialUser =
+    session?.user ||
+    (isWelcome && paramName ? { name: paramName, email: null } : null);
+
   return (
     <LoginView
-      initialUser={session?.user || null}
+      initialUser={initialUser}
       isWelcome={isWelcome}
       nextUrl={nextUrl}
       initialError={error}

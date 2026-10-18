@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { authClient, useSession } from "@/lib/auth-client";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -27,10 +28,16 @@ export function LoginView({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(initialError || null);
   const shouldReduceMotion = useReducedMotion();
+  const searchParams = useSearchParams();
+  const welcomeActive = isWelcome || searchParams.get("welcome") === "1";
+  const paramName = searchParams.get("name");
 
   // If returning from OAuth callback with ?welcome=1, verify session
   const { data: clientSession, isPending } = useSession();
-  const activeUser = initialUser || clientSession?.user;
+  const activeUser =
+    initialUser ||
+    clientSession?.user ||
+    (welcomeActive && paramName ? { name: paramName, email: null } : null);
 
   const handleGitHubLogin = async () => {
     try {
@@ -107,7 +114,7 @@ export function LoginView({
         {/* Center Panel (Sign-in Form or Personalized Welcome) */}
         <div className="max-w-[380px] w-full mx-auto my-auto py-8 sm:py-12 flex flex-col justify-center min-h-[340px]">
           <AnimatePresence mode="wait">
-            {isWelcome && activeUser ? (
+            {welcomeActive && activeUser ? (
               <motion.div
                 key="welcome-panel"
                 initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.98 }}
@@ -118,7 +125,7 @@ export function LoginView({
               >
                 <WelcomeScreen user={activeUser} nextUrl={nextUrl} />
               </motion.div>
-            ) : isWelcome && isPending ? (
+            ) : welcomeActive && isPending ? (
               <motion.div
                 key="verifying-panel"
                 initial={{ opacity: 0 }}
