@@ -10,6 +10,7 @@ import {
 import { eq } from "drizzle-orm";
 import { StatusPill } from "@/components/ui/status-pill";
 import { ArrowRight, Flame } from "lucide-react";
+import { ServiceFilterSelect } from "@/components/app/service-filter-select";
 
 export const dynamic = "force-dynamic";
 
@@ -93,31 +94,11 @@ export default async function IncidentsPage({
         </div>
 
         {allServices.length > 0 && (
-          <form method="GET" action="/app/incidents" className="flex items-center gap-2">
-            <input type="hidden" name="status" value={currentTab} />
-            <label htmlFor="service-filter" className="text-xs font-mono text-[var(--fg-muted)]">
-              Service:
-            </label>
-            <select
-              id="service-filter"
-              name="service"
-              defaultValue={selectedService}
-              className="px-2.5 py-1.5 text-xs rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg)] font-mono outline-none focus:border-[var(--accent)]"
-            >
-              <option value="">All Services</option>
-              {allServices.map((svc: { id: string; name: string }) => (
-                <option key={svc.id} value={svc.id}>
-                  {svc.name}
-                </option>
-              ))}
-            </select>
-            <button
-              type="submit"
-              className="px-2.5 py-1.5 text-xs rounded-lg border border-[var(--line)] bg-[var(--bg-raised)] text-[var(--fg)] font-mono hover:bg-[var(--line)] transition"
-            >
-              Filter
-            </button>
-          </form>
+          <ServiceFilterSelect
+            services={allServices}
+            selectedService={selectedService}
+            currentStatus={currentTab}
+          />
         )}
       </div>
 

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@firebreak/core": "*",
+    "@radix-ui/react-select": "^2.4.1",
     "better-auth": "^1.7.10",
     "clsx": "^2.1.1",
     "gsap": "^3.15.0",

@@ -3,6 +3,13 @@
 import { useEffect, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface RepoItem {
   installationRowId: string;
@@ -274,18 +281,18 @@ export default function NewServicePage() {
             {/* Step 1: GitHub Repo */}
             <div>
               <label className="block text-sm font-medium mb-1">1. GitHub Repository</label>
-              <select
-                value={selectedRepoFull}
-                onChange={(e) => handleRepoChange(e.target.value)}
-                required
-                className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm focus:outline-none focus:border-[var(--accent)]"
-              >
-                {repos.map((r) => (
-                  <option key={r.id} value={r.fullName}>
-                    {r.fullName} ({r.defaultBranch})
-                  </option>
-                ))}
-              </select>
+              <Select value={selectedRepoFull} onValueChange={handleRepoChange}>
+                <SelectTrigger className="w-full h-10 px-3 bg-[var(--surface)] border-[var(--line)] text-sm">
+                  <SelectValue placeholder="Select repository..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {repos.map((r) => (
+                    <SelectItem key={r.id} value={r.fullName}>
+                      {r.fullName} ({r.defaultBranch})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {repos.length === 0 && (
                 <p className="text-xs text-[var(--warn)] mt-1">
                   No repositories found.{" "}
@@ -299,27 +306,27 @@ export default function NewServicePage() {
             {/* Step 2: Vercel Project */}
             <div>
               <label className="block text-sm font-medium mb-1">2. Vercel Project</label>
-              <select
+              <Select
                 value={selectedProjectId}
-                onChange={(e) => {
-                  setSelectedProjectId(e.target.value);
-                  const p = projects.find((proj) => proj.id === e.target.value);
+                onValueChange={(val) => {
+                  setSelectedProjectId(val);
+                  const p = projects.find((proj) => proj.id === val);
                   if (p?.productionUrl) {
                     setHealthUrl(`https://${p.productionUrl}/api/health`);
                   }
                 }}
-                required
-                className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm focus:outline-none focus:border-[var(--accent)]"
               >
-                <option value="" disabled>
-                  Select Vercel project...
-                </option>
-                {projects.map((p) => (
-                  <option key={p.id} value={p.id}>
-                    {p.name} {p.link?.repo ? `(linked to ${p.link.repo})` : ""}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 px-3 bg-[var(--surface)] border-[var(--line)] text-sm">
+                  <SelectValue placeholder="Select Vercel project..." />
+                </SelectTrigger>
+                <SelectContent>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>
+                      {p.name} {p.link?.repo ? `(linked to ${p.link.repo})` : ""}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {projects.length === 0 && (
                 <p className="text-xs text-[var(--warn)] mt-1">
                   No Vercel projects found.{" "}

@@ -11,6 +11,13 @@ import {
   RefreshCw,
   X,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface AiSettingsData {
   mode: "default" | "byok";
@@ -398,17 +405,18 @@ export default function AiSettingsPage() {
                 <label className="text-xs font-mono font-semibold text-[var(--fg)]">
                   Analysis Model
                 </label>
-                <select
-                  value={selectedModel}
-                  onChange={(e) => setSelectedModel(e.target.value)}
-                  className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg)] outline-none focus:border-[var(--accent)]"
-                >
-                  {PROVIDERS[activeDialogProvider].models.map((m) => (
-                    <option key={m.id} value={m.id}>
-                      {m.label} ({m.id})
-                    </option>
-                  ))}
-                </select>
+                <Select value={selectedModel} onValueChange={setSelectedModel}>
+                  <SelectTrigger className="w-full h-9 px-3 bg-[var(--surface)] border-[var(--line)] text-xs font-mono">
+                    <SelectValue placeholder="Select analysis model..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PROVIDERS[activeDialogProvider].models.map((m) => (
+                      <SelectItem key={m.id} value={m.id}>
+                        {m.label} ({m.id})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 

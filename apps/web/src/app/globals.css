@@ -91,7 +91,8 @@ body,
   -ms-overflow-style: none !important; /* IE 10+ and Legacy Edge */
 }
 
-*::-webkit-scrollbar {
+*::-webkit-scrollbar,
+::-webkit-scrollbar {
   display: none !important; /* Chrome, Edge, Safari, Opera */
   width: 0 !important;
   height: 0 !important;
@@ -101,7 +102,10 @@ body,
 
 *::-webkit-scrollbar-track,
 *::-webkit-scrollbar-thumb,
-*::-webkit-scrollbar-corner {
+*::-webkit-scrollbar-corner,
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-corner {
   display: none !important;
   background: transparent !important;
 }

@@ -201,8 +201,11 @@ export function CommandPalette() {
               </button>
             </div>
 
-            {/* Results list */}
-            <div className="max-h-80 overflow-y-auto p-2 space-y-1">
+            {/* Results list - scrollbar suppressed */}
+            <div
+              className="max-h-80 overflow-y-auto p-2 space-y-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               {filtered.length === 0 ? (
                 <div className="p-4 text-center text-xs font-mono text-[var(--fg-muted)]">
                   No commands found matching &quot;{query}&quot;
