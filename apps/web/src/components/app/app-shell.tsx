@@ -117,7 +117,7 @@ export function AppShell({
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-(--bg) text-(--fg)">
+    <div className="flex h-screen overflow-hidden bg-bg text-fg">
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
@@ -128,12 +128,12 @@ export function AppShell({
 
       {/* Sidebar Desktop & Mobile */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-(--line) bg-(--bg-raised) transition-all duration-300 ease-in-out lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-line bg-bg-raised transition-all duration-300 ease-in-out lg:static ${
           collapsed ? "lg:w-16" : "lg:w-60"
         } ${mobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand Header */}
-        <div className="flex h-14 items-center justify-between border-b border-(--line) px-3.5">
+        <div className="flex h-14 items-center justify-between border-b border-line px-3.5">
           <Logo collapsed={collapsed} />
           <div className="flex items-center gap-1">
             <button
