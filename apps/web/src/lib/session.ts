@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { auth } from "./auth";
@@ -11,8 +12,10 @@ export type SessionContext = {
 
 /**
  * Get the current session and workspace if authenticated, or null.
+ * Wrapped in React cache() to deduplicate session and workspace resolution
+ * across layouts, pages, and server components during a single request lifecycle.
  */
-export async function getSession(): Promise<SessionContext | null> {
+export const getSession = cache(async (): Promise<SessionContext | null> => {
   const reqHeaders = await headers();
   const session = await auth.api.getSession({
     headers: reqHeaders,
@@ -33,7 +36,7 @@ export async function getSession(): Promise<SessionContext | null> {
     session: session.session,
     workspace,
   };
-}
+});
 
 /**
  * Require a valid session. Redirects to /login if unauthenticated.

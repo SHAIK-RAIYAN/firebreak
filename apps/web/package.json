@@ -12,6 +12,7 @@
   "dependencies": {
     "@firebreak/core": "*",
     "@radix-ui/react-select": "^2.4.1",
+    "@tanstack/react-query": "^5.104.4",
     "@vercel/analytics": "^2.0.1",
     "better-auth": "^1.7.10",
     "clsx": "^2.1.1",

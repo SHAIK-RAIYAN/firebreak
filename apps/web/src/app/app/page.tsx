@@ -29,17 +29,12 @@ export default async function OverviewPage() {
   const ctx = userCtx(workspace.id, user.id);
   const database = db();
 
-  // Fetch incidents
-  let incidents: IncidentListItem[] = [];
-  try {
-    const res = await listIncidents(ctx, { status: "all", limit: 10 });
-    incidents = res.items;
-  } catch (err) {
-    console.error("Failed to load incidents:", err);
-  }
-
-  // Fetch connections & services to compute onboarding state
-  const [githubList, vercelConn, svcList] = await Promise.all([
+  // Fetch incidents, connections & services concurrently to minimize Neon roundtrips
+  const [incidentsRes, githubList, vercelConn, svcList] = await Promise.all([
+    listIncidents(ctx, { status: "all", limit: 10 }).catch((err) => {
+      console.error("Failed to load incidents:", err);
+      return { items: [] as IncidentListItem[], nextCursor: null };
+    }),
     database
       .select({ id: githubInstallationsTable.id })
       .from(githubInstallationsTable)
@@ -54,6 +49,8 @@ export default async function OverviewPage() {
       .from(servicesTable)
       .where(eq(servicesTable.workspace_id, workspace.id)),
   ]);
+
+  const incidents: IncidentListItem[] = incidentsRes.items;
 
   const hasGithub = githubList.length > 0;
   const hasVercel = vercelConn.length > 0;

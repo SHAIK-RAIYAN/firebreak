@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Mail, ShieldAlert, CheckCircle2, Clock, Check, Loader2 } from "lucide-react";
 
 interface NotificationPreferences {
@@ -15,43 +16,37 @@ export function NotificationPreferencesCard({
 }: {
   userEmail: string;
 }) {
-  const [prefs, setPrefs] = useState<NotificationPreferences>({
-    email_enabled: true,
-    notify_incident_opened: true,
-    notify_action_proposed: true,
-    notify_action_resolved: true,
+  const queryClient = useQueryClient();
+
+  const {
+    data: prefs = {
+      email_enabled: true,
+      notify_incident_opened: true,
+      notify_action_proposed: true,
+      notify_action_resolved: true,
+    },
+    isLoading: loading,
+  } = useQuery<NotificationPreferences>({
+    queryKey: ["notification-preferences"],
+    queryFn: async () => {
+      const res = await fetch("/api/v1/notifications/preferences");
+      if (!res.ok) throw new Error("Failed to load notification preferences");
+      const json = await res.json();
+      return {
+        email_enabled: json.data?.email_enabled ?? true,
+        notify_incident_opened: json.data?.notify_incident_opened ?? true,
+        notify_action_proposed: json.data?.notify_action_proposed ?? true,
+        notify_action_resolved: json.data?.notify_action_resolved ?? true,
+      };
+    },
+    staleTime: 30_000,
   });
-  const [loading, setLoading] = useState(true);
+
   const [saving, setSaving] = useState(false);
   const [savedMessage, setSavedMessage] = useState(false);
 
-  useEffect(() => {
-    async function loadPrefs() {
-      try {
-        const res = await fetch("/api/v1/notifications/preferences");
-        if (res.ok) {
-          const json = await res.json();
-          if (json.data) {
-            setPrefs({
-              email_enabled: json.data.email_enabled ?? true,
-              notify_incident_opened: json.data.notify_incident_opened ?? true,
-              notify_action_proposed: json.data.notify_action_proposed ?? true,
-              notify_action_resolved: json.data.notify_action_resolved ?? true,
-            });
-          }
-        }
-      } catch (err) {
-        console.error("Failed to load notification preferences:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadPrefs();
-  }, []);
-
   const handleToggle = async (key: keyof NotificationPreferences) => {
     const updated = { ...prefs, [key]: !prefs[key] };
-    setPrefs(updated);
     setSaving(true);
     setSavedMessage(false);
 
@@ -64,6 +59,8 @@ export function NotificationPreferencesCard({
       if (res.ok) {
         setSavedMessage(true);
         setTimeout(() => setSavedMessage(false), 2500);
+        queryClient.setQueryData(["notification-preferences"], updated);
+        queryClient.invalidateQueries({ queryKey: ["notification-preferences"] });
       }
     } catch (err) {
       console.error("Failed to update notification preferences:", err);

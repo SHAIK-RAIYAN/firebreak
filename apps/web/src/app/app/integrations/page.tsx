@@ -1,8 +1,9 @@
 "use client";
 
-import { Suspense, useEffect, useState, useTransition } from "react";
+import { Suspense, useState, useTransition } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface IntegrationState {
   github: {
@@ -36,10 +37,24 @@ function IntegrationsContent() {
   const searchParams = useSearchParams();
   const connectedParam = searchParams.get("connected");
   const errorParam = searchParams.get("error");
+  const queryClient = useQueryClient();
 
-  const [state, setState] = useState<IntegrationState | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState<string | null>(errorParam);
+  const {
+    data: state,
+    isLoading: loading,
+    error: queryError,
+  } = useQuery<IntegrationState>({
+    queryKey: ["integrations"],
+    queryFn: async () => {
+      const res = await fetch("/api/v1/integrations");
+      if (!res.ok) throw new Error("Failed to load integrations");
+      const json = await res.json();
+      return json.data;
+    },
+    staleTime: 30_000,
+  });
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(errorParam || null);
   const [successMsg, setSuccessMsg] = useState<string | null>(
     connectedParam === "github" ? "GitHub connected successfully" : null,
   );
@@ -48,44 +63,6 @@ function IntegrationsContent() {
   const [vercelToken, setVercelToken] = useState("");
   const [vercelTeamId, setVercelTeamId] = useState("");
   const [isPending, startTransition] = useTransition();
-
-  async function loadIntegrations() {
-    try {
-      const res = await fetch("/api/v1/integrations");
-      if (!res.ok) throw new Error("Failed to load integrations");
-      const json = await res.json();
-      setState(json.data);
-    } catch (err) {
-      setErrorMsg((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    let ignore = false;
-    fetch("/api/v1/integrations")
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to load integrations");
-        return res.json();
-      })
-      .then((json) => {
-        if (!ignore) {
-          setState(json.data);
-          setLoading(false);
-        }
-      })
-      .catch((err) => {
-        if (!ignore) {
-          setErrorMsg((err as Error).message);
-          setLoading(false);
-        }
-      });
-
-    return () => {
-      ignore = true;
-    };
-  }, []);
 
   async function handleConnectVercel(e: React.FormEvent) {
     e.preventDefault();
@@ -113,7 +90,7 @@ function IntegrationsContent() {
         setVercelToken("");
         setVercelTeamId("");
         setSuccessMsg(`Vercel connected as ${json.data.accountLabel}`);
-        await loadIntegrations();
+        queryClient.invalidateQueries({ queryKey: ["integrations"] });
       } catch (err) {
         setErrorMsg((err as Error).message);
       }
@@ -132,12 +109,14 @@ function IntegrationsContent() {
         });
         if (!res.ok) throw new Error("Failed to disconnect Vercel");
         setSuccessMsg("Vercel disconnected");
-        await loadIntegrations();
+        queryClient.invalidateQueries({ queryKey: ["integrations"] });
       } catch (err) {
         setErrorMsg((err as Error).message);
       }
     });
   }
+
+  const activeError = errorMsg || (queryError ? (queryError as Error).message : null);
 
   return (
     <div className="min-h-screen bg-(--bg) text-(--fg) p-8">
@@ -168,9 +147,9 @@ function IntegrationsContent() {
             {successMsg}
           </div>
         )}
-        {errorMsg && (
+        {activeError && (
           <div className="p-4 bg-(--danger)/10 border border-(--danger)/30 rounded-lg text-sm text-(--danger)">
-            Error: {errorMsg}
+            Error: {activeError}
           </div>
         )}
 

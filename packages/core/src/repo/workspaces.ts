@@ -6,6 +6,14 @@ import { newId } from "../util/ids.js";
 export type Workspace = typeof workspaces.$inferSelect;
 export type NewWorkspace = typeof workspaces.$inferInsert;
 
+interface CachedWorkspace {
+  workspace: Workspace;
+  expiresAt: number;
+}
+
+const workspaceCache = new Map<string, CachedWorkspace>();
+const WORKSPACE_CACHE_TTL_MS = 60_000; // 60 seconds
+
 export const workspacesRepo = {
   /**
    * Find workspace by its ID.
@@ -21,16 +29,36 @@ export const workspacesRepo = {
   },
 
   /**
-   * Find personal workspace by owner user ID.
+   * Find personal workspace by owner user ID with fast in-memory TTL cache.
    */
   async getByOwnerUserId(userId: string): Promise<Workspace | null> {
+    const cached = workspaceCache.get(userId);
+    if (cached && Date.now() < cached.expiresAt) {
+      return cached.workspace;
+    }
+
     const database = db();
     const rows = await database
       .select()
       .from(workspaces)
       .where(eq(workspaces.owner_user_id, userId))
       .limit(1);
-    return rows[0] ?? null;
+
+    const ws = rows[0] ?? null;
+    if (ws) {
+      workspaceCache.set(userId, {
+        workspace: ws,
+        expiresAt: Date.now() + WORKSPACE_CACHE_TTL_MS,
+      });
+    }
+    return ws;
+  },
+
+  /**
+   * Clear cache for a user (e.g. after workspace update)
+   */
+  clearCache(userId: string) {
+    workspaceCache.delete(userId);
   },
 
   /**

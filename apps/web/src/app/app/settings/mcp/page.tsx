@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   PlusCircle,
   Trash2,
@@ -23,9 +24,23 @@ interface McpKeyItem {
 }
 
 export default function McpSettingsPage() {
-  const [keys, setKeys] = useState<McpKeyItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const {
+    data: keys = [],
+    isLoading: loading,
+    error: queryError,
+  } = useQuery<McpKeyItem[]>({
+    queryKey: ["mcp-keys"],
+    queryFn: async () => {
+      const res = await fetch("/api/v1/mcp-keys");
+      if (!res.ok) throw new Error("Failed to load MCP API keys");
+      const json = await res.json();
+      return json.data || [];
+    },
+    staleTime: 30_000,
+  });
+
+  const error = queryError ? (queryError as Error).message : null;
 
   // Create key dialog state
   const [openCreate, setOpenCreate] = useState(false);
@@ -50,28 +65,6 @@ export default function McpSettingsPage() {
       ? process.env.NEXT_PUBLIC_MCP_URL || `${window.location.origin}/api/mcp`
       : "http://localhost:3000/api/mcp";
 
-  const fetchKeys = useCallback(async () => {
-    try {
-      const res = await fetch("/api/v1/mcp-keys");
-      if (!res.ok) throw new Error("Failed to load MCP API keys");
-      const json = await res.json();
-      setKeys(json.data || []);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchKeys();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [fetchKeys]);
-
   const handleCreateKey = async () => {
     if (!newKeyName.trim()) {
       setDialogError("Please enter a name for the key");
@@ -80,6 +73,7 @@ export default function McpSettingsPage() {
 
     setCreating(true);
     setDialogError(null);
+
     try {
       const res = await fetch("/api/v1/mcp-keys", {
         method: "POST",
@@ -98,7 +92,7 @@ export default function McpSettingsPage() {
       setOpenCreate(false);
       setNewKeyName("");
       setShowOnceKey(json.data.key);
-      await fetchKeys();
+      queryClient.invalidateQueries({ queryKey: ["mcp-keys"] });
     } catch (err) {
       setDialogError((err as Error).message);
     } finally {
@@ -111,7 +105,7 @@ export default function McpSettingsPage() {
     try {
       const res = await fetch(`/api/v1/mcp-keys/${id}`, { method: "DELETE" });
       if (!res.ok) throw new Error("Failed to revoke key");
-      await fetchKeys();
+      queryClient.invalidateQueries({ queryKey: ["mcp-keys"] });
     } catch (err) {
       alert((err as Error).message);
     }

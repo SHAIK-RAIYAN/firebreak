@@ -26,12 +26,6 @@ export default async function IncidentsPage({
   const currentTab = params.status || "active";
   const selectedService = params.service || "";
 
-  // Fetch available services for filter dropdown
-  const allServices = await db()
-    .select({ id: servicesTable.id, name: servicesTable.name })
-    .from(servicesTable)
-    .where(eq(servicesTable.workspace_id, workspace.id));
-
   // Determine query status
   const filterStatus =
     currentTab === "active"
@@ -40,17 +34,23 @@ export default async function IncidentsPage({
       ? "resolved"
       : "all";
 
-  let incidents: IncidentListItem[] = [];
-  try {
-    const res = await listIncidents(ctx, {
+  // Fetch available services for filter dropdown and incidents list concurrently
+  const [allServices, incidentsRes] = await Promise.all([
+    db()
+      .select({ id: servicesTable.id, name: servicesTable.name })
+      .from(servicesTable)
+      .where(eq(servicesTable.workspace_id, workspace.id)),
+    listIncidents(ctx, {
       status: filterStatus as "active" | "resolved" | "all",
       serviceId: selectedService || undefined,
       limit: 50,
-    });
-    incidents = res.items;
-  } catch (err) {
-    console.error("Failed to load incidents:", err);
-  }
+    }).catch((err) => {
+      console.error("Failed to load incidents:", err);
+      return { items: [] as IncidentListItem[], nextCursor: null };
+    }),
+  ]);
+
+  const incidents: IncidentListItem[] = incidentsRes.items;
 
   return (
     <div className="space-y-6">

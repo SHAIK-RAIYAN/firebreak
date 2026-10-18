@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { PROVIDERS, type ProviderId } from "@firebreak/core";
 import {
   Cpu,
@@ -40,9 +41,30 @@ interface AiSettingsData {
 }
 
 export default function AiSettingsPage() {
-  const [settings, setSettings] = useState<AiSettingsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<{ message: string; isAuth?: boolean } | null>(null);
+  const queryClient = useQueryClient();
+
+  const {
+    data: settings,
+    isLoading: loading,
+    error: queryError,
+    refetch,
+  } = useQuery<AiSettingsData>({
+    queryKey: ["ai-settings"],
+    queryFn: async () => {
+      const res = await fetch("/api/v1/ai/settings");
+      if (res.status === 401) {
+        throw new Error("AUTH:Your session has expired. Please sign in to manage AI provider keys.");
+      }
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error?.message || `Failed to load AI settings (HTTP ${res.status})`);
+      }
+      const json = await res.json();
+      return json.data;
+    },
+    staleTime: 30_000,
+  });
+
   const [savingMode, setSavingMode] = useState(false);
 
   // Key dialog state
@@ -52,38 +74,11 @@ export default function AiSettingsPage() {
   const [validating, setValidating] = useState(false);
   const [dialogError, setDialogError] = useState<string | null>(null);
 
-  const fetchSettings = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/v1/ai/settings");
-      if (res.status === 401) {
-        setError({
-          message: "Your session has expired. Please sign in to manage AI provider keys.",
-          isAuth: true,
-        });
-        return;
-      }
-      if (!res.ok) {
-        const data = await res.json().catch(() => null);
-        throw new Error(data?.error?.message || `Failed to load AI settings (HTTP ${res.status})`);
-      }
-      const json = await res.json();
-      setSettings(json.data);
-      setError(null);
-    } catch (err) {
-      console.error("AI Settings load error:", err);
-      setError({ message: (err as Error).message });
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchSettings();
-    }, 0);
-    return () => clearTimeout(timer);
-  }, [fetchSettings]);
+  const error = queryError
+    ? queryError.message.startsWith("AUTH:")
+      ? { message: queryError.message.replace("AUTH:", ""), isAuth: true }
+      : { message: queryError.message }
+    : null;
 
   const handleUpdateMode = async (mode: "default" | "byok", provider?: ProviderId) => {
     setSavingMode(true);
@@ -100,7 +95,7 @@ export default function AiSettingsPage() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error?.message || "Failed to update AI mode");
       }
-      await fetchSettings();
+      queryClient.invalidateQueries({ queryKey: ["ai-settings"] });
     } catch (err) {
       alert((err as Error).message);
     } finally {
@@ -145,7 +140,7 @@ export default function AiSettingsPage() {
       }
 
       setActiveDialogProvider(null);
-      await fetchSettings();
+      queryClient.invalidateQueries({ queryKey: ["ai-settings"] });
     } catch (err) {
       setDialogError((err as Error).message);
     } finally {
@@ -163,7 +158,7 @@ export default function AiSettingsPage() {
         const data = await res.json().catch(() => null);
         throw new Error(data?.error?.message || "Failed to remove key");
       }
-      await fetchSettings();
+      queryClient.invalidateQueries({ queryKey: ["ai-settings"] });
     } catch (err) {
       alert((err as Error).message);
     }
@@ -219,7 +214,7 @@ export default function AiSettingsPage() {
               ) : (
                 <button
                   type="button"
-                  onClick={() => fetchSettings()}
+                  onClick={() => refetch()}
                   className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-lg bg-(--surface) hover:bg-(--line) text-(--fg) text-xs font-mono transition"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
@@ -370,7 +365,7 @@ export default function AiSettingsPage() {
                         </div>
                       ) : (
                         <p className="text-xs text-(--fg-muted) leading-relaxed">
-                          Provide an API key to enable {config.label} incident diagnostics and automated commit scoring.
+                          Api key not provided
                         </p>
                       )}
                     </div>
@@ -431,7 +426,7 @@ export default function AiSettingsPage() {
           <div className="p-3.5 rounded-xl border border-(--line) bg-(--bg-raised) flex items-center gap-3 text-xs text-(--fg-muted)">
             <ShieldCheck className="w-4 h-4 text-(--accent) shrink-0" />
             <span>
-              All API keys are encrypted at rest with AES-256-GCM. Code diffs and incident summaries are never retained for model training.
+              All API keys are encrypted at rest with AES-256-GCM. Code diffs and incident summaries are never retained.
             </span>
           </div>
         </>

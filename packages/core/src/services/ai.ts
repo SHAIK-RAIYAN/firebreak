@@ -55,44 +55,47 @@ export async function getAiSettings(
 ): Promise<AiSettingsView> {
   const db = customDb ?? defaultDb();
 
-  const [workspace] = await db
-    .select({
-      mode: workspaces.ai_mode,
-      provider: workspaces.ai_provider,
-    })
-    .from(workspaces)
-    .where(eq(workspaces.id, ctx.workspaceId))
-    .limit(1);
+  // Compute daily quota boundary
+  const startOfDay = new Date();
+  startOfDay.setUTCHours(0, 0, 0, 0);
+
+  // Execute independent queries in parallel via Promise.all
+  const [[workspace], creds, [quotaResult]] = await Promise.all([
+    db
+      .select({
+        mode: workspaces.ai_mode,
+        provider: workspaces.ai_provider,
+      })
+      .from(workspaces)
+      .where(eq(workspaces.id, ctx.workspaceId))
+      .limit(1),
+
+    db
+      .select({
+        provider: ai_credentials.provider,
+        model: ai_credentials.model,
+        last4: ai_credentials.last4,
+        status: ai_credentials.status,
+        validatedAt: ai_credentials.validated_at,
+      })
+      .from(ai_credentials)
+      .where(eq(ai_credentials.workspace_id, ctx.workspaceId)),
+
+    db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(analyses)
+      .where(
+        and(
+          eq(analyses.workspace_id, ctx.workspaceId),
+          eq(analyses.key_source, "default"),
+          sql`${analyses.created_at} >= ${startOfDay}`,
+        ),
+      ),
+  ]);
 
   if (!workspace) {
     throw new AppError("NOT_FOUND", 404, "Workspace not found");
   }
-
-  const creds = await db
-    .select({
-      provider: ai_credentials.provider,
-      model: ai_credentials.model,
-      last4: ai_credentials.last4,
-      status: ai_credentials.status,
-      validatedAt: ai_credentials.validated_at,
-    })
-    .from(ai_credentials)
-    .where(eq(ai_credentials.workspace_id, ctx.workspaceId));
-
-  // Compute daily quota
-  const startOfDay = new Date();
-  startOfDay.setUTCHours(0, 0, 0, 0);
-
-  const [quotaResult] = await db
-    .select({ count: sql<number>`count(*)::int` })
-    .from(analyses)
-    .where(
-      and(
-        eq(analyses.workspace_id, ctx.workspaceId),
-        eq(analyses.key_source, "default"),
-        sql`${analyses.created_at} >= ${startOfDay}`,
-      ),
-    );
 
   const used = quotaResult?.count ?? 0;
   const remaining = Math.max(0, AI_DEFAULT_DAILY_LIMIT - used);

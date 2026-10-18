@@ -40,8 +40,10 @@ export function withAuth<T = unknown>(
   handler: (req: Request, ctx: ApiHandlerContext, routeCtx: T) => Promise<Response>,
 ) {
   return async (req: Request, routeCtx: T) => {
+    const t0 = performance.now();
     try {
       const sessionCtx = await getSession();
+      const tAuth = performance.now() - t0;
       if (!sessionCtx) {
         return NextResponse.json(
           {
@@ -55,7 +57,8 @@ export function withAuth<T = unknown>(
       }
 
       const serviceCtx = userCtx(sessionCtx.workspace.id, sessionCtx.user.id);
-      return await handler(
+      const tAppStart = performance.now();
+      const res = await handler(
         req,
         {
           ...sessionCtx,
@@ -63,6 +66,20 @@ export function withAuth<T = unknown>(
         },
         routeCtx,
       );
+      const tApp = performance.now() - tAppStart;
+      const tTotal = performance.now() - t0;
+
+      // Inject Server-Timing header for transparent performance tracing in DevTools
+      try {
+        res.headers.set(
+          "Server-Timing",
+          `auth;dur=${tAuth.toFixed(1)}, app;dur=${tApp.toFixed(1)}, total;dur=${tTotal.toFixed(1)}`,
+        );
+      } catch {
+        // Ignore immutable response header errors
+      }
+
+      return res;
     } catch (err) {
       return apiError(err);
     }

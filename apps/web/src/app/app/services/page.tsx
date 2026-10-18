@@ -13,33 +13,33 @@ export const dynamic = "force-dynamic";
 export default async function ServicesPage() {
   const { workspace } = await requireSession("/app/services");
 
-  // Fetch all services for the workspace
-  const svcList = await db()
-    .select()
-    .from(servicesTable)
-    .where(eq(servicesTable.workspace_id, workspace.id));
-
-  // Find which services currently have active incidents
-  const activeIncidents = await db()
-    .select({
-      serviceId: incidentsTable.service_id,
-      incidentId: incidentsTable.id,
-      number: incidentsTable.number,
-      status: incidentsTable.status,
-    })
-    .from(incidentsTable)
-    .where(
-      and(
-        eq(incidentsTable.workspace_id, workspace.id),
-        inArray(incidentsTable.status, [
-          "open",
-          "triaged",
-          "awaiting_approval",
-          "mitigating",
-          "verifying",
-        ]),
+  // Fetch all services and active incidents concurrently
+  const [svcList, activeIncidents] = await Promise.all([
+    db()
+      .select()
+      .from(servicesTable)
+      .where(eq(servicesTable.workspace_id, workspace.id)),
+    db()
+      .select({
+        serviceId: incidentsTable.service_id,
+        incidentId: incidentsTable.id,
+        number: incidentsTable.number,
+        status: incidentsTable.status,
+      })
+      .from(incidentsTable)
+      .where(
+        and(
+          eq(incidentsTable.workspace_id, workspace.id),
+          inArray(incidentsTable.status, [
+            "open",
+            "triaged",
+            "awaiting_approval",
+            "mitigating",
+            "verifying",
+          ]),
+        ),
       ),
-    );
+  ]);
 
   const activeByService = new Map<string, typeof activeIncidents[0]>();
   for (const inc of activeIncidents) {

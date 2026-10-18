@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback, use } from "react";
+import { useEffect, useState, useRef, use } from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import type { IncidentDetail } from "@firebreak/core";
 import { StatusPill } from "@/components/ui/status-pill";
@@ -35,55 +36,55 @@ export default function IncidentRoomPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const [detail, setDetail] = useState<IncidentDetail | null>(null);
-  const [loading, setLoading] = useState(true);
+  const queryClient = useQueryClient();
+  const prevStatusRef = useRef<string | null>(null);
+  const [liveAnnouncement, setLiveAnnouncement] = useState("");
   const [actionLoading, setActionLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [expandedSuspects, setExpandedSuspects] = useState<Record<string, boolean>>({});
   const [showPreflightDetails, setShowPreflightDetails] = useState(false);
-  const [liveAnnouncement, setLiveAnnouncement] = useState("");
   const [elapsedDuration, setElapsedDuration] = useState("");
 
-  const fetchIncident = useCallback(async () => {
-    try {
+  const {
+    data: detail = null,
+    isLoading: loading,
+    error: queryErr,
+    refetch: fetchIncident,
+  } = useQuery<IncidentDetail | null>({
+    queryKey: ["incident", id],
+    queryFn: async () => {
       const res = await fetch(`/api/v1/incidents/${id}`, { cache: "no-store" });
       if (!res.ok) {
-        if (res.status === 404) {
-          setError("Incident not found");
-          return;
-        }
+        if (res.status === 404) throw new Error("Incident not found");
         throw new Error(`Failed to load incident (${res.status})`);
       }
       const json = await res.json();
       const newDetail: IncidentDetail = json.data;
 
       // Announce status changes
-      if (detail && detail.incident.status !== newDetail.incident.status) {
+      if (
+        prevStatusRef.current &&
+        prevStatusRef.current !== newDetail.incident.status
+      ) {
         setLiveAnnouncement(
           `Incident status changed to ${newDetail.incident.status}`,
         );
       }
+      prevStatusRef.current = newDetail.incident.status;
 
-      setDetail(newDetail);
-      setError(null);
-    } catch (err) {
-      console.error(err);
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [id, detail]);
+      return newDetail;
+    },
+    // Poll active incidents every 2 seconds; stop polling when resolved/dismissed
+    refetchInterval: (query) => {
+      const status = query.state.data?.incident.status;
+      if (status === "resolved" || status === "dismissed") {
+        return false;
+      }
+      return 2000;
+    },
+    staleTime: 1000,
+  });
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      fetchIncident();
-    }, 0);
-    const interval = setInterval(fetchIncident, 2000);
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
-  }, [fetchIncident]);
+  const error = queryErr ? (queryErr as Error).message : null;
 
   // Duration timer
   useEffect(() => {
@@ -120,6 +121,7 @@ export default function IncidentRoomPage({
       } else {
         setLiveAnnouncement("Rollback approved. Vercel deployment triggered.");
       }
+      queryClient.invalidateQueries({ queryKey: ["incident", id] });
       await fetchIncident();
     } catch (err) {
       alert((err as Error).message);
@@ -141,6 +143,7 @@ export default function IncidentRoomPage({
         const data = await res.json();
         alert(data.error?.message || "Failed to reject action");
       }
+      queryClient.invalidateQueries({ queryKey: ["incident", id] });
       await fetchIncident();
     } catch (err) {
       alert((err as Error).message);
@@ -163,6 +166,7 @@ export default function IncidentRoomPage({
       } else {
         setLiveAnnouncement("Incident marked as resolved.");
       }
+      queryClient.invalidateQueries({ queryKey: ["incident", id] });
       await fetchIncident();
     } catch (err) {
       alert((err as Error).message);
@@ -181,6 +185,7 @@ export default function IncidentRoomPage({
         const data = await res.json();
         alert(data.error?.message || "Failed to dismiss incident");
       }
+      queryClient.invalidateQueries({ queryKey: ["incident", id] });
       await fetchIncident();
     } catch (err) {
       alert((err as Error).message);

@@ -1659,6 +1659,23 @@ export async function getIncidentDetail(
   };
 }
 
+export async function countActiveIncidents(
+  ctx: ServiceContext,
+  customDb?: Database,
+): Promise<number> {
+  const db = customDb ?? defaultDb();
+  const [row] = await db
+    .select({ count: sql<number>`count(*)::int` })
+    .from(incidents)
+    .where(
+      and(
+        eq(incidents.workspace_id, ctx.workspaceId),
+        sql`${incidents.status} NOT IN ('resolved', 'dismissed')`,
+      ),
+    );
+  return row?.count ?? 0;
+}
+
 export async function listIncidents(
   ctx: ServiceContext,
   opts: {
