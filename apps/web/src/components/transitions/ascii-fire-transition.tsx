@@ -12,6 +12,7 @@ import { useRouter, usePathname } from "next/navigation";
 
 type AsciiFireTransitionContextType = {
   triggerTransition: (targetUrl: string) => void;
+  triggerEntranceReveal: () => void;
   isTransitioning: boolean;
 };
 
@@ -46,13 +47,14 @@ export function AsciiFireTransitionProvider({
   const [isActive, setIsActive] = useState(false);
 
   const isTransitioningRef = useRef(false);
+  const isEntranceRevealRef = useRef(false);
   const targetUrlRef = useRef<string | null>(null);
   const fromPathnameRef = useRef<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
   const startRevealCallbackRef = useRef<(() => void) | null>(null);
 
-  // Trigger signature ASCII fire transition to a target URL (e.g. /app)
+  // Trigger signature ASCII fire transition to a target URL (e.g. /app or /login)
   const triggerTransition = useCallback(
     (targetUrl: string) => {
       // Prevent rapid repeated clicks or duplicate transitions
@@ -84,7 +86,24 @@ export function AsciiFireTransitionProvider({
     [router]
   );
 
-  // Intercept links navigating between marketing pages and console (/app <-> /)
+  // Trigger signature ASCII fire entrance reveal (e.g. on direct cold-load of /login)
+  const triggerEntranceReveal = useCallback(() => {
+    if (isTransitioningRef.current) return;
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (prefersReducedMotion) return;
+
+    isTransitioningRef.current = true;
+    isEntranceRevealRef.current = true;
+    targetUrlRef.current = null;
+    fromPathnameRef.current = "";
+    setIsActive(true);
+  }, []);
+
+  // Intercept links navigating between marketing pages, console, and login (/app <-> / <-> /login)
   useEffect(() => {
     const handleDocumentClick = (e: MouseEvent) => {
       // Don't intercept if already transitioning
@@ -97,18 +116,27 @@ export function AsciiFireTransitionProvider({
       const href = anchor.getAttribute("href");
       if (!href) return;
 
+      const cleanHref = (href.split("?")[0] || "").split("#")[0] || "";
       const isCurrentInApp = pathnameRef.current.startsWith("/app");
+      const isCurrentInLogin = pathnameRef.current.startsWith("/login");
 
-      // Case 1: Entering console from marketing/home
-      const isEnteringApp =
-        !isCurrentInApp && (href === "/app" || href.startsWith("/app/"));
+      const isNavigatingToLogin = cleanHref === "/login";
+      const isNavigatingToApp = cleanHref === "/app" || cleanHref.startsWith("/app/");
+      const isNavigatingToHome = cleanHref === "/" || cleanHref === "";
 
-      // Case 2: Returning to home from inside console (e.g. clicking Logo in app-shell)
-      const isReturningHome =
-        isCurrentInApp &&
-        (href === "/" || href === "" || href.startsWith("/?"));
+      // Case 1: Entering console from marketing/login
+      const isEnteringApp = !isCurrentInApp && isNavigatingToApp;
 
-      if (isEnteringApp || isReturningHome) {
+      // Case 2: Entering login page from marketing/console
+      const isEnteringLogin = !isCurrentInLogin && isNavigatingToLogin;
+
+      // Case 3: Returning to home from inside console or from login page (clicking Logo in app-shell/login-view)
+      const isReturningHome = (isCurrentInApp || isCurrentInLogin) && isNavigatingToHome;
+
+      // Case 4: Navigating from login to console
+      const isLoginToApp = isCurrentInLogin && isNavigatingToApp;
+
+      if (isEnteringApp || isEnteringLogin || isReturningHome || isLoginToApp) {
         // Ignore auxiliary clicks (new tab, middle click, modified keys)
         if (
           e.metaKey ||
@@ -188,13 +216,22 @@ export function AsciiFireTransitionProvider({
     const ENGULF_DURATION = 620; // ms: flames surge upward and engulf entire viewport
     const REVEAL_DURATION = 580; // ms: flames retreat upward off the top edge
 
+    const isEntrance = isEntranceRevealRef.current;
+    if (isEntrance) {
+      isEntranceRevealRef.current = false;
+    }
+
     type SimPhase = "igniting" | "engulfing" | "covered" | "revealing";
-    let simPhase: SimPhase = "igniting";
+    let simPhase: SimPhase = isEntrance ? "revealing" : "igniting";
 
     const igniteStartTime = performance.now();
     let engulfStartTime = 0;
-    let revealStartTime = 0;
+    let revealStartTime = isEntrance ? performance.now() : 0;
     let coveredWaitTimeout: NodeJS.Timeout | null = null;
+
+    if (isEntrance) {
+      fireBuffer.fill(9);
+    }
 
     const triggerReveal = () => {
       if (simPhase === "covered") {
@@ -442,6 +479,7 @@ export function AsciiFireTransitionProvider({
     <AsciiFireTransitionContext.Provider
       value={{
         triggerTransition,
+        triggerEntranceReveal,
         isTransitioning: isActive,
       }}
     >

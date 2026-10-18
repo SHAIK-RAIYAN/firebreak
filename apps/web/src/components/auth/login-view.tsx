@@ -1,12 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { authClient, useSession } from "@/lib/auth-client";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LogoMark } from "@/components/brand/logo";
+import { useAsciiFireTransition } from "@/components/transitions/ascii-fire-transition";
 import { WelcomeScreen } from "./welcome-screen";
 
 interface LoginViewProps {
@@ -31,6 +33,16 @@ export function LoginView({
   const searchParams = useSearchParams();
   const welcomeActive = isWelcome || searchParams.get("welcome") === "1";
   const paramName = searchParams.get("name");
+  const { triggerEntranceReveal, isTransitioning } = useAsciiFireTransition();
+  const hasRevealedRef = useRef(isTransitioning || welcomeActive);
+
+  // On direct visit or cold load to /login, play signature ASCII fire reveal if not already in transition
+  useEffect(() => {
+    if (!hasRevealedRef.current && !isTransitioning && !welcomeActive) {
+      hasRevealedRef.current = true;
+      triggerEntranceReveal();
+    }
+  }, [isTransitioning, triggerEntranceReveal, welcomeActive]);
 
   // If returning from OAuth callback with ?welcome=1, verify session
   const { data: clientSession, isPending } = useSession();
@@ -99,12 +111,17 @@ export function LoginView({
       <section className="flex-1 flex flex-col justify-between p-6 sm:p-10 lg:p-14 min-h-[calc(100vh-14rem)] lg:min-h-screen">
         {/* Top Header Row with Theme Toggle */}
         <header className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-2.5 select-none">
-            <LogoMark className="w-5 h-5 shrink-0" />
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 select-none group focus-visible:outline-2 focus-visible:outline-(--accent) rounded"
+            title="Firebreak — Return to Home"
+            aria-label="Firebreak — Return to Home"
+          >
+            <LogoMark className="w-5 h-5 shrink-0 transition-transform group-hover:scale-105" />
             <span className="font-display font-bold tracking-tight text-base text-(--fg) lowercase">
               firebreak
             </span>
-          </div>
+          </Link>
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
