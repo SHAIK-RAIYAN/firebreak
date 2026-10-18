@@ -85,10 +85,10 @@ export function HoldToConfirm({
         }}
         disabled={disabled || isConfirmed}
         aria-describedby="hold-instructions"
-        className={`relative overflow-hidden w-full h-11 rounded-lg border font-semibold text-sm select-none transition-all focus-visible:outline-2 focus-visible:outline-[var(--accent)] disabled:opacity-50 disabled:cursor-not-allowed ${
+        className={`relative overflow-hidden w-full h-11 rounded-lg border font-semibold text-sm select-none transition-all focus-visible:outline-2 focus-visible:outline-(--accent) disabled:opacity-50 disabled:cursor-not-allowed ${
           isConfirmed
-            ? "bg-[var(--ok)] border-[var(--ok)] text-white"
-            : "bg-[var(--accent-solid)] border-[var(--accent-solid)] text-white hover:brightness-110 active:scale-[0.99]"
+            ? "bg-(--ok) border-(--ok) text-white"
+            : "bg-(--accent-solid) border-(--accent-solid) text-white hover:brightness-110 active:scale-[0.99]"
         } ${className}`}
       >
         {/* Progress Fill Bar */}
@@ -116,7 +116,7 @@ export function HoldToConfirm({
 
       <div
         id="hold-instructions"
-        className="text-[11px] font-mono text-[var(--fg-muted)] text-center flex items-center justify-center gap-2"
+        className="text-[11px] font-mono text-(--fg-muted) text-center flex items-center justify-center gap-2"
       >
         <span>Press and hold 800ms to confirm</span>
         <span>&bull;</span>
@@ -129,7 +129,7 @@ export function HoldToConfirm({
               onConfirm();
             }
           }}
-          className="underline hover:text-[var(--accent)] focus-visible:outline-none"
+          className="underline hover:text-(--accent) focus-visible:outline-none"
         >
           Instant click confirm
         </button>

@@ -22,9 +22,9 @@ export function ProbeStrip({
       : 0;
 
   return (
-    <div className={`space-y-2 p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg ${className}`}>
-      <div className="flex items-center justify-between font-mono text-xs text-[var(--fg-muted)]">
-        <span className="font-semibold text-[var(--fg)]">
+    <div className={`space-y-2 p-3 bg-(--surface) border border-(--line) rounded-lg ${className}`}>
+      <div className="flex items-center justify-between font-mono text-xs text-(--fg-muted)">
+        <span className="font-semibold text-(--fg)">
           {healthyCount} / {probes.length} healthy ({max - probes.length} remaining)
         </span>
         {avgLatency > 0 && (
@@ -39,7 +39,7 @@ export function ProbeStrip({
             return (
               <div
                 key={`empty-${idx}`}
-                className="w-3 h-3 rounded-[2px] bg-[var(--line)] shrink-0 opacity-40"
+                className="w-3 h-3 rounded-[2px] bg-(--line) shrink-0 opacity-40"
                 title={`Probe ${idx + 1}: pending`}
               />
             );
@@ -50,7 +50,7 @@ export function ProbeStrip({
             <div
               key={`probe-${probe.seq || idx}`}
               className={`w-3 h-3 rounded-[2px] shrink-0 transition-all duration-200 transform scale-100 ${
-                isOk ? "bg-[var(--ok)] shadow-[0_0_6px_var(--ok)]" : "bg-[var(--danger)] shadow-[0_0_6px_var(--danger)]"
+                isOk ? "bg-(--ok) shadow-[0_0_6px_var(--ok)]" : "bg-(--danger) shadow-[0_0_6px_var(--danger)]"
               }`}
               title={`Probe ${probe.seq}: ${isOk ? "OK" : "FAIL"} (${probe.httpStatus ?? "timeout"} in ${probe.latencyMs ?? 0}ms)`}
             />

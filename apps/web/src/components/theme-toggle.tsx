@@ -20,7 +20,7 @@ export function ThemeToggle() {
     return (
       <div
         aria-hidden="true"
-        className="w-8 h-8 rounded-lg border border-[var(--line)] bg-[var(--surface)] opacity-40 shrink-0"
+        className="w-8 h-8 rounded-lg border border-(--line) bg-(--surface) opacity-40 shrink-0"
       />
     );
   }
@@ -47,7 +47,7 @@ export function ThemeToggle() {
       }}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
       title={`Switch to ${isDark ? "light" : "dark"} mode`}
-      className="relative flex items-center justify-center w-8 h-8 rounded-lg border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] hover:text-[var(--accent)] transition-all shrink-0 focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+      className="relative flex items-center justify-center w-8 h-8 rounded-lg border border-(--line) bg-(--surface) hover:bg-(--line) text-(--fg) hover:text-(--accent) transition-all shrink-0 focus-visible:outline-2 focus-visible:outline-(--accent)"
     >
       {isDark ? (
         <SunIcon

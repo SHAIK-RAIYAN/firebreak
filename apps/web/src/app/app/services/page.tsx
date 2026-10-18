@@ -53,16 +53,16 @@ export default async function ServicesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[var(--fg)]">
+          <h1 className="text-2xl font-bold tracking-tight text-(--fg)">
             Services
           </h1>
-          <p className="text-sm text-[var(--fg-muted)]">
+          <p className="text-sm text-(--fg-muted)">
             Applications monitored by Firebreak with automated rollback capability
           </p>
         </div>
         <Link
           href="/app/services/new"
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition shadow-xs self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2 bg-(--accent-solid) text-(--accent-fg) rounded-lg text-xs font-semibold hover:brightness-110 transition shadow-xs self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>New Service</span>
@@ -71,18 +71,18 @@ export default async function ServicesPage() {
 
       {/* Services List / Cards */}
       {svcList.length === 0 ? (
-        <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-12 text-center space-y-3">
-          <Layers className="w-10 h-10 text-[var(--fg-subtle)] mx-auto opacity-50" />
-          <h2 className="text-base font-semibold text-[var(--fg)]">
+        <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-12 text-center space-y-3">
+          <Layers className="w-10 h-10 text-(--fg-subtle) mx-auto opacity-50" />
+          <h2 className="text-base font-semibold text-(--fg)">
             No services configured
           </h2>
-          <p className="text-xs text-[var(--fg-muted)] max-w-sm mx-auto">
+          <p className="text-xs text-(--fg-muted) max-w-sm mx-auto">
             Connect a GitHub repository and Vercel project to enable automated incident response.
           </p>
           <div className="pt-2">
             <Link
               href="/app/services/new"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition"
+              className="inline-flex items-center gap-2 px-4 py-2 bg-(--accent-solid) text-(--accent-fg) rounded-lg text-xs font-semibold hover:brightness-110 transition"
             >
               <PlusCircle className="w-4 h-4" />
               <span>Create your first service</span>
@@ -96,12 +96,12 @@ export default async function ServicesPage() {
             return (
               <div
                 key={svc.id}
-                className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-4 hover:border-[var(--line-strong)] transition shadow-xs flex flex-col justify-between"
+                className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 space-y-4 hover:border-(--line-strong) transition shadow-xs flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   {/* Top line: Name & Status Pill */}
                   <div className="flex items-center justify-between gap-2">
-                    <h2 className="text-base font-bold text-[var(--fg)]">
+                    <h2 className="text-base font-bold text-(--fg)">
                       {svc.name}
                     </h2>
                     {activeInc ? (
@@ -113,45 +113,45 @@ export default async function ServicesPage() {
                         <span>INC-{activeInc.number} active</span>
                       </Link>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/10 border border-emerald-500/30 text-[var(--ok)]">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[var(--ok)]" />
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-mono font-semibold bg-emerald-500/10 border border-emerald-500/30 text-(--ok)">
+                        <span className="w-1.5 h-1.5 rounded-full bg-(--ok)" />
                         <span>Protected</span>
                       </span>
                     )}
                   </div>
 
                   {/* Metadata fields */}
-                  <div className="space-y-2 font-mono text-xs text-[var(--fg-muted)]">
-                    <div className="flex items-center justify-between py-1 border-b border-[var(--line)]/50">
-                      <span className="text-[var(--fg-subtle)]">Repository:</span>
+                  <div className="space-y-2 font-mono text-xs text-(--fg-muted)">
+                    <div className="flex items-center justify-between py-1 border-b border-(--line)/50">
+                      <span className="text-(--fg-subtle)">Repository:</span>
                       <a
                         href={`https://github.com/${svc.repo_owner}/${svc.repo_name}`}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[var(--fg)] hover:text-[var(--accent)] flex items-center gap-1"
+                        className="text-(--fg) hover:text-(--accent) flex items-center gap-1"
                       >
                         <span>{svc.repo_owner}/{svc.repo_name}</span>
                         <ExternalLink className="w-3 h-3" />
                       </a>
                     </div>
 
-                    <div className="flex items-center justify-between py-1 border-b border-[var(--line)]/50">
-                      <span className="text-[var(--fg-subtle)]">Production Branch:</span>
-                      <span className="text-[var(--fg)]">{svc.production_branch}</span>
+                    <div className="flex items-center justify-between py-1 border-b border-(--line)/50">
+                      <span className="text-(--fg-subtle)">Production Branch:</span>
+                      <span className="text-(--fg)">{svc.production_branch}</span>
                     </div>
 
-                    <div className="flex items-center justify-between py-1 border-b border-[var(--line)]/50">
-                      <span className="text-[var(--fg-subtle)]">Vercel Project:</span>
-                      <span className="text-[var(--fg)]">{svc.vercel_project_name}</span>
+                    <div className="flex items-center justify-between py-1 border-b border-(--line)/50">
+                      <span className="text-(--fg-subtle)">Vercel Project:</span>
+                      <span className="text-(--fg)">{svc.vercel_project_name}</span>
                     </div>
 
                     <div className="flex items-center justify-between py-1">
-                      <span className="text-[var(--fg-subtle)]">Health Check:</span>
+                      <span className="text-(--fg-subtle)">Health Check:</span>
                       <a
                         href={svc.health_url}
                         target="_blank"
                         rel="noreferrer"
-                        className="text-[var(--accent)] truncate max-w-[200px] hover:underline"
+                        className="text-(--accent) truncate max-w-[200px] hover:underline"
                         title={svc.health_url}
                       >
                         {svc.health_url}
@@ -161,12 +161,12 @@ export default async function ServicesPage() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="pt-3 border-t border-[var(--line)] flex items-center justify-between text-xs font-mono">
-                  <span className="text-[var(--fg-subtle)]">
+                <div className="pt-3 border-t border-(--line) flex items-center justify-between text-xs font-mono">
+                  <span className="text-(--fg-subtle)">
                     ID: {svc.id}
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[var(--fg-muted)]">
+                    <span className="text-(--fg-muted)">
                       Expected HTTP {svc.health_expected_status}
                     </span>
                   </div>

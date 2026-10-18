@@ -151,9 +151,9 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
   if (loading) {
     return (
       <div className="space-y-4 animate-pulse">
-        <div className="h-8 bg-[var(--surface)] rounded w-1/4" />
-        <div className="h-4 bg-[var(--surface)] rounded w-1/2" />
-        <div className="h-64 bg-[var(--surface)] rounded w-full" />
+        <div className="h-8 bg-(--surface) rounded w-1/4" />
+        <div className="h-4 bg-(--surface) rounded w-1/2" />
+        <div className="h-64 bg-(--surface) rounded w-full" />
       </div>
     );
   }
@@ -163,10 +163,10 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[var(--fg)]">
+          <h1 className="text-2xl font-bold tracking-tight text-(--fg)">
             NitroStack MCP Server
           </h1>
-          <p className="text-sm text-[var(--fg-muted)]">
+          <p className="text-sm text-(--fg-muted)">
             Connect AI coding agents (Claude Code, Cursor, NitroStudio) directly to production incidents
           </p>
         </div>
@@ -176,7 +176,7 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
             setOpenCreate(true);
             setDialogError(null);
           }}
-          className="flex items-center gap-2 px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition shadow-xs self-start sm:self-auto"
+          className="flex items-center gap-2 px-4 py-2 bg-(--accent-solid) text-(--accent-fg) rounded-lg text-xs font-semibold hover:brightness-110 transition shadow-xs self-start sm:self-auto"
         >
           <PlusCircle className="w-4 h-4" />
           <span>Create MCP Key</span>
@@ -190,33 +190,33 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       )}
 
       {/* Top MCP Server URL Card */}
-      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-3">
+      <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 space-y-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Server className="w-4 h-4 text-[var(--accent)]" />
-            <span className="font-semibold text-sm text-[var(--fg)]">
+            <Server className="w-4 h-4 text-(--accent)" />
+            <span className="font-semibold text-sm text-(--fg)">
               MCP Server Endpoint
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-[var(--ok)] border border-emerald-500/20">
-            <span className="w-1.5 h-1.5 rounded-full bg-[var(--ok)]" />
+          <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-mono bg-emerald-500/10 text-(--ok) border border-emerald-500/20">
+            <span className="w-1.5 h-1.5 rounded-full bg-(--ok)" />
             <span>Ready</span>
           </span>
         </div>
 
         <div className="flex items-center gap-2">
-          <code className="flex-1 p-2.5 rounded-lg bg-[var(--surface)] border border-[var(--line)] font-mono text-xs text-[var(--fg)] select-all truncate">
+          <code className="flex-1 p-2.5 rounded-lg bg-(--surface) border border-(--line) font-mono text-xs text-(--fg) select-all truncate">
             {mcpUrl}
           </code>
           <button
             type="button"
             onClick={() => copyToClipboard(mcpUrl, setCopiedUrl)}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-[var(--surface)] border border-[var(--line)] text-xs font-mono text-[var(--fg)] hover:bg-[var(--line)] transition"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-(--surface) border border-(--line) text-xs font-mono text-(--fg) hover:bg-(--line) transition"
           >
             {copiedUrl ? (
               <>
-                <Check className="w-3.5 h-3.5 text-[var(--ok)]" />
-                <span className="text-[var(--ok)]">Copied</span>
+                <Check className="w-3.5 h-3.5 text-(--ok)" />
+                <span className="text-(--ok)">Copied</span>
               </>
             ) : (
               <>
@@ -229,20 +229,20 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       </div>
 
       {/* Keys Table */}
-      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
-        <div className="border-b border-[var(--line)] pb-3">
-          <h2 className="text-base font-bold text-[var(--fg)]">Active API Keys</h2>
-          <p className="text-xs text-[var(--fg-muted)]">
+      <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-6 space-y-4">
+        <div className="border-b border-(--line) pb-3">
+          <h2 className="text-base font-bold text-(--fg)">Active API Keys</h2>
+          <p className="text-xs text-(--fg-muted)">
             Scoped credentials for MCP clients to triage and propose mitigations
           </p>
         </div>
 
         {keys.length === 0 ? (
-          <div className="py-8 text-center text-xs font-mono text-[var(--fg-muted)] border border-dashed border-[var(--line)] rounded-lg">
+          <div className="py-8 text-center text-xs font-mono text-(--fg-muted) border border-dashed border-(--line) rounded-lg">
             No active MCP keys. Create one to connect your IDE or terminal assistant.
           </div>
         ) : (
-          <div className="divide-y divide-[var(--line)]">
+          <div className="divide-y divide-(--line)">
             {keys.map((k) => (
               <div
                 key={k.id}
@@ -250,10 +250,10 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
               >
                 <div className="space-y-1">
                   <div className="flex items-center gap-2">
-                    <span className="font-semibold text-sm text-[var(--fg)]">
+                    <span className="font-semibold text-sm text-(--fg)">
                       {k.name}
                     </span>
-                    <span className="font-mono text-xs text-[var(--fg-subtle)]">
+                    <span className="font-mono text-xs text-(--fg-subtle)">
                       ({k.prefix}••••)
                     </span>
                   </div>
@@ -263,8 +263,8 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                         key={s}
                         className={`text-[10px] font-mono px-2 py-0.5 rounded border ${
                           s === "actions:approve"
-                            ? "bg-amber-500/10 border-amber-500/30 text-[var(--warn)]"
-                            : "bg-[var(--surface)] border-[var(--line)] text-[var(--fg-muted)]"
+                            ? "bg-amber-500/10 border-amber-500/30 text-(--warn)"
+                            : "bg-(--surface) border-(--line) text-(--fg-muted)"
                         }`}
                       >
                         {s}
@@ -273,12 +273,12 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4 text-xs font-mono text-[var(--fg-muted)] self-end sm:self-center">
+                <div className="flex items-center gap-4 text-xs font-mono text-(--fg-muted) self-end sm:self-center">
                   <span>Created {new Date(k.createdAt).toLocaleDateString()}</span>
                   <button
                     type="button"
                     onClick={() => handleRevokeKey(k.id, k.name)}
-                    className="p-1.5 rounded hover:bg-rose-950/20 text-[var(--fg-muted)] hover:text-rose-400 transition"
+                    className="p-1.5 rounded hover:bg-rose-950/20 text-(--fg-muted) hover:text-rose-400 transition"
                     title="Revoke key"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -291,16 +291,16 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       </div>
 
       {/* Connect a Client Code Snippets */}
-      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-6 space-y-4">
-        <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+      <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-6 space-y-4">
+        <div className="flex items-center justify-between border-b border-(--line) pb-3">
           <div className="flex items-center gap-2">
-            <Terminal className="w-4 h-4 text-[var(--accent)]" />
-            <h2 className="text-base font-bold text-[var(--fg)]">
+            <Terminal className="w-4 h-4 text-(--accent)" />
+            <h2 className="text-base font-bold text-(--fg)">
               Connect a Client
             </h2>
           </div>
 
-          <div className="flex items-center gap-1 bg-[var(--surface)] p-1 rounded-lg border border-[var(--line)]">
+          <div className="flex items-center gap-1 bg-(--surface) p-1 rounded-lg border border-(--line)">
             {[
               { id: "claude", label: "Claude Code" },
               { id: "cursor", label: "Cursor" },
@@ -312,8 +312,8 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                 onClick={() => setSnippetTab(tab.id as "claude" | "cursor" | "studio")}
                 className={`px-2.5 py-1 text-xs font-mono font-medium rounded transition ${
                   snippetTab === tab.id
-                    ? "bg-[var(--bg-raised)] text-[var(--fg)] shadow-xs"
-                    : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                    ? "bg-(--bg-raised) text-(--fg) shadow-xs"
+                    : "text-(--fg-muted) hover:text-(--fg)"
                 }`}
               >
                 {tab.label}
@@ -323,7 +323,7 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
         </div>
 
         <div className="relative">
-          <pre className="p-4 rounded-lg bg-[var(--bg)] border border-[var(--line)] font-mono text-xs text-[var(--fg-muted)] overflow-x-auto leading-relaxed">
+          <pre className="p-4 rounded-lg bg-(--bg) border border-(--line) font-mono text-xs text-(--fg-muted) overflow-x-auto leading-relaxed">
             {snippetTab === "claude" && claudeSnippet}
             {snippetTab === "cursor" && cursorSnippet}
             {snippetTab === "studio" && studioSnippet}
@@ -339,10 +339,10 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                   : studioSnippet;
               copyToClipboard(snippet, setCopiedKey);
             }}
-            className="absolute top-3 right-3 px-2.5 py-1 rounded bg-[var(--surface)] border border-[var(--line)] text-[11px] font-mono text-[var(--fg)] hover:bg-[var(--line)] transition flex items-center gap-1"
+            className="absolute top-3 right-3 px-2.5 py-1 rounded bg-(--surface) border border-(--line) text-[11px] font-mono text-(--fg) hover:bg-(--line) transition flex items-center gap-1"
           >
             {copiedKey ? (
-              <span className="text-[var(--ok)]">Copied!</span>
+              <span className="text-(--ok)">Copied!</span>
             ) : (
               <span>Copy snippet</span>
             )}
@@ -354,18 +354,18 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       {openCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
           <div
-            className="w-full max-w-md bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl shadow-2xl p-6 space-y-5"
+            className="w-full max-w-md bg-(--bg-raised) border border-(--line) rounded-xl shadow-2xl p-6 space-y-5"
             role="dialog"
             aria-modal="true"
           >
-            <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
-              <h3 className="text-base font-bold text-[var(--fg)]">
+            <div className="flex items-center justify-between border-b border-(--line) pb-3">
+              <h3 className="text-base font-bold text-(--fg)">
                 Create NitroStack MCP Key
               </h3>
               <button
                 type="button"
                 onClick={() => setOpenCreate(false)}
-                className="p-1 rounded text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                className="p-1 rounded text-(--fg-muted) hover:text-(--fg)"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -379,7 +379,7 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-semibold text-[var(--fg)]">
+                <label className="text-xs font-mono font-semibold text-(--fg)">
                   Key Name
                 </label>
                 <input
@@ -388,26 +388,26 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                   onChange={(e) => setNewKeyName(e.target.value)}
                   placeholder="e.g. laptop-claude-code"
                   autoFocus
-                  className="w-full px-3 py-2 text-sm font-mono rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg)] outline-none focus:border-[var(--accent)]"
+                  className="w-full px-3 py-2 text-sm font-mono rounded-lg border border-(--line) bg-(--surface) text-(--fg) outline-none focus:border-(--accent)"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-xs font-mono font-semibold text-[var(--fg)]">
+                <label className="text-xs font-mono font-semibold text-(--fg)">
                   Permissions &amp; Scopes
                 </label>
-                <div className="space-y-2 p-3 rounded-lg bg-[var(--surface)] border border-[var(--line)] text-xs font-mono">
-                  <label className="flex items-center gap-2 text-[var(--fg)]">
+                <div className="space-y-2 p-3 rounded-lg bg-(--surface) border border-(--line) text-xs font-mono">
+                  <label className="flex items-center gap-2 text-(--fg)">
                     <input
                       type="checkbox"
                       checked={true}
                       disabled={true}
-                      className="accent-[var(--accent)]"
+                      className="accent-(--accent)"
                     />
                     <span>incidents:read (Always included)</span>
                   </label>
 
-                  <label className="flex items-center gap-2 text-[var(--fg)] cursor-pointer">
+                  <label className="flex items-center gap-2 text-(--fg) cursor-pointer">
                     <input
                       type="checkbox"
                       checked={scopes.includes("actions:propose")}
@@ -418,12 +418,12 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                           setScopes(scopes.filter((s) => s !== "actions:propose"));
                         }
                       }}
-                      className="accent-[var(--accent)]"
+                      className="accent-(--accent)"
                     />
                     <span>actions:propose (Allow proposing rollbacks)</span>
                   </label>
 
-                  <label className="flex items-center gap-2 text-[var(--fg)] cursor-pointer">
+                  <label className="flex items-center gap-2 text-(--fg) cursor-pointer">
                     <input
                       type="checkbox"
                       checked={scopes.includes("actions:approve")}
@@ -434,9 +434,9 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                           setScopes(scopes.filter((s) => s !== "actions:approve"));
                         }
                       }}
-                      className="accent-[var(--warn)]"
+                      className="accent-(--warn)"
                     />
-                    <span className="text-[var(--warn)] font-semibold">
+                    <span className="text-(--warn) font-semibold">
                       actions:approve (Allow executing rollbacks)
                     </span>
                   </label>
@@ -453,11 +453,11 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-[var(--line)]">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-(--line)">
               <button
                 type="button"
                 onClick={() => setOpenCreate(false)}
-                className="px-4 py-2 text-xs font-mono rounded-lg text-[var(--fg-muted)] hover:bg-[var(--surface)]"
+                className="px-4 py-2 text-xs font-mono rounded-lg text-(--fg-muted) hover:bg-(--surface)"
               >
                 Cancel
               </button>
@@ -465,7 +465,7 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
                 type="button"
                 onClick={handleCreateKey}
                 disabled={creating}
-                className="px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition disabled:opacity-50"
+                className="px-4 py-2 bg-(--accent-solid) text-(--accent-fg) rounded-lg text-xs font-semibold hover:brightness-110 transition disabled:opacity-50"
               >
                 {creating ? "Creating…" : "Create Key"}
               </button>
@@ -478,39 +478,39 @@ Header: Authorization: Bearer ${keyPlaceholder}`;
       {showOnceKey && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-150">
           <div
-            className="w-full max-w-lg bg-[var(--bg-raised)] border border-[var(--ok)]/50 rounded-xl shadow-2xl p-6 space-y-4"
+            className="w-full max-w-lg bg-(--bg-raised) border border-(--ok)/50 rounded-xl shadow-2xl p-6 space-y-4"
             role="dialog"
             aria-modal="true"
           >
-            <div className="flex items-center gap-2 text-[var(--ok)]">
+            <div className="flex items-center gap-2 text-(--ok)">
               <ShieldCheck className="w-5 h-5" />
-              <h3 className="text-base font-bold text-[var(--fg)]">
+              <h3 className="text-base font-bold text-(--fg)">
                 Key Created Successfully
               </h3>
             </div>
 
-            <p className="text-xs text-[var(--fg-muted)]">
-              Copy this key now. For your security, <strong className="text-[var(--fg)]">it will never be displayed again</strong>.
+            <p className="text-xs text-(--fg-muted)">
+              Copy this key now. For your security, <strong className="text-(--fg)">it will never be displayed again</strong>.
             </p>
 
             <div className="flex items-center gap-2">
-              <code className="flex-1 p-3 rounded-lg bg-[var(--surface)] border border-[var(--line)] font-mono text-xs text-[var(--accent)] select-all break-all">
+              <code className="flex-1 p-3 rounded-lg bg-(--surface) border border-(--line) font-mono text-xs text-(--accent) select-all break-all">
                 {showOnceKey}
               </code>
               <button
                 type="button"
                 onClick={() => copyToClipboard(showOnceKey, setCopiedKey)}
-                className="px-3 py-3 rounded-lg bg-[var(--accent-solid)] text-[var(--accent-fg)] text-xs font-mono font-semibold hover:brightness-110 transition shrink-0"
+                className="px-3 py-3 rounded-lg bg-(--accent-solid) text-(--accent-fg) text-xs font-mono font-semibold hover:brightness-110 transition shrink-0"
               >
                 {copiedKey ? "Copied!" : "Copy"}
               </button>
             </div>
 
-            <div className="pt-3 border-t border-[var(--line)] flex justify-end">
+            <div className="pt-3 border-t border-(--line) flex justify-end">
               <button
                 type="button"
                 onClick={() => setShowOnceKey(null)}
-                className="px-4 py-2 bg-[var(--surface)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono rounded-lg text-[var(--fg)] transition"
+                className="px-4 py-2 bg-(--surface) hover:bg-(--line) border border-(--line) text-xs font-mono rounded-lg text-(--fg) transition"
               >
                 Done
               </button>

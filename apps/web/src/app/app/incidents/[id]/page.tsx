@@ -211,8 +211,8 @@ export default function IncidentRoomPage({
 
   if (loading && !detail) {
     return (
-      <div className="py-24 flex items-center justify-center font-mono text-xs text-[var(--fg-muted)] space-x-3">
-        <span className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] animate-ping" />
+      <div className="py-24 flex items-center justify-center font-mono text-xs text-(--fg-muted) space-x-3">
+        <span className="w-2.5 h-2.5 rounded-full bg-(--accent) animate-ping" />
         <span>Connecting to Incident Room #{id}…</span>
       </div>
     );
@@ -227,7 +227,7 @@ export default function IncidentRoomPage({
         </div>
         <Link
           href="/app/incidents"
-          className="inline-block px-4 py-2 text-xs font-mono rounded-lg bg-[var(--surface)] border border-[var(--line)] text-[var(--fg)] hover:bg-[var(--line)]"
+          className="inline-block px-4 py-2 text-xs font-mono rounded-lg bg-(--surface) border border-(--line) text-(--fg) hover:bg-(--line)"
         >
           &larr; Back to Incidents
         </Link>
@@ -257,33 +257,33 @@ export default function IncidentRoomPage({
       </div>
 
       {/* Incident Header */}
-      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-[var(--line)]">
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 pb-4 border-b border-(--line)">
         <div className="space-y-2">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="font-mono text-xs font-bold text-[var(--accent)] px-2 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)]">
+            <span className="font-mono text-xs font-bold text-(--accent) px-2 py-0.5 rounded bg-(--surface) border border-(--line)">
               INC-{incident.number}
             </span>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[var(--fg)]">
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-(--fg)">
               {incident.title}
             </h1>
             <StatusPill status={incident.status} />
           </div>
 
-          <div className="flex items-center gap-3 text-xs font-mono text-[var(--fg-muted)] flex-wrap">
+          <div className="flex items-center gap-3 text-xs font-mono text-(--fg-muted) flex-wrap">
             <span>
               Service:{" "}
-              <strong className="text-[var(--fg)]">{service.name}</strong>{" "}
-              <span className="text-[var(--fg-subtle)]">
+              <strong className="text-(--fg)">{service.name}</strong>{" "}
+              <span className="text-(--fg-subtle)">
                 ({service.repoOwner}/{service.repoName})
               </span>
             </span>
-            <span className="text-[var(--line-strong)]">•</span>
-            <span className="flex items-center gap-1 text-[var(--fg-subtle)]">
+            <span className="text-(--line-strong)">•</span>
+            <span className="flex items-center gap-1 text-(--fg-subtle)">
               <Clock className="w-3.5 h-3.5" />
               {elapsedDuration ? `${elapsedDuration}` : new Date(incident.openedAt).toLocaleTimeString()}
             </span>
-            <span className="text-[var(--line-strong)]">•</span>
-            <span className="uppercase text-[10px] font-semibold px-2 py-0.5 rounded bg-[var(--surface)] text-[var(--fg-subtle)] border border-[var(--line)]">
+            <span className="text-(--line-strong)">•</span>
+            <span className="uppercase text-[10px] font-semibold px-2 py-0.5 rounded bg-(--surface) text-(--fg-subtle) border border-(--line)">
               {incident.severity}
             </span>
           </div>
@@ -298,7 +298,7 @@ export default function IncidentRoomPage({
                 <button
                   type="button"
                   onClick={handleRetrace}
-                  className="px-3 py-1.5 text-xs font-mono rounded-lg bg-[var(--surface)] border border-[var(--line)] hover:bg-[var(--line)] text-[var(--fg)] transition"
+                  className="px-3 py-1.5 text-xs font-mono rounded-lg bg-(--surface) border border-(--line) hover:bg-(--line) text-(--fg) transition"
                 >
                   Retry Trace
                 </button>
@@ -313,7 +313,7 @@ export default function IncidentRoomPage({
               <button
                 type="button"
                 onClick={handleDismiss}
-                className="px-3 py-1.5 text-xs font-mono rounded-lg bg-[var(--surface)] text-[var(--fg-muted)] border border-[var(--line)] hover:bg-[var(--line)] transition"
+                className="px-3 py-1.5 text-xs font-mono rounded-lg bg-(--surface) text-(--fg-muted) border border-(--line) hover:bg-(--line) transition"
               >
                 Dismiss
               </button>
@@ -330,12 +330,12 @@ export default function IncidentRoomPage({
         {/* Main Column (8 cols) */}
         <div className="lg:col-span-8 space-y-5">
           {/* 1. Streamlined Deployments Comparison */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-4 sm:p-5 space-y-3">
-            <div className="flex items-center justify-between pb-2.5 border-b border-[var(--line)]">
-              <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-[var(--fg-subtle)]">
+          <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-4 sm:p-5 space-y-3">
+            <div className="flex items-center justify-between pb-2.5 border-b border-(--line)">
+              <span className="text-[11px] font-mono uppercase tracking-wider font-semibold text-(--fg-subtle)">
                 Deployment Boundary Comparison
               </span>
-              <span className="text-[11px] font-mono text-[var(--fg-subtle)]">
+              <span className="text-[11px] font-mono text-(--fg-subtle)">
                 Vercel Production Alias
               </span>
             </div>
@@ -352,13 +352,13 @@ export default function IncidentRoomPage({
                     Active
                   </span>
                 </div>
-                <div className="text-[var(--fg)] font-bold text-sm tracking-wide">
+                <div className="text-(--fg) font-bold text-sm tracking-wide">
                   {incident.badDeployment?.sha
                     ? incident.badDeployment.sha.slice(0, 7)
                     : incident.badDeployment?.id ?? "Unknown"}
                 </div>
                 <div className="flex items-center justify-between pt-1 text-[11px]">
-                  <span className="text-[var(--fg-subtle)]">
+                  <span className="text-(--fg-subtle)">
                     {incident.badDeployment?.createdAt
                       ? new Date(incident.badDeployment.createdAt).toLocaleTimeString() + " UTC"
                       : "Production"}
@@ -372,7 +372,7 @@ export default function IncidentRoomPage({
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+                      className="text-(--accent) hover:underline inline-flex items-center gap-1"
                     >
                       <span>View deploy</span>
                       <ExternalLink className="w-3 h-3" />
@@ -392,13 +392,13 @@ export default function IncidentRoomPage({
                     Last Good
                   </span>
                 </div>
-                <div className="text-[var(--fg)] font-bold text-sm tracking-wide">
+                <div className="text-(--fg) font-bold text-sm tracking-wide">
                   {incident.goodDeployment?.sha
                     ? incident.goodDeployment.sha.slice(0, 7)
                     : incident.goodDeployment?.id ?? "Unknown"}
                 </div>
                 <div className="flex items-center justify-between pt-1 text-[11px]">
-                  <span className="text-[var(--fg-subtle)]">
+                  <span className="text-(--fg-subtle)">
                     {incident.goodDeployment?.createdAt
                       ? new Date(incident.goodDeployment.createdAt).toLocaleTimeString() + " UTC"
                       : "Target"}
@@ -412,7 +412,7 @@ export default function IncidentRoomPage({
                       }
                       target="_blank"
                       rel="noreferrer"
-                      className="text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+                      className="text-(--accent) hover:underline inline-flex items-center gap-1"
                     >
                       <span>View deploy</span>
                       <ExternalLink className="w-3 h-3" />
@@ -424,23 +424,23 @@ export default function IncidentRoomPage({
           </div>
 
           {/* 2. Suspect Commits Card */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-[var(--line)]">
+          <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-(--line)">
               <div>
-                <h2 className="text-sm font-semibold text-[var(--fg)]">
+                <h2 className="text-sm font-semibold text-(--fg)">
                   Suspect Commits
                 </h2>
-                <p className="text-xs text-[var(--fg-muted)] mt-0.5">
+                <p className="text-xs text-(--fg-muted) mt-0.5">
                   Deterministic scoring between bad and last-good deployments
                 </p>
               </div>
-              <span className="text-xs font-mono text-[var(--fg-subtle)]">
+              <span className="text-xs font-mono text-(--fg-subtle)">
                 {suspects.length} {suspects.length === 1 ? "commit" : "commits"} evaluated
               </span>
             </div>
 
             {suspects.length === 0 ? (
-              <div className="py-8 text-center text-xs font-mono text-[var(--fg-muted)]">
+              <div className="py-8 text-center text-xs font-mono text-(--fg-muted)">
                 {incident.traceStatus === "pending"
                   ? "Tracing commits between deployments…"
                   : "No suspect commits found."}
@@ -460,16 +460,16 @@ export default function IncidentRoomPage({
                             href={`https://github.com/${service.repoOwner}/${service.repoName}/commit/${topSuspect.sha}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="font-mono text-xs font-bold text-[var(--accent)] hover:underline flex items-center gap-1"
+                            className="font-mono text-xs font-bold text-(--accent) hover:underline flex items-center gap-1"
                           >
                             <span>{topSuspect.shortSha}</span>
                             <ExternalLink className="w-3 h-3" />
                           </a>
-                          <span className="text-xs font-medium text-[var(--fg)]">
+                          <span className="text-xs font-medium text-(--fg)">
                             {topSuspect.message}
                           </span>
                         </div>
-                        <div className="text-[11px] font-mono text-[var(--fg-muted)]">
+                        <div className="text-[11px] font-mono text-(--fg-muted)">
                           by {topSuspect.author} • {new Date(topSuspect.committedAt).toLocaleTimeString()} UTC
                         </div>
                       </div>
@@ -487,7 +487,7 @@ export default function IncidentRoomPage({
                         {topSuspect.evidence.map((ev) => (
                           <span
                             key={ev.id}
-                            className="text-[10px] font-mono px-2 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] text-[var(--fg-muted)]"
+                            className="text-[10px] font-mono px-2 py-0.5 rounded bg-(--surface) border border-(--line) text-(--fg-muted)"
                           >
                             {ev.label} (+{ev.points})
                           </span>
@@ -501,7 +501,7 @@ export default function IncidentRoomPage({
                         <button
                           type="button"
                           onClick={() => toggleSuspect(topSuspect.id)}
-                          className="flex items-center gap-1 text-[11px] font-mono text-[var(--accent)] hover:underline"
+                          className="flex items-center gap-1 text-[11px] font-mono text-(--accent) hover:underline"
                         >
                           {expandedSuspects[topSuspect.id] ? (
                             <>
@@ -517,7 +517,7 @@ export default function IncidentRoomPage({
                         </button>
 
                         {expandedSuspects[topSuspect.id] && (
-                          <div className="mt-3 space-y-3 pt-3 border-t border-[var(--line)]">
+                          <div className="mt-3 space-y-3 pt-3 border-t border-(--line)">
                             {topSuspect.files.map((file) => (
                               <DiffBlock
                                 key={file.path}
@@ -541,33 +541,33 @@ export default function IncidentRoomPage({
                   return (
                     <div
                       key={suspect.id}
-                      className="rounded-lg border border-[var(--line)] bg-[var(--surface)]/50 p-3 space-y-2"
+                      className="rounded-lg border border-(--line) bg-(--surface)/50 p-3 space-y-2"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <div className="space-y-0.5">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-[var(--fg-subtle)] bg-[var(--surface)] border border-[var(--line)]">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono text-(--fg-subtle) bg-(--surface) border border-(--line)">
                               #{suspect.rank}
                             </span>
                             <a
                               href={`https://github.com/${service.repoOwner}/${service.repoName}/commit/${suspect.sha}`}
                               target="_blank"
                               rel="noreferrer"
-                              className="font-mono text-xs font-semibold text-[var(--accent)] hover:underline inline-flex items-center gap-1"
+                              className="font-mono text-xs font-semibold text-(--accent) hover:underline inline-flex items-center gap-1"
                             >
                               <span>{suspect.shortSha}</span>
                               <ExternalLink className="w-3 h-3" />
                             </a>
-                            <span className="text-xs text-[var(--fg)]">
+                            <span className="text-xs text-(--fg)">
                               {suspect.message}
                             </span>
                           </div>
-                          <div className="text-[10px] font-mono text-[var(--fg-subtle)]">
+                          <div className="text-[10px] font-mono text-(--fg-subtle)">
                             by {suspect.author} • {new Date(suspect.committedAt).toLocaleTimeString()} UTC
                           </div>
                         </div>
 
-                        <span className="text-xs font-mono text-[var(--fg-muted)] shrink-0">
+                        <span className="text-xs font-mono text-(--fg-muted) shrink-0">
                           {suspect.points} pts
                         </span>
                       </div>
@@ -577,7 +577,7 @@ export default function IncidentRoomPage({
                           <button
                             type="button"
                             onClick={() => toggleSuspect(suspect.id)}
-                            className="flex items-center gap-1 text-[11px] font-mono text-[var(--accent)] hover:underline"
+                            className="flex items-center gap-1 text-[11px] font-mono text-(--accent) hover:underline"
                           >
                             {isExpanded ? (
                               <>
@@ -593,7 +593,7 @@ export default function IncidentRoomPage({
                           </button>
 
                           {isExpanded && (
-                            <div className="mt-2 space-y-2 pt-2 border-t border-[var(--line)]">
+                            <div className="mt-2 space-y-2 pt-2 border-t border-(--line)">
                               {suspect.files.map((file) => (
                                 <DiffBlock
                                   key={file.path}
@@ -617,14 +617,14 @@ export default function IncidentRoomPage({
           <ExplanationCard incidentId={incident.id} analysis={analysis} />
 
           {/* 4. Incident Timeline */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-[var(--fg)] pb-2.5 border-b border-[var(--line)]">
+          <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 space-y-3">
+            <h2 className="text-sm font-semibold text-(--fg) pb-2.5 border-b border-(--line)">
               Incident Timeline
             </h2>
 
             <div className="space-y-2.5 font-mono text-xs">
               {timeline.length === 0 ? (
-                <p className="text-[var(--fg-muted)]">No timeline events recorded.</p>
+                <p className="text-(--fg-muted)">No timeline events recorded.</p>
               ) : (
                 timeline.map((evt) => {
                   const actorBadge =
@@ -639,18 +639,18 @@ export default function IncidentRoomPage({
                   return (
                     <div
                       key={evt.id}
-                      className="flex items-start gap-2.5 pb-2 border-b border-[var(--line)]/40 last:border-0"
+                      className="flex items-start gap-2.5 pb-2 border-b border-(--line)/40 last:border-0"
                     >
-                      <span className="text-[var(--fg-subtle)] text-[11px] w-16 shrink-0 pt-0.5">
+                      <span className="text-(--fg-subtle) text-[11px] w-16 shrink-0 pt-0.5">
                         {new Date(evt.at).toLocaleTimeString()}
                       </span>
                       <span
-                        className="w-4 h-4 rounded text-[9px] font-bold flex items-center justify-center bg-[var(--surface)] text-[var(--accent)] border border-[var(--line)] shrink-0 mt-0.5"
+                        className="w-4 h-4 rounded text-[9px] font-bold flex items-center justify-center bg-(--surface) text-(--accent) border border-(--line) shrink-0 mt-0.5"
                         title={`Actor: ${evt.actorType}`}
                       >
                         {actorBadge}
                       </span>
-                      <span className="text-[var(--fg)] flex-1 text-xs leading-relaxed">
+                      <span className="text-(--fg) flex-1 text-xs leading-relaxed">
                         {evt.summary}
                       </span>
                     </div>
@@ -674,13 +674,13 @@ export default function IncidentRoomPage({
                   ? "border-indigo-500/40 bg-indigo-950/10"
                   : action.status === "failed" || action.status === "verification_failed"
                   ? "border-rose-500/40 bg-rose-950/10"
-                  : "border-[var(--line)] bg-[var(--bg-raised)]"
+                  : "border-(--line) bg-(--bg-raised)"
               }`}
             >
               {/* Header */}
-              <div className="pb-3 border-b border-[var(--line)] space-y-1.5">
+              <div className="pb-3 border-b border-(--line) space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-[var(--fg-subtle)]">
+                  <span className="text-[10px] font-mono uppercase tracking-wider font-bold text-(--fg-subtle)">
                     Action Plan
                   </span>
                   <span
@@ -689,18 +689,18 @@ export default function IncidentRoomPage({
                         ? "bg-emerald-500/20 text-emerald-400"
                         : action.status === "awaiting_approval"
                         ? "bg-amber-500/20 text-amber-300"
-                        : "bg-[var(--surface)] text-[var(--fg-muted)]"
+                        : "bg-(--surface) text-(--fg-muted)"
                     }`}
                   >
                     {action.status.replace("_", " ")}
                   </span>
                 </div>
-                <h3 className="text-sm font-bold text-[var(--fg)] leading-snug">
+                <h3 className="text-sm font-bold text-(--fg) leading-snug">
                   {action.message}
                 </h3>
-                <div className="text-xs font-mono text-[var(--fg-muted)]">
+                <div className="text-xs font-mono text-(--fg-muted)">
                   Target SHA:{" "}
-                  <span className="text-[var(--accent)] font-semibold">
+                  <span className="text-(--accent) font-semibold">
                     {action.target?.shortSha ?? action.target?.id?.slice(0, 7)}
                   </span>
                 </div>
@@ -722,7 +722,7 @@ export default function IncidentRoomPage({
                       ) : (
                         <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
                       )}
-                      <span className="text-xs font-medium text-[var(--fg)]">
+                      <span className="text-xs font-medium text-(--fg)">
                         {allPreflightPass
                           ? `All ${preflightCount} preflight checks verified`
                           : `${preflightPassedCount} of ${preflightCount} checks passed`}
@@ -732,7 +732,7 @@ export default function IncidentRoomPage({
                     <button
                       type="button"
                       onClick={() => setShowPreflightDetails(!showPreflightDetails)}
-                      className="text-[11px] font-mono text-[var(--accent)] hover:underline inline-flex items-center gap-0.5 ml-2"
+                      className="text-[11px] font-mono text-(--accent) hover:underline inline-flex items-center gap-0.5 ml-2"
                     >
                       <span>{showPreflightDetails ? "Hide" : "Review"}</span>
                       {showPreflightDetails ? (
@@ -748,9 +748,9 @@ export default function IncidentRoomPage({
                       {action.preflight.map((check) => (
                         <div
                           key={check.id}
-                          className="flex items-center justify-between p-1.5 px-2.5 rounded bg-[var(--surface)] border border-[var(--line)]"
+                          className="flex items-center justify-between p-1.5 px-2.5 rounded bg-(--surface) border border-(--line)"
                         >
-                          <span className="text-[var(--fg-muted)] text-[11px] truncate max-w-[200px]" title={check.detail || check.id}>
+                          <span className="text-(--fg-muted) text-[11px] truncate max-w-[200px]" title={check.detail || check.id}>
                             {PREFLIGHT_LABELS[check.id] || check.id}
                           </span>
                           {check.ok ? (
@@ -782,11 +782,11 @@ export default function IncidentRoomPage({
                     type="button"
                     onClick={() => handleReject(action.id)}
                     disabled={actionLoading}
-                    className="w-full py-1.5 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono text-[var(--fg-muted)] transition"
+                    className="w-full py-1.5 rounded-lg bg-(--surface) hover:bg-(--line) border border-(--line) text-xs font-mono text-(--fg-muted) transition"
                   >
                     Reject Rollback
                   </button>
-                  <div className="text-[10px] font-mono text-[var(--fg-subtle)] text-center">
+                  <div className="text-[10px] font-mono text-(--fg-subtle) text-center">
                     Expires at {new Date(action.expiresAt).toLocaleTimeString()} UTC
                   </div>
                 </div>
@@ -795,11 +795,11 @@ export default function IncidentRoomPage({
               {/* State 2: Executing */}
               {action.status === "executing" && (
                 <div className="py-3 text-center space-y-2">
-                  <RefreshCw className="w-5 h-5 text-[var(--info)] animate-spin mx-auto" />
-                  <div className="text-xs font-semibold text-[var(--fg)]">
+                  <RefreshCw className="w-5 h-5 text-(--info) animate-spin mx-auto" />
+                  <div className="text-xs font-semibold text-(--fg)">
                     Deploying rollback on Vercel…
                   </div>
-                  <p className="text-[11px] font-mono text-[var(--fg-muted)]">
+                  <p className="text-[11px] font-mono text-(--fg-muted)">
                     Restoring last-good SHA to production alias
                   </p>
                 </div>
@@ -808,8 +808,8 @@ export default function IncidentRoomPage({
               {/* State 3: Verifying */}
               {action.status === "verifying" && (
                 <div className="space-y-2.5">
-                  <div className="text-xs font-mono font-semibold text-[var(--info)] flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-[var(--info)] animate-pulse" />
+                  <div className="text-xs font-mono font-semibold text-(--info) flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-(--info) animate-pulse" />
                     <span>Verifying Health Check Probes…</span>
                   </div>
                   <ProbeStrip probes={action.probes} max={18} />
@@ -825,7 +825,7 @@ export default function IncidentRoomPage({
                   <div className="text-xs font-bold text-emerald-400">
                     Production Recovered
                   </div>
-                  <p className="text-[11px] text-[var(--fg-muted)] leading-relaxed">
+                  <p className="text-[11px] text-(--fg-muted) leading-relaxed">
                     3 consecutive health probes returned 200 OK. Traffic is healthy on target deployment.
                   </p>
                 </div>
@@ -843,7 +843,7 @@ export default function IncidentRoomPage({
               )}
             </div>
           ) : (
-            <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 text-center text-xs font-mono text-[var(--fg-muted)]">
+            <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 text-center text-xs font-mono text-(--fg-muted)">
               No rollback action proposed.
             </div>
           )}

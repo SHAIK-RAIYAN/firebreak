@@ -117,7 +117,7 @@ export function AppShell({
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg)] text-[var(--fg)]">
+    <div className="flex h-screen overflow-hidden bg-(--bg) text-(--fg)">
       {/* Mobile Backdrop */}
       {mobileOpen && (
         <div
@@ -128,18 +128,18 @@ export function AppShell({
 
       {/* Sidebar Desktop & Mobile */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[var(--line)] bg-[var(--bg-raised)] transition-all duration-300 ease-in-out lg:static ${
+        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-(--line) bg-(--bg-raised) transition-all duration-300 ease-in-out lg:static ${
           collapsed ? "lg:w-16" : "lg:w-60"
         } ${mobileOpen ? "translate-x-0 w-64 shadow-2xl" : "-translate-x-full lg:translate-x-0"}`}
       >
         {/* Brand Header */}
-        <div className="flex h-14 items-center justify-between border-b border-[var(--line)] px-3.5">
+        <div className="flex h-14 items-center justify-between border-b border-(--line) px-3.5">
           <Logo collapsed={collapsed} />
           <div className="flex items-center gap-1">
             <button
               type="button"
               onClick={() => setCollapsed(!collapsed)}
-              className="hidden p-1.5 rounded hover:bg-[var(--surface)] text-[var(--fg-muted)] hover:text-[var(--fg)] lg:inline-flex"
+              className="hidden p-1.5 rounded hover:bg-(--surface) text-(--fg-muted) hover:text-(--fg) lg:inline-flex"
               title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {collapsed ? (
@@ -151,7 +151,7 @@ export function AppShell({
             <button
               type="button"
               onClick={() => setMobileOpen(false)}
-              className="p-1.5 rounded hover:bg-[var(--surface)] text-[var(--fg-muted)] lg:hidden"
+              className="p-1.5 rounded hover:bg-(--surface) text-(--fg-muted) lg:hidden"
             >
               <X className="w-5 h-5" />
             </button>
@@ -169,12 +169,12 @@ export function AppShell({
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`relative flex items-center gap-3 rounded-lg py-2 text-xs font-medium transition-colors group focus-visible:outline-2 focus-visible:outline-[var(--accent)] ${
+                className={`relative flex items-center gap-3 rounded-lg py-2 text-xs font-medium transition-colors group focus-visible:outline-2 focus-visible:outline-(--accent) ${
                   collapsed ? "justify-center px-2" : "px-3"
                 } ${
                   isActive
-                    ? "text-[var(--fg)] font-semibold"
-                    : "text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface)]/40"
+                    ? "text-(--fg) font-semibold"
+                    : "text-(--fg-muted) hover:text-(--fg) hover:bg-(--surface)/40"
                 }`}
                 title={collapsed ? item.label : undefined}
               >
@@ -182,7 +182,7 @@ export function AppShell({
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active-pill"
-                    className="absolute inset-0 rounded-lg bg-[var(--surface)] border border-[var(--line)] shadow-xs"
+                    className="absolute inset-0 rounded-lg bg-(--surface) border border-(--line) shadow-xs"
                     transition={
                       shouldReduceMotion
                         ? { duration: 0 }
@@ -195,7 +195,7 @@ export function AppShell({
                 {isActive && (
                   <motion.div
                     layoutId="sidebar-active-indicator"
-                    className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r bg-[var(--accent)] z-10"
+                    className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r bg-(--accent) z-10"
                     transition={
                       shouldReduceMotion
                         ? { duration: 0 }
@@ -207,8 +207,8 @@ export function AppShell({
                 <Icon
                   className={`w-4 h-4 shrink-0 transition-colors relative z-10 ${
                     isActive
-                      ? "text-[var(--accent)]"
-                      : "text-[var(--fg-muted)] group-hover:text-[var(--fg)]"
+                      ? "text-(--accent)"
+                      : "text-(--fg-muted) group-hover:text-(--fg)"
                   }`}
                 />
                 {!collapsed && (
@@ -225,14 +225,14 @@ export function AppShell({
         </nav>
 
         {/* Bottom Workspace & User area */}
-        <div className="border-t border-[var(--line)] p-2.5 space-y-2">
+        <div className="border-t border-(--line) p-2.5 space-y-2">
           {!collapsed && (
-            <div className="px-2 py-1.5 rounded-md bg-[var(--surface)] border border-[var(--line)] flex items-center justify-between">
+            <div className="px-2 py-1.5 rounded-md bg-(--surface) border border-(--line) flex items-center justify-between">
               <div className="truncate">
-                <div className="text-[10px] font-mono uppercase text-[var(--fg-subtle)]">
+                <div className="text-[10px] font-mono uppercase text-(--fg-subtle)">
                   Workspace
                 </div>
-                <div className="text-xs font-semibold text-[var(--fg)] truncate">
+                <div className="text-xs font-semibold text-(--fg) truncate">
                   {workspaceName}
                 </div>
               </div>
@@ -252,20 +252,20 @@ export function AppShell({
                   width={28}
                   height={28}
                   unoptimized
-                  className="w-7 h-7 rounded-full border border-[var(--line)] shrink-0"
+                  className="w-7 h-7 rounded-full border border-(--line) shrink-0"
                 />
               ) : (
-                <div className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center font-mono text-xs font-bold text-[var(--accent)] shrink-0">
+                <div className="w-7 h-7 rounded-full bg-(--surface) border border-(--line) flex items-center justify-center font-mono text-xs font-bold text-(--accent) shrink-0">
                   {userName.charAt(0).toUpperCase()}
                 </div>
               )}
               {!collapsed && (
                 <div className="truncate">
-                  <div className="text-xs font-medium text-[var(--fg)] truncate">
+                  <div className="text-xs font-medium text-(--fg) truncate">
                     {userName}
                   </div>
                   {userEmail && (
-                    <div className="text-[10px] text-[var(--fg-subtle)] truncate font-mono">
+                    <div className="text-[10px] text-(--fg-subtle) truncate font-mono">
                       {userEmail}
                     </div>
                   )}
@@ -278,7 +278,7 @@ export function AppShell({
               <button
                 type="button"
                 onClick={handleSignOut}
-                className="p-1.5 rounded-md border border-[var(--line)] bg-[var(--surface)] hover:bg-rose-950/20 hover:text-rose-400 hover:border-rose-900/40 text-[var(--fg-muted)] transition"
+                className="p-1.5 rounded-md border border-(--line) bg-(--surface) hover:bg-rose-950/20 hover:text-rose-400 hover:border-rose-900/40 text-(--fg-muted) transition"
                 title="Sign out"
               >
                 <LogOut className="w-4 h-4" />
@@ -291,18 +291,18 @@ export function AppShell({
       {/* Main Content Area with Top Bar */}
       <div className="flex flex-1 flex-col overflow-hidden min-w-0">
         {/* Top Bar (56px) */}
-        <header className="flex h-14 shrink-0 items-center justify-between border-b border-[var(--line)] bg-[var(--bg-raised)] px-4 sm:px-6">
+        <header className="flex h-14 shrink-0 items-center justify-between border-b border-(--line) bg-(--bg-raised) px-4 sm:px-6">
           <div className="flex items-center gap-3">
             <button
               type="button"
               onClick={() => setMobileOpen(true)}
-              className="p-1.5 rounded-lg border border-[var(--line)] text-[var(--fg-muted)] lg:hidden"
+              className="p-1.5 rounded-lg border border-(--line) text-(--fg-muted) lg:hidden"
             >
               <Menu className="w-5 h-5" />
             </button>
 
             {/* Breadcrumb with subtle transition in fixed-height header */}
-            <div className="hidden sm:flex items-center h-6 overflow-hidden font-mono text-xs text-[var(--fg-muted)]">
+            <div className="hidden sm:flex items-center h-6 overflow-hidden font-mono text-xs text-(--fg-muted)">
               <AnimatePresence mode="popLayout" initial={false}>
                 <motion.nav
                   key={pathname}
@@ -317,15 +317,15 @@ export function AppShell({
                     const isLast = idx === breadcrumbItems.length - 1;
                     return (
                       <div key={item.url} className="flex items-center gap-1.5 shrink-0">
-                        {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[var(--fg-subtle)] shrink-0" />}
+                        {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-(--fg-subtle) shrink-0" />}
                         {isLast ? (
-                          <span className="font-semibold text-[var(--fg)] shrink-0" aria-current="page">
+                          <span className="font-semibold text-(--fg) shrink-0" aria-current="page">
                             {item.label}
                           </span>
                         ) : (
                           <Link
                             href={item.url}
-                            className="hover:text-[var(--accent)] transition-colors shrink-0"
+                            className="hover:text-(--accent) transition-colors shrink-0"
                           >
                             {item.label}
                           </Link>

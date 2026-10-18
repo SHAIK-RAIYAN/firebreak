@@ -63,19 +63,19 @@ export function McpSection() {
   };
 
   return (
-    <section id="mcp" className="py-16 lg:py-20 border-t border-[var(--line)] bg-[var(--bg-raised)] relative overflow-hidden">
+    <section id="mcp" className="py-16 lg:py-20 border-t border-(--line) bg-(--bg-raised) relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-[var(--accent)] tracking-wider">
+          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-(--accent) tracking-wider">
             <span>[04]</span>
             <span>WORKS WHERE YOU WORK</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display tracking-tight text-[var(--fg)]">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display tracking-tight text-(--fg)">
               Same loop, inside your MCP client.
             </h2>
-            <p className="text-[var(--fg-muted)] text-sm sm:text-base max-w-xl">
+            <p className="text-(--fg-muted) text-sm sm:text-base max-w-xl">
               Exposes a Model Context Protocol server powered by NitroStack. Ask Claude or Cursor to inspect suspects directly.
             </p>
           </div>
@@ -88,11 +88,11 @@ export function McpSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.35, ease: "easeOut" }}
-            className="lg:col-span-7 bg-[var(--surface)] border border-[var(--line)] rounded-2xl overflow-hidden shadow-sm font-mono text-xs flex flex-col"
+            className="lg:col-span-7 bg-(--surface) border border-(--line) rounded-2xl overflow-hidden shadow-sm font-mono text-xs flex flex-col"
           >
-            <div className="bg-[var(--bg)] px-4 py-3 border-b border-[var(--line)] flex items-center justify-between">
+            <div className="bg-(--bg) px-4 py-3 border-b border-(--line) flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Terminal className="w-3.5 h-3.5 text-[var(--accent)] shrink-0 hidden sm:inline" />
+                <Terminal className="w-3.5 h-3.5 text-(--accent) shrink-0 hidden sm:inline" />
                 <div className="flex gap-1.5">
                   {CLIENTS.map((c, i) => (
                     <button
@@ -100,8 +100,8 @@ export function McpSection() {
                       onClick={() => setActiveClient(i)}
                       className={`px-3 py-1 rounded-lg text-xs transition-colors ${
                         activeClient === i
-                          ? "bg-[var(--accent)] text-[var(--accent-fg)] font-semibold"
-                          : "text-[var(--fg-subtle)] hover:text-[var(--fg)] hover:bg-[var(--surface)]"
+                          ? "bg-(--accent) text-(--accent-fg) font-semibold"
+                          : "text-(--fg-subtle) hover:text-(--fg) hover:bg-(--surface)"
                       }`}
                     >
                       {c.name}
@@ -111,7 +111,7 @@ export function McpSection() {
               </div>
               <button
                 onClick={copySnippet}
-                className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md border transition-all duration-200 border-[var(--line)] hover:border-[var(--line-strong)] bg-[var(--surface)] text-[var(--fg-subtle)] hover:text-[var(--fg)]`}
+                className={`flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-md border transition-all duration-200 border-(--line) hover:border-(--line-strong) bg-(--surface) text-(--fg-subtle) hover:text-(--fg)`}
                 title="Copy configuration snippet"
               >
                 <AnimatePresence mode="wait" initial={false}>
@@ -143,7 +143,7 @@ export function McpSection() {
                 </AnimatePresence>
               </button>
             </div>
-            <pre className="p-4 text-[11px] text-[var(--fg)] overflow-x-auto overflow-y-hidden leading-relaxed bg-[var(--surface)] h-[246px] min-h-[246px] max-h-[246px]">
+            <pre className="p-4 text-[11px] text-(--fg) overflow-x-auto overflow-y-hidden leading-relaxed bg-(--surface) h-[246px] min-h-[246px] max-h-[246px]">
               {CLIENTS[activeClient]?.config ?? ""}
             </pre>
           </motion.div>
@@ -154,13 +154,13 @@ export function McpSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.2 }}
             transition={{ duration: 0.35, delay: 0.08, ease: "easeOut" }}
-            className="lg:col-span-5 bg-[var(--surface)] border border-[var(--line)] rounded-2xl p-5 shadow-sm flex flex-col justify-between"
+            className="lg:col-span-5 bg-(--surface) border border-(--line) rounded-2xl p-5 shadow-sm flex flex-col justify-between"
           >
             <div>
-              <div className="flex items-center justify-between pb-3 border-b border-[var(--line)] mb-3">
+              <div className="flex items-center justify-between pb-3 border-b border-(--line) mb-3">
                 <div className="flex items-center gap-2 font-mono text-xs">
-                  <Cpu className="w-4 h-4 text-[var(--accent)]" />
-                  <span className="font-semibold text-[var(--fg)]">9 MCP TOOLS</span>
+                  <Cpu className="w-4 h-4 text-(--accent)" />
+                  <span className="font-semibold text-(--fg)">9 MCP TOOLS</span>
                 </div>
               </div>
 
@@ -168,11 +168,11 @@ export function McpSection() {
                 {TOOLS.map((tool) => (
                   <div
                     key={tool.name}
-                    className="flex items-center gap-2 p-2 rounded-lg bg-[var(--bg-raised)] border border-[var(--line)] text-[var(--fg-muted)] hover:border-[var(--line-strong)] hover:text-[var(--fg)] transition-colors"
+                    className="flex items-center gap-2 p-2 rounded-lg bg-(--bg-raised) border border-(--line) text-(--fg-muted) hover:border-(--line-strong) hover:text-(--fg) transition-colors"
                   >
                     <span
                       className={`w-1.5 h-1.5 rounded-full shrink-0 ${
-                        tool.type === "guard" ? "bg-[var(--danger)]" : "bg-[var(--accent)]"
+                        tool.type === "guard" ? "bg-(--danger)" : "bg-(--accent)"
                       }`}
                     />
                     <span className="text-[11px] font-semibold truncate">{tool.name}</span>
@@ -181,13 +181,13 @@ export function McpSection() {
               </div>
             </div>
 
-            <div className="flex items-center justify-between pt-3 border-t border-[var(--line)] mt-3 text-[11px] text-[var(--fg-subtle)] font-mono">
+            <div className="flex items-center justify-between pt-3 border-t border-(--line) mt-3 text-[11px] text-(--fg-subtle) font-mono">
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-(--accent)" />
                 <span>Read Tools</span>
               </span>
               <span className="flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-[var(--danger)]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-(--danger)" />
                 <span>Guarded Mutations</span>
               </span>
             </div>

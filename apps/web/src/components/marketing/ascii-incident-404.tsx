@@ -485,7 +485,7 @@ export function AsciiIncident404() {
   }, [triggerShatter]);
 
   return (
-    <div className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-[var(--bg)] text-[var(--fg)] selection:bg-[var(--accent)] selection:text-white">
+    <div className="relative min-h-screen w-full flex flex-col justify-between overflow-hidden bg-(--bg) text-(--fg) selection:bg-(--accent) selection:text-white">
       {/* Subtle Atmospheric Cosmic Background */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <Image
@@ -496,7 +496,7 @@ export function AsciiIncident404() {
           sizes="100vw"
           className="object-cover object-center opacity-50 dark:opacity-20 blur-[1.5px] scale-105 select-none transition-opacity duration-300"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg)] via-transparent to-[var(--bg)]/30 dark:to-[var(--bg)]/80" />
+        <div className="absolute inset-0 bg-linear-to-t from-(--bg) via-transparent to-(--bg)/30 dark:to-(--bg)/80" />
       </div>
 
       {/* Hairline Grid Texture Background */}
@@ -509,11 +509,11 @@ export function AsciiIncident404() {
       />
 
       {/* Top Console Navigation Bar */}
-      <header className="relative z-30 w-full border-b border-[var(--line)] bg-[var(--bg)]/80 backdrop-blur-md">
+      <header className="relative z-30 w-full border-b border-(--line) bg-(--bg)/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2.5 group">
             <LogoMark className="w-6 h-6 transition-transform group-hover:scale-105" />
-            <span className="font-display font-bold text-lg tracking-tight lowercase text-[var(--fg)]">
+            <span className="font-display font-bold text-lg tracking-tight lowercase text-(--fg)">
               firebreak
             </span>
           </Link>
@@ -522,7 +522,7 @@ export function AsciiIncident404() {
             <ThemeToggle />
             <Link
               href="/app"
-              className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] border border-[var(--line)] transition-colors shrink-0"
+              className="px-3.5 py-1.5 rounded-lg text-xs font-mono font-semibold bg-(--surface) hover:bg-(--line) text-(--fg) border border-(--line) transition-colors shrink-0"
             >
               Console
             </Link>
@@ -531,36 +531,36 @@ export function AsciiIncident404() {
       </header>
 
       {/* Ambient Telemetry Watermarks (Selectable text with animated chevrons) */}
-      <div className="absolute top-20 left-4 sm:left-8 z-20 font-mono text-[11px] text-neutral-900 dark:text-[var(--fg-subtle)] space-y-1.5 hidden sm:block select-text">
-        <div className="flex items-center gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+      <div className="absolute top-20 left-4 sm:left-8 z-20 font-mono text-[11px] text-neutral-900 dark:text-(--fg-subtle) space-y-1.5 hidden sm:block select-text">
+        <div className="flex items-center gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >GET /404</span>
         </div>
-        <div className="flex items-center gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+        <div className="flex items-center gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >404. no route matched</span>
         </div>
-        <div className="flex items-center gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+        <div className="flex items-center gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >checked the whole map. 0 results</span>
         </div>
-        <div className="flex items-center gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+        <div className="flex items-center gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >the page moved, was never here</span>
         </div>
       </div>
 
-      <div className="absolute top-20 right-4 sm:right-8 z-20 font-mono text-[11px] text-neutral-900 dark:text-[var(--fg-subtle)] space-y-1.5 text-right hidden sm:block select-text">
-        <div className="flex items-center justify-end gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+      <div className="absolute top-20 right-4 sm:right-8 z-20 font-mono text-[11px] text-neutral-900 dark:text-(--fg-subtle) space-y-1.5 text-right hidden sm:block select-text">
+        <div className="flex items-center justify-end gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >ORBIT_STATUS: FRACTURED</span>
         </div>
-        <div className="flex items-center justify-end gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+        <div className="flex items-center justify-end gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >VECTOR_COORDS: 0x404_VOID</span>
         </div>
-        <div className="flex items-center justify-end gap-1.5 hover:text-[var(--fg)] transition-colors group">
-          <ChevronRightIcon size={12} className="text-[var(--accent)] shrink-0 transition-transform group-hover:translate-x-0.5" />
+        <div className="flex items-center justify-end gap-1.5 hover:text-(--fg) transition-colors group">
+          <ChevronRightIcon size={12} className="text-(--accent) shrink-0 transition-transform group-hover:translate-x-0.5" />
           <span >DISPERSION: ACTIVE_ASCII_FIELD</span>
         </div>
       </div>
@@ -586,7 +586,7 @@ export function AsciiIncident404() {
       <main className="relative z-20 w-full max-w-3xl mx-auto px-4 sm:px-6 pb-6 text-center space-y-3 pointer-events-auto select-text">
         {/* Messaging */}
         <div className="space-y-1">
-          <p className="text-sm sm:text-base text-neutral-950 dark:text-[var(--fg-muted)] font-mono font-medium max-w-md mx-auto leading-relaxed">
+          <p className="text-sm sm:text-base text-neutral-950 dark:text-(--fg-muted) font-mono font-medium max-w-md mx-auto leading-relaxed">
             Nothing at this address.
           </p>
         </div>
@@ -595,14 +595,14 @@ export function AsciiIncident404() {
         <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
           <Link
             href="/"
-            className="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold bg-[var(--surface)] hover:bg-[var(--line)] text-neutral-900 dark:text-[var(--fg)] border border-[var(--line-strong)] active:scale-95 transition-all flex items-center gap-2 shadow-xs"
+            className="px-5 py-2.5 rounded-xl font-mono text-xs font-semibold bg-(--surface) hover:bg-(--line) text-neutral-900 dark:text-(--fg) border border-(--line-strong) active:scale-95 transition-all flex items-center gap-2 shadow-xs"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>Back to Home</span>
           </Link>
           <Link
             href="/app"
-            className="px-5 py-2.5 rounded-xl font-mono text-xs font-bold bg-[var(--accent-solid)] text-[var(--accent-fg)] hover:brightness-110 active:scale-95 transition-all shadow-md shadow-[var(--accent-solid)]/15 flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl font-mono text-xs font-bold bg-(--accent-solid) text-(--accent-fg) hover:brightness-110 active:scale-95 transition-all shadow-md shadow-(--accent-solid)/15 flex items-center gap-2"
           >
             <Home className="w-3.5 h-3.5" />
             <span>Open Console</span>
@@ -611,8 +611,8 @@ export function AsciiIncident404() {
       </main>
 
       {/* Terminal Minimal Footer */}
-      <footer className="relative z-20 w-full border-t border-[var(--line)] bg-[var(--bg)]/85 backdrop-blur-xs py-3 px-4 text-center font-mono text-[11px] text-neutral-800 dark:text-[var(--fg-subtle)] font-medium flex items-center justify-center gap-2 select-text">
-        <Terminal className="w-3 h-3 text-[var(--accent)]" />
+      <footer className="relative z-20 w-full border-t border-(--line) bg-(--bg)/85 backdrop-blur-xs py-3 px-4 text-center font-mono text-[11px] text-neutral-800 dark:text-(--fg-subtle) font-medium flex items-center justify-center gap-2 select-text">
+        <Terminal className="w-3 h-3 text-(--accent)" />
         <span>FIREBREAK INCIDENT ISOLATION SYSTEM · ALL OTHER ACTIVE DEPLOYMENTS HEALTHY</span>
       </footer>
     </div>

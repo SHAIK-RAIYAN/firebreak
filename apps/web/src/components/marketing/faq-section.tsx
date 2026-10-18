@@ -35,7 +35,7 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-16 lg:py-20 border-t border-[var(--line)] bg-[var(--bg-raised)] relative overflow-hidden">
+    <section id="faq" className="py-16 lg:py-20 border-t border-(--line) bg-(--bg-raised) relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -44,15 +44,15 @@ export function FaqSection() {
           transition={{ duration: 0.4 }}
           className="mb-8"
         >
-          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-[var(--accent)] tracking-wider">
+          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-(--accent) tracking-wider">
             <span>[06]</span>
             <span>FREQUENTLY ASKED QUESTIONS</span>
           </div>
           <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display tracking-tight text-[var(--fg)]">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display tracking-tight text-(--fg)">
               Answers to common questions.
             </h2>
-            <p className="text-[var(--fg-muted)] text-sm sm:text-base max-w-md">
+            <p className="text-(--fg-muted) text-sm sm:text-base max-w-md">
               Everything you need to know about safety, permissions, and rollback mechanics.
             </p>
           </div>
@@ -68,15 +68,15 @@ export function FaqSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: idx * 0.05 }}
-                className="border border-[var(--line)] rounded-xl overflow-hidden bg-[var(--surface)] transition-colors hover:border-[var(--line-strong)]"
+                className="border border-(--line) rounded-xl overflow-hidden bg-(--surface) transition-colors hover:border-(--line-strong)"
               >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : idx)}
-                  className="w-full p-5 text-left font-semibold text-base text-[var(--fg)] flex items-center justify-between gap-4 hover:bg-[var(--bg-raised)]/60 transition-colors"
+                  className="w-full p-5 text-left font-semibold text-base text-(--fg) flex items-center justify-between gap-4 hover:bg-(--bg-raised)/60 transition-colors"
                 >
                   <span className="flex items-center gap-3">
-                    <span className="font-mono text-xs text-[var(--fg-subtle)] font-normal">
+                    <span className="font-mono text-xs text-(--fg-subtle) font-normal">
                       {(idx + 1).toString().padStart(2, "0")}
                     </span>
                     <span>{faq.q}</span>
@@ -87,7 +87,7 @@ export function FaqSection() {
                   >
                     <ChevronDown
                       className={`w-5 h-5 transition-colors ${
-                        isOpen ? "text-[var(--accent)]" : "text-[var(--fg-subtle)]"
+                        isOpen ? "text-(--accent)" : "text-(--fg-subtle)"
                       }`}
                     />
                   </motion.div>
@@ -101,7 +101,7 @@ export function FaqSection() {
                       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
-                      <div className="px-5 pb-5 pt-1 text-sm text-[var(--fg-muted)] leading-relaxed border-t border-[var(--line)]/50 bg-[var(--bg-raised)]/30">
+                      <div className="px-5 pb-5 pt-1 text-sm text-(--fg-muted) leading-relaxed border-t border-(--line)/50 bg-(--bg-raised)/30">
                         {faq.a}
                       </div>
                     </motion.div>

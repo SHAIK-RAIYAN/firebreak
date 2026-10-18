@@ -10,10 +10,10 @@ export function StatusPill({
   className?: string;
 }) {
   let label = status;
-  let bg = "bg-[var(--surface)]";
-  let border = "border-[var(--line)]";
-  let text = "text-[var(--fg-muted)]";
-  let dot = "bg-[var(--fg-muted)]";
+  let bg = "bg-(--surface)";
+  let border = "border-(--line)";
+  let text = "text-(--fg-muted)";
+  let dot = "bg-(--fg-muted)";
   let pulsing = false;
 
   switch (status) {
@@ -27,55 +27,55 @@ export function StatusPill({
       break;
     case "triaged":
       label = "Triaged";
-      bg = "bg-[var(--surface)]";
-      border = "border-[var(--line-strong)]";
-      text = "text-[var(--fg)]";
+      bg = "bg-(--surface)";
+      border = "border-(--line-strong)";
+      text = "text-(--fg)";
       dot = "bg-purple-400";
       break;
     case "awaiting_approval":
       label = "Needs approval";
       bg = "bg-amber-500/10";
       border = "border-amber-500/40";
-      text = "text-[var(--warn)]";
-      dot = "bg-[var(--warn)]";
+      text = "text-(--warn)";
+      dot = "bg-(--warn)";
       pulsing = true;
       break;
     case "mitigating":
       label = "Rolling back";
       bg = "bg-indigo-500/10";
       border = "border-indigo-500/40";
-      text = "text-[var(--info)]";
-      dot = "bg-[var(--info)]";
+      text = "text-(--info)";
+      dot = "bg-(--info)";
       pulsing = true;
       break;
     case "verifying":
       label = "Verifying";
       bg = "bg-indigo-500/10";
       border = "border-indigo-500/40";
-      text = "text-[var(--info)]";
-      dot = "bg-[var(--info)]";
+      text = "text-(--info)";
+      dot = "bg-(--info)";
       pulsing = true;
       break;
     case "resolved":
       label = "Recovered";
       bg = "bg-emerald-500/10";
       border = "border-emerald-500/30";
-      text = "text-[var(--ok)]";
-      dot = "bg-[var(--ok)]";
+      text = "text-(--ok)";
+      dot = "bg-(--ok)";
       break;
     case "mitigation_failed":
       label = "Still failing";
       bg = "bg-rose-500/10";
       border = "border-rose-500/40";
-      text = "text-[var(--danger)]";
-      dot = "bg-[var(--danger)]";
+      text = "text-(--danger)";
+      dot = "bg-(--danger)";
       break;
     case "dismissed":
       label = "Dismissed";
-      bg = "bg-[var(--surface)]";
-      border = "border-[var(--line)]";
-      text = "text-[var(--fg-subtle)]";
-      dot = "bg-[var(--fg-subtle)]";
+      bg = "bg-(--surface)";
+      border = "border-(--line)";
+      text = "text-(--fg-subtle)";
+      dot = "bg-(--fg-subtle)";
       break;
     default:
       label = status;

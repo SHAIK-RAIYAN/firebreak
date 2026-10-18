@@ -125,42 +125,42 @@ export default async function HomePage() {
           __html: JSON.stringify(faqPageLd).replace(/</g, "\\u003c"),
         }}
       />
-      <div className="min-h-screen flex flex-col bg-[var(--bg)] text-[var(--fg)] selection:bg-[var(--accent)] selection:text-white">
+      <div className="min-h-screen flex flex-col bg-(--bg) text-(--fg) selection:bg-(--accent) selection:text-white">
       {/* ─────────────────────────────────────────────────────────────
           1. Sticky Navigation Bar
       ───────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full border-b border-[var(--line)] bg-[var(--bg)]/85 backdrop-blur-md transition-all">
+      <header className="sticky top-0 z-50 w-full border-b border-(--line) bg-(--bg)/85 backdrop-blur-md transition-all">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-6 lg:gap-10 shrink-0">
             <Link href="/" className="flex items-center gap-2.5 group shrink-0">
               <LogoMark className="w-6 h-6 transition-transform group-hover:scale-105" />
-              <span className="font-display font-bold text-lg tracking-tight lowercase text-[var(--fg)]">firebreak</span>
+              <span className="font-display font-bold text-lg tracking-tight lowercase text-(--fg)">firebreak</span>
             </Link>
 
             <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-left">
               <a href="#problem" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[01]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Problem</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[01]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">Problem</span>
               </a>
               <a href="#loop" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[02]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">The Loop</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[02]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">The Loop</span>
               </a>
               <a href="#evidence" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[03]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Evidence</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[03]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">Evidence</span>
               </a>
               <a href="#mcp" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[04]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">MCP Tools</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[04]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">MCP Tools</span>
               </a>
               <a href="#security" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[05]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Security</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[05]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">Security</span>
               </a>
               <a href="#faq" className="flex flex-col items-start leading-none group py-1 transition-colors">
-                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[06]</span>
-                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">FAQ</span>
+                <span className="font-mono text-[10px] text-(--accent) tracking-wider mb-1 font-semibold group-hover:brightness-110">[06]</span>
+                <span className="font-mono text-xs text-(--fg-muted) group-hover:text-(--fg) transition-colors">FAQ</span>
               </a>
             </nav>
           </div>
@@ -170,7 +170,7 @@ export default async function HomePage() {
             <NavAuthSlot initialUser={user} />
             <Link
               href="/app"
-              className="px-3.5 sm:px-4 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[var(--accent-solid)] text-[var(--accent-fg)] hover:brightness-110 active:scale-95 transition-all shadow-sm whitespace-nowrap shrink-0"
+              className="px-3.5 sm:px-4 py-1.5 rounded-lg text-xs font-mono font-semibold bg-(--accent-solid) text-(--accent-fg) hover:brightness-110 active:scale-95 transition-all shadow-sm whitespace-nowrap shrink-0"
             >
               <span className="hidden sm:inline">Open Console</span>
               <span className="sm:hidden">Console</span>
@@ -222,38 +222,38 @@ export default async function HomePage() {
       {/* ─────────────────────────────────────────────────────────────
           10. Global Footer
       ───────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-[var(--line)] bg-[var(--bg-raised)] py-12 text-xs font-mono text-[var(--fg-subtle)]">
+      <footer className="border-t border-(--line) bg-(--bg-raised) py-12 text-xs font-mono text-(--fg-subtle)">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
               <LogoMark className="w-5 h-5" />
-              <span className="font-display font-bold text-base text-[var(--fg)] lowercase">firebreak</span>
+              <span className="font-display font-bold text-base text-(--fg) lowercase">firebreak</span>
             </div>
-            <p className="text-[var(--fg-muted)] text-xs font-sans">
+            <p className="text-(--fg-muted) text-xs font-sans">
               Autonomous diagnosis and human-in-the-loop rollback verification for web teams.
             </p>
           </div>
 
           <div>
-            <h4 className="font-bold text-[var(--fg)] mb-3 uppercase tracking-wider text-[11px]">Product</h4>
+            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Product</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#loop" className="hover:text-[var(--fg)] transition-colors">
+                <a href="#loop" className="hover:text-(--fg) transition-colors">
                   How It Works
                 </a>
               </li>
               <li>
-                <a href="#evidence" className="hover:text-[var(--fg)] transition-colors">
+                <a href="#evidence" className="hover:text-(--fg) transition-colors">
                   Deterministic Evidence
                 </a>
               </li>
               <li>
-                <a href="#mcp" className="hover:text-[var(--fg)] transition-colors">
+                <a href="#mcp" className="hover:text-(--fg) transition-colors">
                   NitroStack MCP
                 </a>
               </li>
               <li>
-                <a href="#security" className="hover:text-[var(--fg)] transition-colors">
+                <a href="#security" className="hover:text-(--fg) transition-colors">
                   Security Architecture
                 </a>
               </li>
@@ -261,15 +261,15 @@ export default async function HomePage() {
           </div>
 
           <div>
-            <h4 className="font-bold text-[var(--fg)] mb-3 uppercase tracking-wider text-[11px]">Resources</h4>
+            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Resources</h4>
             <ul className="space-y-2">
               <li>
-                <Link href="/app" className="hover:text-[var(--fg)] transition-colors">
+                <Link href="/app" className="hover:text-(--fg) transition-colors">
                   Operator Console
                 </Link>
               </li>
               <li>
-                <Link href="/login" className="hover:text-[var(--fg)] transition-colors">
+                <Link href="/login" className="hover:text-(--fg) transition-colors">
                   Sign In
                 </Link>
               </li>
@@ -278,7 +278,7 @@ export default async function HomePage() {
                   href="https://github.com/SHAIK-RAIYAN/firebreak"
                   target="_blank"
                   rel="noreferrer"
-                  className="hover:text-[var(--fg)] transition-colors flex items-center gap-1"
+                  className="hover:text-(--fg) transition-colors flex items-center gap-1"
                 >
                   <span>GitHub Repository</span>
                   <ExternalLink className="w-3 h-3" />
@@ -288,11 +288,11 @@ export default async function HomePage() {
           </div>
 
           <div>
-            <h4 className="font-bold text-[var(--fg)] mb-3 uppercase tracking-wider text-[11px]">Stack</h4>
-            <p className="text-[var(--fg-muted)] text-[11px] leading-relaxed mb-4">
+            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Stack</h4>
+            <p className="text-(--fg-muted) text-[11px] leading-relaxed mb-4">
               Built with Next.js 16, NitroStack MCP, Inngest durable workflows, and Neon Serverless Postgres.
             </p>
-            <p className="text-[10px] text-[var(--fg-subtle)]">© 2026 Firebreak. All rights reserved.</p>
+            <p className="text-[10px] text-(--fg-subtle)">© 2026 Firebreak. All rights reserved.</p>
           </div>
         </div>
       </footer>

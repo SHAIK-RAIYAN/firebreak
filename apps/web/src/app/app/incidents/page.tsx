@@ -57,18 +57,18 @@ export default async function IncidentsPage({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-[var(--fg)]">
+          <h1 className="text-2xl font-bold tracking-tight text-(--fg)">
             Incidents
           </h1>
-          <p className="text-sm text-[var(--fg-muted)]">
+          <p className="text-sm text-(--fg-muted)">
             Active and historical production mitigations and rollbacks
           </p>
         </div>
       </div>
 
       {/* Filter Bar: Tabs & Service selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-[var(--line)]">
-        <div className="flex items-center gap-1 bg-[var(--surface)] p-1 rounded-lg border border-[var(--line)]">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-2 border-b border-(--line)">
+        <div className="flex items-center gap-1 bg-(--surface) p-1 rounded-lg border border-(--line)">
           {[
             { id: "active", label: "Active" },
             { id: "resolved", label: "Resolved" },
@@ -83,8 +83,8 @@ export default async function IncidentsPage({
                 }`}
                 className={`px-3 py-1.5 rounded-md text-xs font-semibold transition ${
                   isActive
-                    ? "bg-[var(--bg-raised)] text-[var(--fg)] shadow-xs"
-                    : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                    ? "bg-(--bg-raised) text-(--fg) shadow-xs"
+                    : "text-(--fg-muted) hover:text-(--fg)"
                 }`}
               >
                 {tab.label}
@@ -103,49 +103,49 @@ export default async function IncidentsPage({
       </div>
 
       {/* Incidents Table / Cards */}
-      <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] overflow-hidden shadow-xs">
+      <div className="rounded-xl border border-(--line) bg-(--bg-raised) overflow-hidden shadow-xs">
         {incidents.length === 0 ? (
           <div className="py-16 text-center space-y-2">
-            <Flame className="w-8 h-8 text-[var(--fg-subtle)] mx-auto opacity-40" />
-            <div className="font-mono text-sm font-semibold text-[var(--fg)]">
+            <Flame className="w-8 h-8 text-(--fg-subtle) mx-auto opacity-40" />
+            <div className="font-mono text-sm font-semibold text-(--fg)">
               {currentTab === "active"
                 ? "No active incidents."
                 : currentTab === "resolved"
                 ? "Nothing resolved yet."
                 : "No incidents recorded."}
             </div>
-            <p className="text-xs text-[var(--fg-muted)]">
+            <p className="text-xs text-(--fg-muted)">
               {currentTab === "active"
                 ? "Production is currently stable."
                 : "All alerts will appear here."}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-[var(--line)]">
+          <div className="divide-y divide-(--line)">
             {incidents.map((inc) => (
               <Link
                 key={inc.id}
                 href={`/app/incidents/${inc.id}`}
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-[var(--surface)] transition group gap-3"
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 hover:bg-(--surface) transition group gap-3"
               >
                 <div className="space-y-1.5">
                   <div className="flex items-center gap-2.5 flex-wrap">
-                    <span className="font-mono text-xs font-bold text-[var(--accent)]">
+                    <span className="font-mono text-xs font-bold text-(--accent)">
                       INC-{inc.number}
                     </span>
-                    <span className="text-sm font-semibold text-[var(--fg)] group-hover:text-[var(--accent)] transition">
+                    <span className="text-sm font-semibold text-(--fg) group-hover:text-(--accent) transition">
                       {inc.title}
                     </span>
                     <StatusPill status={inc.status} size="sm" />
                   </div>
-                  <div className="text-xs text-[var(--fg-muted)] font-mono flex items-center gap-2 flex-wrap">
-                    <span className="text-[var(--fg)]">{inc.service.name}</span>
+                  <div className="text-xs text-(--fg-muted) font-mono flex items-center gap-2 flex-wrap">
+                    <span className="text-(--fg)">{inc.service.name}</span>
                     <span>&bull;</span>
                     <span>Opened {new Date(inc.openedAt).toLocaleString()}</span>
                     {inc.topSuspect && (
                       <>
                         <span>&bull;</span>
-                        <span className="text-[var(--accent)]">
+                        <span className="text-(--accent)">
                           Suspect {inc.topSuspect.shortSha} ({inc.topSuspect.message})
                         </span>
                       </>
@@ -153,11 +153,11 @@ export default async function IncidentsPage({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-3 text-xs font-mono text-[var(--fg-muted)] self-end sm:self-center">
-                  <span className="px-2 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)] uppercase">
+                <div className="flex items-center gap-3 text-xs font-mono text-(--fg-muted) self-end sm:self-center">
+                  <span className="px-2 py-0.5 rounded bg-(--surface) border border-(--line) uppercase">
                     {inc.severity}
                   </span>
-                  <ArrowRight className="w-4 h-4 text-[var(--fg-subtle)] group-hover:translate-x-1 transition" />
+                  <ArrowRight className="w-4 h-4 text-(--fg-subtle) group-hover:translate-x-1 transition" />
                 </div>
               </Link>
             ))}

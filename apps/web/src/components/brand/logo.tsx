@@ -33,12 +33,12 @@ export function Logo({
   return (
     <Link
       href={href}
-      className="flex items-center gap-2.5 group focus-visible:outline-2 focus-visible:outline-[var(--accent)] rounded p-1"
+      className="flex items-center gap-2.5 group focus-visible:outline-2 focus-visible:outline-(--accent) rounded p-1"
       title="Firebreak"
     >
       <LogoMark className="w-6 h-6 shrink-0 transition-transform group-hover:scale-105" />
       {!collapsed && (
-        <span className="font-display font-bold tracking-tight text-lg text-[var(--fg)] lowercase select-none">
+        <span className="font-display font-bold tracking-tight text-lg text-(--fg) lowercase select-none">
           firebreak
         </span>
       )}

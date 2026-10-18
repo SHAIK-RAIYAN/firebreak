@@ -207,25 +207,25 @@ export default function NewServicePage() {
 
   if (createdSecret) {
     return (
-      <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] p-8">
+      <div className="min-h-screen bg-(--bg) text-(--fg) p-8">
         <div className="max-w-xl mx-auto space-y-6 pt-12">
-          <div className="p-8 bg-[var(--bg-raised)] border border-[var(--ok)]/40 rounded-xl space-y-6 shadow-sm">
+          <div className="p-8 bg-(--bg-raised) border border-(--ok)/40 rounded-xl space-y-6 shadow-sm">
             <div className="space-y-2">
-              <span className="px-2.5 py-1 bg-[var(--ok)]/20 text-[var(--ok)] text-xs font-semibold rounded-full">
+              <span className="px-2.5 py-1 bg-(--ok)/20 text-(--ok) text-xs font-semibold rounded-full">
                 Service Created
               </span>
               <h1 className="text-2xl font-bold tracking-tight">Save your Alert Secret</h1>
-              <p className="text-sm text-[var(--fg-muted)]">
+              <p className="text-sm text-(--fg-muted)">
                 This secret is required to sign webhook alerts sent to Firebreak. It will{" "}
-                <strong className="text-[var(--danger)]">never be shown again</strong>.
+                <strong className="text-(--danger)">never be shown again</strong>.
               </p>
             </div>
 
-            <div className="p-4 bg-[var(--surface)] border border-[var(--line)] rounded-lg font-mono text-sm break-all flex items-center justify-between">
+            <div className="p-4 bg-(--surface) border border-(--line) rounded-lg font-mono text-sm break-all flex items-center justify-between">
               <span>{createdSecret}</span>
               <button
                 onClick={copySecret}
-                className="ml-4 px-3 py-1.5 bg-[var(--fg)] text-[var(--bg)] text-xs font-medium rounded-md hover:opacity-90 shrink-0"
+                className="ml-4 px-3 py-1.5 bg-(--fg) text-(--bg) text-xs font-medium rounded-md hover:opacity-90 shrink-0"
               >
                 {copied ? "Copied!" : "Copy"}
               </button>
@@ -234,7 +234,7 @@ export default function NewServicePage() {
             <div className="pt-2">
               <button
                 onClick={() => router.push("/app")}
-                className="w-full px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] font-medium text-sm rounded-md hover:opacity-90 transition"
+                className="w-full px-4 py-2 bg-(--accent-solid) text-(--accent-fg) font-medium text-sm rounded-md hover:opacity-90 transition"
               >
                 Go to Console &rarr;
               </button>
@@ -246,12 +246,12 @@ export default function NewServicePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] p-8">
+    <div className="min-h-screen bg-(--bg) text-(--fg) p-8">
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Navigation */}
-        <div className="border-b border-[var(--line)] pb-4">
-          <div className="flex items-center space-x-2 text-sm text-[var(--fg-muted)] mb-1">
-            <Link href="/app" className="hover:text-[var(--fg)]">
+        <div className="border-b border-(--line) pb-4">
+          <div className="flex items-center space-x-2 text-sm text-(--fg-muted) mb-1">
+            <Link href="/app" className="hover:text-(--fg)">
               Console
             </Link>
             <span>/</span>
@@ -260,13 +260,13 @@ export default function NewServicePage() {
             <span>New</span>
           </div>
           <h1 className="text-2xl font-bold tracking-tight">Connect New Service</h1>
-          <p className="text-sm text-[var(--fg-muted)] mt-1">
+          <p className="text-sm text-(--fg-muted) mt-1">
             Pair a GitHub repository with its Vercel production deployment.
           </p>
         </div>
 
         {errorMsg && (
-          <div className="p-4 bg-[var(--danger)]/10 border border-[var(--danger)]/30 rounded-lg text-sm text-[var(--danger)] flex items-center justify-between">
+          <div className="p-4 bg-(--danger)/10 border border-(--danger)/30 rounded-lg text-sm text-(--danger) flex items-center justify-between">
             <span>{errorMsg}</span>
             <Link href="/app/integrations" className="underline font-medium">
               Manage Integrations &rarr;
@@ -275,14 +275,14 @@ export default function NewServicePage() {
         )}
 
         {loading ? (
-          <div className="p-12 text-center text-[var(--fg-muted)]">Loading available repositories and projects...</div>
+          <div className="p-12 text-center text-(--fg-muted)">Loading available repositories and projects...</div>
         ) : (
-          <form onSubmit={handleSubmit} className="p-6 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl space-y-6">
+          <form onSubmit={handleSubmit} className="p-6 bg-(--bg-raised) border border-(--line) rounded-xl space-y-6">
             {/* Step 1: GitHub Repo */}
             <div>
               <label className="block text-sm font-medium mb-1">1. GitHub Repository</label>
               <Select value={selectedRepoFull} onValueChange={handleRepoChange}>
-                <SelectTrigger className="w-full h-10 px-3 bg-[var(--surface)] border-[var(--line)] text-sm">
+                <SelectTrigger className="w-full h-10 px-3 bg-(--surface) border-(--line) text-sm">
                   <SelectValue placeholder="Select repository..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -294,7 +294,7 @@ export default function NewServicePage() {
                 </SelectContent>
               </Select>
               {repos.length === 0 && (
-                <p className="text-xs text-[var(--warn)] mt-1">
+                <p className="text-xs text-(--warn) mt-1">
                   No repositories found.{" "}
                   <Link href="/app/integrations" className="underline">
                     Connect GitHub
@@ -316,7 +316,7 @@ export default function NewServicePage() {
                   }
                 }}
               >
-                <SelectTrigger className="w-full h-10 px-3 bg-[var(--surface)] border-[var(--line)] text-sm">
+                <SelectTrigger className="w-full h-10 px-3 bg-(--surface) border-(--line) text-sm">
                   <SelectValue placeholder="Select Vercel project..." />
                 </SelectTrigger>
                 <SelectContent>
@@ -328,7 +328,7 @@ export default function NewServicePage() {
                 </SelectContent>
               </Select>
               {projects.length === 0 && (
-                <p className="text-xs text-[var(--warn)] mt-1">
+                <p className="text-xs text-(--warn) mt-1">
                   No Vercel projects found.{" "}
                   <Link href="/app/integrations" className="underline">
                     Connect Vercel
@@ -346,7 +346,7 @@ export default function NewServicePage() {
                   value={serviceName}
                   onChange={(e) => setServiceName(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm focus:outline-none focus:border-(--accent)"
                 />
               </div>
               <div>
@@ -356,7 +356,7 @@ export default function NewServicePage() {
                   value={productionBranch}
                   onChange={(e) => setProductionBranch(e.target.value)}
                   required
-                  className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm focus:outline-none focus:border-[var(--accent)]"
+                  className="w-full px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm focus:outline-none focus:border-(--accent)"
                 />
               </div>
             </div>
@@ -373,13 +373,13 @@ export default function NewServicePage() {
                       onChange={(e) => setHealthUrl(e.target.value)}
                       placeholder="https://your-domain.vercel.app/api/health"
                       required
-                      className="flex-1 px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm font-mono focus:outline-none focus:border-[var(--accent)]"
+                      className="flex-1 px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm font-mono focus:outline-none focus:border-(--accent)"
                     />
                     <button
                       type="button"
                       onClick={handleTestHealth}
                       disabled={probing || !healthUrl}
-                      className="px-4 py-2 bg-[var(--surface)] border border-[var(--line-strong)] text-sm font-medium rounded-md hover:bg-[var(--line)] transition disabled:opacity-50"
+                      className="px-4 py-2 bg-(--surface) border border-(--line-strong) text-sm font-medium rounded-md hover:bg-(--line) transition disabled:opacity-50"
                     >
                       {probing ? "Testing..." : "Test"}
                     </button>
@@ -392,7 +392,7 @@ export default function NewServicePage() {
                     value={expectedStatus}
                     onChange={(e) => setExpectedStatus(Number(e.target.value))}
                     required
-                    className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm font-mono focus:outline-none focus:border-[var(--accent)]"
+                    className="w-full px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm font-mono focus:outline-none focus:border-(--accent)"
                   />
                 </div>
               </div>
@@ -402,8 +402,8 @@ export default function NewServicePage() {
                 <div
                   className={`p-3 rounded-lg border text-xs font-mono flex items-center justify-between ${
                     probeResult.ok
-                      ? "bg-[var(--ok)]/10 border-[var(--ok)]/30 text-[var(--ok)]"
-                      : "bg-[var(--danger)]/10 border-[var(--danger)]/30 text-[var(--danger)]"
+                      ? "bg-(--ok)/10 border-(--ok)/30 text-(--ok)"
+                      : "bg-(--danger)/10 border-(--danger)/30 text-(--danger)"
                   }`}
                 >
                   <div>
@@ -412,7 +412,7 @@ export default function NewServicePage() {
                     {probeResult.error && <span> &bull; Error: {probeResult.error}</span>}
                   </div>
                   {probeResult.observedSha && (
-                    <span className="bg-[var(--surface)] px-2 py-0.5 rounded text-[var(--fg)] border border-[var(--line)]">
+                    <span className="bg-(--surface) px-2 py-0.5 rounded text-(--fg) border border-(--line)">
                       SHA: {probeResult.observedSha.slice(0, 7)}
                     </span>
                   )}
@@ -420,17 +420,17 @@ export default function NewServicePage() {
               )}
             </div>
 
-            <div className="pt-4 border-t border-[var(--line)] flex justify-end space-x-3">
+            <div className="pt-4 border-t border-(--line) flex justify-end space-x-3">
               <Link
                 href="/app"
-                className="px-4 py-2 bg-[var(--surface)] text-sm font-medium rounded-md hover:bg-[var(--line)] transition"
+                className="px-4 py-2 bg-(--surface) text-sm font-medium rounded-md hover:bg-(--line) transition"
               >
                 Cancel
               </Link>
               <button
                 type="submit"
                 disabled={isPending || repos.length === 0 || projects.length === 0}
-                className="px-5 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] font-medium text-sm rounded-md hover:opacity-90 transition disabled:opacity-50"
+                className="px-5 py-2 bg-(--accent-solid) text-(--accent-fg) font-medium text-sm rounded-md hover:opacity-90 transition disabled:opacity-50"
               >
                 {isPending ? "Creating..." : "Create Service"}
               </button>

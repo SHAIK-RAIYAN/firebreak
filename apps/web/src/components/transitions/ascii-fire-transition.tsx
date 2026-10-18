@@ -450,7 +450,7 @@ export function AsciiFireTransitionProvider({
       {/* Cinematic Full-Viewport ASCII Fire Transition Overlay */}
       {isActive && (
         <div
-          className="fixed inset-0 z-[99999] pointer-events-auto select-none overflow-hidden"
+          className="fixed inset-0 z-99999 pointer-events-auto select-none overflow-hidden"
           aria-hidden="true"
         >
           <canvas ref={canvasRef} className="w-full h-full block" />

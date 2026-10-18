@@ -26,7 +26,7 @@ interface IntegrationState {
 
 export default function IntegrationsPage() {
   return (
-    <Suspense fallback={<div className="p-12 text-center text-[var(--fg-muted)]">Loading integrations...</div>}>
+    <Suspense fallback={<div className="p-12 text-center text-(--fg-muted)">Loading integrations...</div>}>
       <IntegrationsContent />
     </Suspense>
   );
@@ -140,13 +140,13 @@ function IntegrationsContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[var(--bg)] text-[var(--fg)] p-8">
+    <div className="min-h-screen bg-(--bg) text-(--fg) p-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Navigation & Header */}
-        <div className="flex items-center justify-between border-b border-[var(--line)] pb-4">
+        <div className="flex items-center justify-between border-b border-(--line) pb-4">
           <div>
-            <div className="flex items-center space-x-2 text-sm text-[var(--fg-muted)] mb-1">
-              <Link href="/app" className="hover:text-[var(--fg)]">
+            <div className="flex items-center space-x-2 text-sm text-(--fg-muted) mb-1">
+              <Link href="/app" className="hover:text-(--fg)">
                 Console
               </Link>
               <span>/</span>
@@ -156,7 +156,7 @@ function IntegrationsContent() {
           </div>
           <Link
             href="/app/services/new"
-            className="px-4 py-2 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-md font-medium text-sm hover:opacity-90 transition"
+            className="px-4 py-2 bg-(--accent-solid) text-(--accent-fg) rounded-md font-medium text-sm hover:opacity-90 transition"
           >
             Create Service &rarr;
           </Link>
@@ -164,32 +164,32 @@ function IntegrationsContent() {
 
         {/* Notifications */}
         {successMsg && (
-          <div className="p-4 bg-[var(--ok)]/10 border border-[var(--ok)]/30 rounded-lg text-sm text-[var(--ok)]">
+          <div className="p-4 bg-(--ok)/10 border border-(--ok)/30 rounded-lg text-sm text-(--ok)">
             {successMsg}
           </div>
         )}
         {errorMsg && (
-          <div className="p-4 bg-[var(--danger)]/10 border border-[var(--danger)]/30 rounded-lg text-sm text-[var(--danger)]">
+          <div className="p-4 bg-(--danger)/10 border border-(--danger)/30 rounded-lg text-sm text-(--danger)">
             Error: {errorMsg}
           </div>
         )}
 
         {loading ? (
-          <div className="p-12 text-center text-[var(--fg-muted)]">Loading integrations...</div>
+          <div className="p-12 text-center text-(--fg-muted)">Loading integrations...</div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* GitHub Card */}
-            <div className="p-6 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl space-y-4">
+            <div className="p-6 bg-(--bg-raised) border border-(--line) rounded-xl space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-semibold text-lg">GitHub</h2>
-                  <p className="text-sm text-[var(--fg-muted)]">Repository access and commit comparisons</p>
+                  <p className="text-sm text-(--fg-muted)">Repository access and commit comparisons</p>
                 </div>
                 <span
                   className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                     state?.github.installations.length
-                      ? "bg-[var(--ok)]/20 text-[var(--ok)]"
-                      : "bg-[var(--warn)]/20 text-[var(--warn)]"
+                      ? "bg-(--ok)/20 text-(--ok)"
+                      : "bg-(--warn)/20 text-(--warn)"
                   }`}
                 >
                   {state?.github.installations.length ? "Connected" : "Not connected"}
@@ -198,27 +198,27 @@ function IntegrationsContent() {
 
               {state?.github.installations && state.github.installations.length > 0 ? (
                 <div className="space-y-3 pt-2">
-                  <div className="text-sm font-medium text-[var(--fg-muted)]">Installed accounts:</div>
+                  <div className="text-sm font-medium text-(--fg-muted)">Installed accounts:</div>
                   {state.github.installations.map((inst) => (
                     <div
                       key={inst.id}
-                      className="flex items-center justify-between p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg text-sm"
+                      className="flex items-center justify-between p-3 bg-(--surface) border border-(--line) rounded-lg text-sm"
                     >
                       <div>
                         <div className="font-semibold">{inst.accountLogin}</div>
-                        <div className="text-xs text-[var(--fg-muted)]">
+                        <div className="text-xs text-(--fg-muted)">
                           {inst.accountType} &bull; {inst.repositorySelection} repos
                         </div>
                       </div>
                       {inst.suspended && (
-                        <span className="text-xs text-[var(--danger)] font-medium">Suspended</span>
+                        <span className="text-xs text-(--danger) font-medium">Suspended</span>
                       )}
                     </div>
                   ))}
                   <div className="pt-2">
                     <a
                       href="/api/v1/integrations/github/install"
-                      className="inline-block px-3 py-1.5 bg-[var(--surface)] border border-[var(--line-strong)] text-sm font-medium rounded-md hover:bg-[var(--line)] transition"
+                      className="inline-block px-3 py-1.5 bg-(--surface) border border-(--line-strong) text-sm font-medium rounded-md hover:bg-(--line) transition"
                     >
                       + Add another organization
                     </a>
@@ -226,12 +226,12 @@ function IntegrationsContent() {
                 </div>
               ) : (
                 <div className="pt-4 space-y-3">
-                  <p className="text-sm text-[var(--fg-subtle)]">
+                  <p className="text-sm text-(--fg-subtle)">
                     Install the Firebreak GitHub App on your personal account or organization to enable commit tracing.
                   </p>
                   <a
                     href="/api/v1/integrations/github/install"
-                    className="inline-block px-4 py-2 bg-[var(--fg)] text-[var(--bg)] font-medium text-sm rounded-md hover:opacity-90 transition"
+                    className="inline-block px-4 py-2 bg-(--fg) text-(--bg) font-medium text-sm rounded-md hover:opacity-90 transition"
                   >
                     Install GitHub App
                   </a>
@@ -240,17 +240,17 @@ function IntegrationsContent() {
             </div>
 
             {/* Vercel Card */}
-            <div className="p-6 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl space-y-4">
+            <div className="p-6 bg-(--bg-raised) border border-(--line) rounded-xl space-y-4">
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-semibold text-lg">Vercel</h2>
-                  <p className="text-sm text-[var(--fg-muted)]">Production deployments and instant rollbacks</p>
+                  <p className="text-sm text-(--fg-muted)">Production deployments and instant rollbacks</p>
                 </div>
                 <span
                   className={`px-2 py-0.5 text-xs rounded-full font-medium ${
                     state?.vercel.connected
-                      ? "bg-[var(--ok)]/20 text-[var(--ok)]"
-                      : "bg-[var(--warn)]/20 text-[var(--warn)]"
+                      ? "bg-(--ok)/20 text-(--ok)"
+                      : "bg-(--warn)/20 text-(--warn)"
                   }`}
                 >
                   {state?.vercel.connected ? "Connected" : "Not connected"}
@@ -259,19 +259,19 @@ function IntegrationsContent() {
 
               {state?.vercel.connected ? (
                 <div className="space-y-4 pt-2">
-                  <div className="p-3 bg-[var(--surface)] border border-[var(--line)] rounded-lg text-sm space-y-1">
-                    <div className="font-semibold text-[var(--fg)]">{state.vercel.accountLabel}</div>
-                    <div className="text-xs text-[var(--fg-muted)]">
+                  <div className="p-3 bg-(--surface) border border-(--line) rounded-lg text-sm space-y-1">
+                    <div className="font-semibold text-(--fg)">{state.vercel.accountLabel}</div>
+                    <div className="text-xs text-(--fg-muted)">
                       Token: &bull;&bull;&bull;&bull;&bull;&bull;&bull;&bull;{state.vercel.last4}
                     </div>
                     {state.vercel.teamSlug && (
-                      <div className="text-xs text-[var(--fg-muted)]">Team: {state.vercel.teamSlug}</div>
+                      <div className="text-xs text-(--fg-muted)">Team: {state.vercel.teamSlug}</div>
                     )}
                   </div>
                   <button
                     onClick={handleDisconnectVercel}
                     disabled={isPending}
-                    className="px-3 py-1.5 text-xs text-[var(--danger)] hover:bg-[var(--danger)]/10 border border-[var(--danger)]/30 rounded-md font-medium transition"
+                    className="px-3 py-1.5 text-xs text-(--danger) hover:bg-(--danger)/10 border border-(--danger)/30 rounded-md font-medium transition"
                   >
                     Disconnect Vercel
                   </button>
@@ -279,7 +279,7 @@ function IntegrationsContent() {
               ) : (
                 <form onSubmit={handleConnectVercel} className="space-y-3 pt-2">
                   <div>
-                    <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">
+                    <label className="block text-xs font-medium text-(--fg-muted) mb-1">
                       Vercel Token (project or team scoped)
                     </label>
                     <input
@@ -288,11 +288,11 @@ function IntegrationsContent() {
                       onChange={(e) => setVercelToken(e.target.value)}
                       placeholder="vcp_..."
                       required
-                      className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm font-mono focus:outline-none focus:border-[var(--accent)]"
+                      className="w-full px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm font-mono focus:outline-none focus:border-(--accent)"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium text-[var(--fg-muted)] mb-1">
+                    <label className="block text-xs font-medium text-(--fg-muted) mb-1">
                       Team ID (optional)
                     </label>
                     <input
@@ -300,13 +300,13 @@ function IntegrationsContent() {
                       value={vercelTeamId}
                       onChange={(e) => setVercelTeamId(e.target.value)}
                       placeholder="team_..."
-                      className="w-full px-3 py-2 bg-[var(--surface)] border border-[var(--line)] rounded-md text-sm font-mono focus:outline-none focus:border-[var(--accent)]"
+                      className="w-full px-3 py-2 bg-(--surface) border border-(--line) rounded-md text-sm font-mono focus:outline-none focus:border-(--accent)"
                     />
                   </div>
                   <button
                     type="submit"
                     disabled={isPending}
-                    className="w-full px-4 py-2 bg-[var(--fg)] text-[var(--bg)] font-medium text-sm rounded-md hover:opacity-90 transition disabled:opacity-50"
+                    className="w-full px-4 py-2 bg-(--fg) text-(--bg) font-medium text-sm rounded-md hover:opacity-90 transition disabled:opacity-50"
                   >
                     {isPending ? "Connecting..." : "Connect Vercel"}
                   </button>

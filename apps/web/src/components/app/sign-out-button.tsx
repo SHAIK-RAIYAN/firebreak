@@ -28,7 +28,7 @@ export function SignOutButton() {
     <button
       onClick={handleSignOut}
       disabled={loading}
-      className="px-3 py-1.5 text-xs font-mono font-medium rounded border border-[var(--line-strong)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:border-[var(--danger)] hover:bg-red-950/10 transition-colors disabled:opacity-50 cursor-pointer"
+      className="px-3 py-1.5 text-xs font-mono font-medium rounded border border-(--line-strong) text-(--fg-muted) hover:text-(--fg) hover:border-(--danger) hover:bg-red-950/10 transition-colors disabled:opacity-50 cursor-pointer"
     >
       {loading ? "Signing out..." : "Sign out"}
     </button>

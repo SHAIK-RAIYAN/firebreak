@@ -30,12 +30,12 @@ export function ServiceFilterSelect({
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-xs font-mono text-[var(--fg-muted)]">Service:</span>
+      <span className="text-xs font-mono text-(--fg-muted)">Service:</span>
       <Select
         value={selectedService || "all"}
         onValueChange={handleValueChange}
       >
-        <SelectTrigger className="w-[180px] h-8 text-xs font-mono bg-[var(--surface)] border-[var(--line)] text-[var(--fg)]">
+        <SelectTrigger className="w-[180px] h-8 text-xs font-mono bg-(--surface) border-(--line) text-(--fg)">
           <SelectValue placeholder="All Services" />
         </SelectTrigger>
         <SelectContent align="end">

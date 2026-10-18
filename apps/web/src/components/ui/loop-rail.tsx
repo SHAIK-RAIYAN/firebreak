@@ -51,13 +51,13 @@ export function LoopRail({
   return (
     <nav
       aria-label="Incident response progress"
-      className={`w-full py-3.5 px-3 sm:px-6 bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl ${className}`}
+      className={`w-full py-3.5 px-3 sm:px-6 bg-(--bg-raised) border border-(--line) rounded-xl ${className}`}
     >
       <div className="relative w-full">
         {/* Background baseline track: connects precisely center of marker 0 to center of marker 5 */}
         <div
           aria-hidden="true"
-          className="absolute top-[11px] -translate-y-1/2 h-[2px] bg-[var(--line)] z-0 pointer-events-none"
+          className="absolute top-[11px] -translate-y-1/2 h-[2px] bg-(--line) z-0 pointer-events-none"
           style={{
             left: "calc(100% / 12)",
             right: "calc(100% / 12)",
@@ -67,7 +67,7 @@ export function LoopRail({
         {/* Active progress track: starts at center of marker 0 and grows toward marker 5 */}
         <div
           aria-hidden="true"
-          className="absolute top-[11px] -translate-y-1/2 h-[2px] bg-[var(--accent)] z-0 pointer-events-none transition-all duration-500 ease-out"
+          className="absolute top-[11px] -translate-y-1/2 h-[2px] bg-(--accent) z-0 pointer-events-none transition-all duration-500 ease-out"
           style={{
             left: "calc(100% / 12)",
             width: `calc((100% - 100% / 6) * ${progressFraction})`,
@@ -91,14 +91,14 @@ export function LoopRail({
                   <div
                     className={`w-3.5 h-3.5 rounded-full flex items-center justify-center transition-all duration-300 ${
                       isDone
-                        ? "bg-[var(--accent)] text-white scale-100 shadow-xs"
+                        ? "bg-(--accent) text-white scale-100 shadow-xs"
                         : isCurrent
-                        ? "bg-[var(--bg)] border-2 border-[var(--accent)] ring-4 ring-[var(--accent)]/25 scale-110"
-                        : "bg-[var(--surface)] border border-[var(--line-strong)]"
+                        ? "bg-(--bg) border-2 border-(--accent) ring-4 ring-(--accent)/25 scale-110"
+                        : "bg-(--surface) border border-(--line-strong)"
                     }`}
                   >
                     {isCurrent && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-(--accent) animate-pulse" />
                     )}
                     {isDone && (
                       <span className="w-1.5 h-1.5 rounded-full bg-white" />
@@ -110,10 +110,10 @@ export function LoopRail({
                 <span
                   className={`font-mono text-[9px] sm:text-[10px] md:text-[11px] tracking-wider uppercase select-none truncate max-w-full pt-1.5 transition-colors ${
                     isCurrent
-                      ? "text-[var(--accent)] font-bold"
+                      ? "text-(--accent) font-bold"
                       : isDone
-                      ? "text-[var(--fg)] font-semibold"
-                      : "text-[var(--fg-subtle)] font-normal"
+                      ? "text-(--fg) font-semibold"
+                      : "text-(--fg-subtle) font-normal"
                   }`}
                 >
                   {step.label}

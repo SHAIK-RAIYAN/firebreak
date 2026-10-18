@@ -20,11 +20,11 @@ export function IncidentTicker() {
   }, []);
 
   return (
-    <div className="w-full bg-[var(--surface)]/75 dark:bg-[var(--surface)]/60 border border-[var(--line)] rounded-xl p-3 font-mono text-xs overflow-hidden backdrop-blur-md shadow-xs">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--line)] text-[var(--fg-subtle)] text-[11px]">
+    <div className="w-full bg-(--surface)/75 dark:bg-(--surface)/60 border border-(--line) rounded-xl p-3 font-mono text-xs overflow-hidden backdrop-blur-md shadow-xs">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-(--line) text-(--fg-subtle) text-[11px]">
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 rounded-full bg-[var(--ember)] animate-pulse" />
-          <span className="font-semibold tracking-wider text-[var(--fg)]">LIVE INCIDENT STREAM</span>
+          <span className="w-2 h-2 rounded-full bg-(--ember) animate-pulse" />
+          <span className="font-semibold tracking-wider text-(--fg)">LIVE INCIDENT STREAM</span>
         </div>
       </div>
       {/* Fixed height container reserving exact space for all 4 rows to prevent hero layout shifts */}
@@ -33,12 +33,12 @@ export function IncidentTicker() {
           const isVisible = idx < activeCount;
           const colorClass =
             tick.tag === "danger"
-              ? "text-[var(--danger)] bg-[var(--danger)]/15 border-[var(--danger)]/30"
+              ? "text-(--danger) bg-(--danger)/15 border-(--danger)/30"
               : tick.tag === "warn"
-                ? "text-[var(--warn)] bg-[var(--warn)]/15 border-[var(--warn)]/30"
+                ? "text-(--warn) bg-(--warn)/15 border-(--warn)/30"
                 : tick.tag === "info"
-                  ? "text-[var(--accent)] bg-[var(--accent)]/15 border-[var(--accent)]/30"
-                  : "text-[var(--ok)] bg-[var(--ok)]/15 border-[var(--ok)]/30";
+                  ? "text-(--accent) bg-(--accent)/15 border-(--accent)/30"
+                  : "text-(--ok) bg-(--ok)/15 border-(--ok)/30";
 
           return (
             <div
@@ -48,13 +48,13 @@ export function IncidentTicker() {
                 : "opacity-0 -translate-x-2 pointer-events-none"
                 }`}
             >
-              <span className="text-[var(--fg-subtle)] font-mono shrink-0">{tick.time}</span>
+              <span className="text-(--fg-subtle) font-mono shrink-0">{tick.time}</span>
               <span
                 className={`px-1.5 py-0.2 rounded text-[10px] font-semibold tracking-wider border shrink-0 ${colorClass}`}
               >
                 {tick.kind}
               </span>
-              <span className="text-[var(--fg)] truncate">{tick.text}</span>
+              <span className="text-(--fg) truncate">{tick.text}</span>
             </div>
           );
         })}

@@ -33,7 +33,7 @@ const itemVariants: Variants = {
 
 export function ProblemSection() {
   return (
-    <section id="problem" className="min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex items-center py-12 lg:py-0 border-t border-[var(--line)] bg-[var(--bg)] relative overflow-hidden">
+    <section id="problem" className="min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex items-center py-12 lg:py-0 border-t border-(--line) bg-(--bg) relative overflow-hidden">
       <motion.div
         variants={containerVariants}
         initial="hidden"
@@ -43,7 +43,7 @@ export function ProblemSection() {
       >
         <motion.div
           variants={itemVariants}
-          className="flex items-center gap-2 mb-3 font-mono text-xs text-[var(--accent)] tracking-wider"
+          className="flex items-center gap-2 mb-3 font-mono text-xs text-(--accent) tracking-wider"
         >
           <span>[01]</span>
           <span>THE FIRST 20 MINUTES</span>
@@ -55,18 +55,18 @@ export function ProblemSection() {
             variants={itemVariants}
             className="lg:col-span-5 space-y-4"
           >
-            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] leading-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-(--fg) leading-tight">
               The slowest part of an incident is the part a script could do.
             </h2>
-            <p className="text-[var(--fg-muted)] text-base sm:text-lg leading-relaxed">
+            <p className="text-(--fg-muted) text-base sm:text-lg leading-relaxed">
               When production fails at 3 AM, engineers burn twenty minutes asking manual questions before writing a single line of a fix.
             </p>
-            <div className="p-4 bg-[var(--surface)] border border-[var(--line)] rounded-xl space-y-2 font-mono text-xs text-[var(--fg-subtle)] group hover:border-[var(--line-strong)] transition-colors shadow-xs">
-              <div className="flex items-center gap-2 text-[var(--accent)] font-semibold">
+            <div className="p-4 bg-(--surface) border border-(--line) rounded-xl space-y-2 font-mono text-xs text-(--fg-subtle) group hover:border-(--line-strong) transition-colors shadow-xs">
+              <div className="flex items-center gap-2 text-(--accent) font-semibold">
                 <Zap className="w-4 h-4 transition-transform group-hover:scale-110 duration-200" />
                 <span>FIREBREAK AUTOMATION PRINCIPLE</span>
               </div>
-              <p className="text-[var(--fg-muted)]">
+              <p className="text-(--fg-muted)">
                 Collect evidence, pinpoint suspects, verify rollback safety, and stage recovery for a single operator confirmation.
               </p>
             </div>
@@ -79,15 +79,15 @@ export function ProblemSection() {
                 key={idx}
                 variants={itemVariants}
                 whileHover={{ x: 3 }}
-                className="p-3.5 rounded-xl border border-[var(--line)] bg-[var(--surface)] hover:border-[var(--line-strong)] transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 font-mono text-xs group"
+                className="p-3.5 rounded-xl border border-(--line) bg-(--surface) hover:border-(--line-strong) transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 font-mono text-xs group"
               >
                 <div className="flex items-center gap-3">
-                  <span className="text-[var(--danger)] line-through opacity-75 font-semibold shrink-0">
+                  <span className="text-(--danger) line-through opacity-75 font-semibold shrink-0">
                     {item.time}
                   </span>
-                  <span className="text-[var(--fg)] font-medium font-sans text-sm">{item.question}</span>
+                  <span className="text-(--fg) font-medium font-sans text-sm">{item.question}</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-[var(--ok)] shrink-0 text-xs">
+                <div className="flex items-center gap-1.5 text-(--ok) shrink-0 text-xs">
                   <CheckCircle2 className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
                   <span>{item.automated}</span>
                 </div>
@@ -97,7 +97,7 @@ export function ProblemSection() {
             {/* Firebreak outcome banner */}
             <motion.div
               variants={itemVariants}
-              className="p-3.5 rounded-xl border-2 border-[var(--ok)]/40 bg-[var(--ok)]/10 flex items-center justify-between font-mono text-xs text-[var(--ok)] shadow-xs"
+              className="p-3.5 rounded-xl border-2 border-(--ok)/40 bg-(--ok)/10 flex items-center justify-between font-mono text-xs text-(--ok) shadow-xs"
             >
               <span className="font-bold text-sm">WITH FIREBREAK: 02:14 → 02:15</span>
               <span className="font-semibold text-xs uppercase tracking-wider">65 SECONDS TO RECOVERY</span>

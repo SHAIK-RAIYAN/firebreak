@@ -24,7 +24,7 @@ export function NavAuthSlot({
     return (
       <Link
         href="/app/settings/account"
-        className="flex items-center gap-2 p-0.5 rounded-full hover:ring-2 hover:ring-[var(--accent)] transition-all shrink-0 group focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+        className="flex items-center gap-2 p-0.5 rounded-full hover:ring-2 hover:ring-(--accent) transition-all shrink-0 group focus-visible:outline-2 focus-visible:outline-(--accent)"
         title={`Signed in as ${displayName} · View Account`}
         aria-label={`Signed in as ${displayName} · View Account`}
       >
@@ -35,10 +35,10 @@ export function NavAuthSlot({
             width={32}
             height={32}
             unoptimized
-            className="w-7 h-7 rounded-full border border-[var(--line)] group-hover:border-[var(--accent)] object-cover shrink-0 transition-colors shadow-xs"
+            className="w-7 h-7 rounded-full border border-(--line) group-hover:border-(--accent) object-cover shrink-0 transition-colors shadow-xs"
           />
         ) : (
-          <div className="w-7 h-7 rounded-full bg-[var(--surface)] border border-[var(--line)] group-hover:border-[var(--accent)] flex items-center justify-center font-mono text-xs font-bold text-[var(--accent)] shrink-0 transition-colors shadow-xs">
+          <div className="w-7 h-7 rounded-full bg-(--surface) border border-(--line) group-hover:border-(--accent) flex items-center justify-center font-mono text-xs font-bold text-(--accent) shrink-0 transition-colors shadow-xs">
             {displayName.charAt(0).toUpperCase()}
           </div>
         )}
@@ -48,14 +48,14 @@ export function NavAuthSlot({
 
   if (isPending && !initialUser) {
     return (
-      <div className="hidden sm:inline-block w-14 h-7 rounded-lg bg-[var(--surface)]/50 animate-pulse border border-[var(--line)] shrink-0" />
+      <div className="hidden sm:inline-block w-14 h-7 rounded-lg bg-(--surface)/50 animate-pulse border border-(--line) shrink-0" />
     );
   }
 
   return (
     <Link
       href="/login"
-      className="hidden sm:inline-flex px-3 py-1.5 rounded-lg text-xs font-mono font-medium text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface)] transition-colors whitespace-nowrap shrink-0"
+      className="hidden sm:inline-flex px-3 py-1.5 rounded-lg text-xs font-mono font-medium text-(--fg-muted) hover:text-(--fg) hover:bg-(--surface) transition-colors whitespace-nowrap shrink-0"
     >
       Sign In
     </Link>

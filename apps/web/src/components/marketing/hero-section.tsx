@@ -8,7 +8,7 @@ import Link from "next/link";
 
 export function HeroSection() {
   return (
-    <section className="relative min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex flex-col justify-between py-6 lg:py-8 overflow-hidden border-b border-[var(--line)]">
+    <section className="relative min-h-[calc(100svh-4rem)] lg:h-[calc(100svh-4rem)] flex flex-col justify-between py-6 lg:py-8 overflow-hidden border-b border-(--line)">
       {/* Hairline Grid Texture Background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-20"
@@ -40,7 +40,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.08, ease: "easeOut" }}
-            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display tracking-tight leading-[1.04] text-[var(--fg)]"
+            className="text-4xl sm:text-6xl lg:text-7xl font-extrabold font-display tracking-tight leading-[1.04] text-(--fg)"
           >
             Stop the spread.
           </motion.h1>
@@ -48,7 +48,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.16, ease: "easeOut" }}
-            className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-display tracking-tight leading-[1.04] text-[var(--fg-muted)]"
+            className="text-3xl sm:text-5xl lg:text-6xl font-extrabold font-display tracking-tight leading-[1.04] text-(--fg-muted)"
           >
             Roll back with proof.
           </motion.h2>
@@ -56,7 +56,7 @@ export function HeroSection() {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.24, ease: "easeOut" }}
-            className="text-base sm:text-lg text-[var(--fg-muted)] max-w-2xl pt-2 leading-relaxed font-sans"
+            className="text-base sm:text-lg text-(--fg-muted) max-w-2xl pt-2 leading-relaxed font-sans"
           >
             Firebreak finds the deploy that broke production, stages a preflight-checked rollback, and proves recovery with automated health probes.
           </motion.p>
@@ -71,14 +71,14 @@ export function HeroSection() {
         >
           <Link
             href="/app"
-            className="px-5 py-2.5 rounded-xl font-bold font-mono text-sm bg-[var(--accent-solid)] text-[var(--accent-fg)] hover:brightness-110 active:scale-95 transition-all shadow-md shadow-[var(--accent-solid)]/15 flex items-center gap-2 group"
+            className="px-5 py-2.5 rounded-xl font-bold font-mono text-sm bg-(--accent-solid) text-(--accent-fg) hover:brightness-110 active:scale-95 transition-all shadow-md shadow-(--accent-solid)/15 flex items-center gap-2 group"
           >
             <span>Launch Console</span>
             <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
           <a
             href="#loop"
-            className="px-5 py-2.5 rounded-xl font-mono text-sm border border-[var(--line-strong)] bg-[var(--surface)] text-[var(--fg)] hover:bg-[var(--line)] active:scale-95 transition-all flex items-center gap-2"
+            className="px-5 py-2.5 rounded-xl font-mono text-sm border border-(--line-strong) bg-(--surface) text-(--fg) hover:bg-(--line) active:scale-95 transition-all flex items-center gap-2"
           >
             <span>See the loop ↓</span>
           </a>

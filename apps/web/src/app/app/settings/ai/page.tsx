@@ -180,10 +180,10 @@ export default function AiSettingsPage() {
     <div className="space-y-6 max-w-4xl">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-[var(--fg)]">
+        <h1 className="text-2xl font-bold tracking-tight text-(--fg)">
           AI Analysis &amp; Keys
         </h1>
-        <p className="text-sm text-[var(--fg-muted)] mt-1">
+        <p className="text-sm text-(--fg-muted) mt-1">
           Configure provider API credentials for automated incident root cause analysis and diff verification.
         </p>
       </div>
@@ -191,12 +191,12 @@ export default function AiSettingsPage() {
       {/* Loading Skeleton */}
       {loading && !settings && (
         <div className="space-y-4 animate-pulse">
-          <div className="h-28 bg-[var(--surface)] rounded-xl border border-[var(--line)]" />
+          <div className="h-28 bg-(--surface) rounded-xl border border-(--line)" />
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="h-40 bg-[var(--surface)] rounded-xl border border-[var(--line)]" />
-            <div className="h-40 bg-[var(--surface)] rounded-xl border border-[var(--line)]" />
-            <div className="h-40 bg-[var(--surface)] rounded-xl border border-[var(--line)]" />
-            <div className="h-40 bg-[var(--surface)] rounded-xl border border-[var(--line)]" />
+            <div className="h-40 bg-(--surface) rounded-xl border border-(--line)" />
+            <div className="h-40 bg-(--surface) rounded-xl border border-(--line)" />
+            <div className="h-40 bg-(--surface) rounded-xl border border-(--line)" />
+            <div className="h-40 bg-(--surface) rounded-xl border border-(--line)" />
           </div>
         </div>
       )}
@@ -220,7 +220,7 @@ export default function AiSettingsPage() {
                 <button
                   type="button"
                   onClick={() => fetchSettings()}
-                  className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] text-xs font-mono transition"
+                  className="inline-flex items-center gap-1.5 mt-2 px-3 py-1.5 rounded-lg bg-(--surface) hover:bg-(--line) text-(--fg) text-xs font-mono transition"
                 >
                   <RefreshCw className="w-3.5 h-3.5" />
                   Retry Request
@@ -235,29 +235,29 @@ export default function AiSettingsPage() {
       {settings && (
         <>
           {/* Mode Selector Card */}
-          <div className="rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-5 space-y-4">
+          <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-0.5">
                 <div className="flex items-center gap-2">
-                  <Cpu className="w-4 h-4 text-[var(--accent)]" />
-                  <h2 className="text-sm font-semibold text-[var(--fg)]">
+                  <Cpu className="w-4 h-4 text-(--accent)" />
+                  <h2 className="text-sm font-semibold text-(--fg)">
                     Analysis Provider Mode
                   </h2>
                 </div>
-                <p className="text-xs text-[var(--fg-muted)]">
+                <p className="text-xs text-(--fg-muted)">
                   Use platform credits or route through your own encrypted provider credentials.
                 </p>
               </div>
 
-              <div className="inline-flex items-center p-0.5 bg-[var(--surface)] border border-[var(--line)] rounded-lg">
+              <div className="inline-flex items-center p-0.5 bg-(--surface) border border-(--line) rounded-lg">
                 <button
                   type="button"
                   onClick={() => handleUpdateMode("default")}
                   disabled={savingMode}
                   className={`px-3 py-1 rounded-md text-xs font-medium transition ${
                     settings.mode === "default"
-                      ? "bg-[var(--bg-raised)] text-[var(--fg)] font-semibold shadow-xs"
-                      : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                      ? "bg-(--bg-raised) text-(--fg) font-semibold shadow-xs"
+                      : "text-(--fg-muted) hover:text-(--fg)"
                   }`}
                 >
                   Platform Quota
@@ -268,8 +268,8 @@ export default function AiSettingsPage() {
                   disabled={savingMode}
                   className={`px-3 py-1 rounded-md text-xs font-medium transition ${
                     settings.mode === "byok"
-                      ? "bg-[var(--bg-raised)] text-[var(--fg)] font-semibold shadow-xs"
-                      : "text-[var(--fg-muted)] hover:text-[var(--fg)]"
+                      ? "bg-(--bg-raised) text-(--fg) font-semibold shadow-xs"
+                      : "text-(--fg-muted) hover:text-(--fg)"
                   }`}
                 >
                   Bring Your Own Key (BYOK)
@@ -278,20 +278,20 @@ export default function AiSettingsPage() {
             </div>
 
             {/* Quota Progress Line */}
-            <div className="pt-3 border-t border-[var(--line)] space-y-2">
+            <div className="pt-3 border-t border-(--line) space-y-2">
               <div className="flex items-center justify-between text-xs font-mono">
-                <span className="text-[var(--fg-muted)] flex items-center gap-2">
+                <span className="text-(--fg-muted) flex items-center gap-2">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                   Daily Platform Allowance:
-                  <span className="text-[var(--fg)] font-semibold">
+                  <span className="text-(--fg) font-semibold">
                     {remaining} of {limit} analyses remaining
                   </span>
                 </span>
-                <span className="text-[var(--fg-subtle)] text-[11px]">Resets 00:00 UTC</span>
+                <span className="text-(--fg-subtle) text-[11px]">Resets 00:00 UTC</span>
               </div>
-              <div className="w-full h-1.5 bg-[var(--surface)] rounded-full overflow-hidden">
+              <div className="w-full h-1.5 bg-(--surface) rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[var(--accent)] transition-all duration-300"
+                  className="h-full bg-(--accent) transition-all duration-300"
                   style={{ width: `${100 - quotaPercent}%` }}
                 />
               </div>
@@ -301,10 +301,10 @@ export default function AiSettingsPage() {
           {/* Provider Cards */}
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-sm font-semibold text-[var(--fg)] uppercase tracking-wider font-mono text-[11px]">
+              <h2 className="text-sm font-semibold text-(--fg) uppercase tracking-wider font-mono text-[11px]">
                 Supported Providers
               </h2>
-              <span className="text-[11px] font-mono text-[var(--fg-subtle)] flex items-center gap-1">
+              <span className="text-[11px] font-mono text-(--fg-subtle) flex items-center gap-1">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                 AES-256-GCM Vault
               </span>
@@ -322,21 +322,21 @@ export default function AiSettingsPage() {
                     key={provider}
                     className={`rounded-xl border p-4.5 transition flex flex-col justify-between gap-4 ${
                       isSelectedByok
-                        ? "border-[var(--accent)] bg-[var(--surface)]/30 ring-1 ring-[var(--accent)]/30"
-                        : "border-[var(--line)] bg-[var(--bg-raised)] hover:border-[var(--line-strong)]"
+                        ? "border-(--accent) bg-(--surface)/30 ring-1 ring-(--accent)/30"
+                        : "border-(--line) bg-(--bg-raised) hover:border-(--line-strong)"
                     }`}
                   >
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-7 h-7 rounded-lg bg-[var(--surface)] border border-[var(--line)] flex items-center justify-center">
-                            <Cpu className="w-4 h-4 text-[var(--accent)]" />
+                          <div className="w-7 h-7 rounded-lg bg-(--surface) border border-(--line) flex items-center justify-center">
+                            <Cpu className="w-4 h-4 text-(--accent)" />
                           </div>
                           <div>
-                            <span className="font-semibold text-sm text-[var(--fg)] block">
+                            <span className="font-semibold text-sm text-(--fg) block">
                               {config.label}
                             </span>
-                            <span className="text-[10px] font-mono text-[var(--fg-subtle)]">
+                            <span className="text-[10px] font-mono text-(--fg-subtle)">
                               {config.models.length} models available
                             </span>
                           </div>
@@ -348,7 +348,7 @@ export default function AiSettingsPage() {
                             Connected
                           </span>
                         ) : (
-                          <span className="text-[10px] font-mono text-[var(--fg-subtle)] px-2 py-0.5 rounded bg-[var(--surface)] border border-[var(--line)]">
+                          <span className="text-[10px] font-mono text-(--fg-subtle) px-2 py-0.5 rounded bg-(--surface) border border-(--line)">
                             Not configured
                           </span>
                         )}
@@ -356,27 +356,27 @@ export default function AiSettingsPage() {
 
                       {/* Key details or minimal description */}
                       {isConnected ? (
-                        <div className="rounded-lg bg-[var(--surface)]/60 border border-[var(--line)] p-2.5 space-y-1 font-mono text-xs">
+                        <div className="rounded-lg bg-(--surface)/60 border border-(--line) p-2.5 space-y-1 font-mono text-xs">
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[var(--fg-subtle)]">Active Key</span>
-                            <span className="text-[var(--fg)] font-semibold">••••{cred.last4}</span>
+                            <span className="text-(--fg-subtle)">Active Key</span>
+                            <span className="text-(--fg) font-semibold">••••{cred.last4}</span>
                           </div>
                           <div className="flex items-center justify-between text-[11px]">
-                            <span className="text-[var(--fg-subtle)]">Selected Model</span>
-                            <span className="text-[var(--accent)] truncate max-w-[180px]">
+                            <span className="text-(--fg-subtle)">Selected Model</span>
+                            <span className="text-(--accent) truncate max-w-[180px]">
                               {cred.model || config.models[0]?.id}
                             </span>
                           </div>
                         </div>
                       ) : (
-                        <p className="text-xs text-[var(--fg-muted)] leading-relaxed">
+                        <p className="text-xs text-(--fg-muted) leading-relaxed">
                           Provide an API key to enable {config.label} incident diagnostics and automated commit scoring.
                         </p>
                       )}
                     </div>
 
                     {/* Footer actions */}
-                    <div className="pt-3 border-t border-[var(--line)] flex items-center justify-between gap-2">
+                    <div className="pt-3 border-t border-(--line) flex items-center justify-between gap-2">
                       {isConnected ? (
                         <>
                           <label className="flex items-center gap-2 text-xs font-mono cursor-pointer select-none">
@@ -385,9 +385,9 @@ export default function AiSettingsPage() {
                               name="activeProviderRadio"
                               checked={settings.activeProvider === provider}
                               onChange={() => handleUpdateMode("byok", provider)}
-                              className="accent-[var(--accent)] w-3.5 h-3.5"
+                              className="accent-(--accent) w-3.5 h-3.5"
                             />
-                            <span className={isSelectedByok ? "text-[var(--accent)] font-semibold" : "text-[var(--fg-muted)]"}>
+                            <span className={isSelectedByok ? "text-(--accent) font-semibold" : "text-(--fg-muted)"}>
                               {isSelectedByok ? "Active for BYOK" : "Set Active"}
                             </span>
                           </label>
@@ -396,14 +396,14 @@ export default function AiSettingsPage() {
                             <button
                               type="button"
                               onClick={() => handleOpenDialog(provider)}
-                              className="px-2.5 py-1 text-xs font-mono rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] border border-[var(--line)] transition"
+                              className="px-2.5 py-1 text-xs font-mono rounded-lg bg-(--surface) hover:bg-(--line) text-(--fg) border border-(--line) transition"
                             >
                               Edit
                             </button>
                             <button
                               type="button"
                               onClick={() => handleDeleteKey(provider)}
-                              className="p-1.5 text-[var(--fg-muted)] hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition"
+                              className="p-1.5 text-(--fg-muted) hover:text-rose-400 hover:bg-rose-500/10 rounded-lg transition"
                               title="Delete API key"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
@@ -414,9 +414,9 @@ export default function AiSettingsPage() {
                         <button
                           type="button"
                           onClick={() => handleOpenDialog(provider)}
-                          className="w-full py-1.5 px-3 rounded-lg bg-[var(--surface)] hover:bg-[var(--line)] border border-[var(--line)] text-xs font-mono font-medium text-[var(--fg)] transition flex items-center justify-center gap-1.5"
+                          className="w-full py-1.5 px-3 rounded-lg bg-(--surface) hover:bg-(--line) border border-(--line) text-xs font-mono font-medium text-(--fg) transition flex items-center justify-center gap-1.5"
                         >
-                          <Key className="w-3.5 h-3.5 text-[var(--accent)]" />
+                          <Key className="w-3.5 h-3.5 text-(--accent)" />
                           <span>Configure {config.label} Key</span>
                         </button>
                       )}
@@ -428,8 +428,8 @@ export default function AiSettingsPage() {
           </div>
 
           {/* Security Note */}
-          <div className="p-3.5 rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] flex items-center gap-3 text-xs text-[var(--fg-muted)]">
-            <ShieldCheck className="w-4 h-4 text-[var(--accent)] shrink-0" />
+          <div className="p-3.5 rounded-xl border border-(--line) bg-(--bg-raised) flex items-center gap-3 text-xs text-(--fg-muted)">
+            <ShieldCheck className="w-4 h-4 text-(--accent) shrink-0" />
             <span>
               All API keys are encrypted at rest with AES-256-GCM. Code diffs and incident summaries are never retained for model training.
             </span>
@@ -441,21 +441,21 @@ export default function AiSettingsPage() {
       {activeDialogProvider && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
           <div
-            className="w-full max-w-md bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl shadow-2xl p-5 space-y-4"
+            className="w-full max-w-md bg-(--bg-raised) border border-(--line) rounded-xl shadow-2xl p-5 space-y-4"
             role="dialog"
             aria-modal="true"
           >
-            <div className="flex items-center justify-between border-b border-[var(--line)] pb-3">
+            <div className="flex items-center justify-between border-b border-(--line) pb-3">
               <div className="flex items-center gap-2">
-                <Key className="w-4 h-4 text-[var(--accent)]" />
-                <h3 className="text-sm font-semibold text-[var(--fg)]">
+                <Key className="w-4 h-4 text-(--accent)" />
+                <h3 className="text-sm font-semibold text-(--fg)">
                   Configure {PROVIDERS[activeDialogProvider].label}
                 </h3>
               </div>
               <button
                 type="button"
                 onClick={() => setActiveDialogProvider(null)}
-                className="p-1 rounded-lg text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface)] transition"
+                className="p-1 rounded-lg text-(--fg-muted) hover:text-(--fg) hover:bg-(--surface) transition"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -470,7 +470,7 @@ export default function AiSettingsPage() {
 
             <div className="space-y-3.5">
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-medium text-[var(--fg)]">
+                <label className="text-xs font-mono font-medium text-(--fg)">
                   API Key
                 </label>
                 <input
@@ -479,19 +479,19 @@ export default function AiSettingsPage() {
                   onChange={(e) => setKeyInput(e.target.value)}
                   placeholder="Paste provider API key..."
                   autoFocus
-                  className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg)] outline-none focus:border-[var(--accent)] transition"
+                  className="w-full px-3 py-2 text-xs font-mono rounded-lg border border-(--line) bg-(--surface) text-(--fg) outline-none focus:border-(--accent) transition"
                 />
-                <p className="text-[11px] text-[var(--fg-subtle)]">
+                <p className="text-[11px] text-(--fg-subtle)">
                   Key will be validated against {PROVIDERS[activeDialogProvider].label}&apos;s API prior to saving.
                 </p>
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-xs font-mono font-medium text-[var(--fg)]">
+                <label className="text-xs font-mono font-medium text-(--fg)">
                   Default Model
                 </label>
                 <Select value={selectedModel} onValueChange={setSelectedModel}>
-                  <SelectTrigger className="w-full h-9 px-3 bg-[var(--surface)] border-[var(--line)] text-xs font-mono">
+                  <SelectTrigger className="w-full h-9 px-3 bg-(--surface) border-(--line) text-xs font-mono">
                     <SelectValue placeholder="Select model..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -505,11 +505,11 @@ export default function AiSettingsPage() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[var(--line)]">
+            <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-(--line)">
               <button
                 type="button"
                 onClick={() => setActiveDialogProvider(null)}
-                className="px-3 py-1.5 text-xs font-mono rounded-lg text-[var(--fg-muted)] hover:bg-[var(--surface)] transition"
+                className="px-3 py-1.5 text-xs font-mono rounded-lg text-(--fg-muted) hover:bg-(--surface) transition"
               >
                 Cancel
               </button>
@@ -517,7 +517,7 @@ export default function AiSettingsPage() {
                 type="button"
                 onClick={handleSaveKey}
                 disabled={validating}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[var(--accent-solid)] text-[var(--accent-fg)] rounded-lg text-xs font-semibold hover:brightness-110 transition disabled:opacity-50"
+                className="flex items-center gap-1.5 px-3.5 py-1.5 bg-(--accent-solid) text-(--accent-fg) rounded-lg text-xs font-semibold hover:brightness-110 transition disabled:opacity-50"
               >
                 {validating && <RefreshCw className="w-3.5 h-3.5 animate-spin" />}
                 <span>{validating ? "Validating…" : "Save Key"}</span>

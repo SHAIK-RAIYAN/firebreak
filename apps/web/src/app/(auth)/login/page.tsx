@@ -24,20 +24,20 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-[var(--bg)] text-[var(--fg)]">
-      <div className="w-full max-w-sm rounded-xl border border-[var(--line)] bg-[var(--bg-raised)] p-8 shadow-sm">
+    <div className="flex min-h-screen flex-col items-center justify-center p-4 bg-(--bg) text-(--fg)">
+      <div className="w-full max-w-sm rounded-xl border border-(--line) bg-(--bg-raised) p-8 shadow-sm">
         <div className="flex items-center gap-2 mb-6">
-          <span className="inline-block w-3 h-3 rounded-full bg-[var(--ember)]" />
+          <span className="inline-block w-3 h-3 rounded-full bg-(--ember)" />
           <h1 className="font-mono text-lg font-bold tracking-tight">firebreak</h1>
         </div>
 
         <h2 className="text-xl font-semibold mb-2">Sign in to console</h2>
-        <p className="text-sm text-[var(--fg-muted)] mb-6">
+        <p className="text-sm text-(--fg-muted) mb-6">
           Access your incident mitigation workspace.
         </p>
 
         {error && (
-          <div className="mb-4 rounded border border-[var(--danger)] bg-red-950/20 p-3 text-xs text-[var(--danger)]">
+          <div className="mb-4 rounded border border-(--danger) bg-red-950/20 p-3 text-xs text-(--danger)">
             {error}
           </div>
         )}
@@ -45,7 +45,7 @@ export default function LoginPage() {
         <button
           onClick={handleGitHubLogin}
           disabled={loading}
-          className="flex w-full items-center justify-center gap-3 rounded-lg bg-[var(--accent-solid)] px-4 py-2.5 font-medium text-[var(--accent-fg)] transition-opacity hover:opacity-90 disabled:opacity-50 cursor-pointer"
+          className="flex w-full items-center justify-center gap-3 rounded-lg bg-(--accent-solid) px-4 py-2.5 font-medium text-(--accent-fg) transition-opacity hover:opacity-90 disabled:opacity-50 cursor-pointer"
         >
           {loading ? (
             <span className="text-sm">Connecting to GitHub...</span>

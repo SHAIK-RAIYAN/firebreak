@@ -158,12 +158,12 @@ export function CommandPalette() {
           setOpen(true);
           setSelectedIndex(0);
         }}
-        className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:border-[var(--line-strong)] transition focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
+        className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-(--line) bg-(--surface) text-(--fg-muted) hover:text-(--fg) hover:border-(--line-strong) transition focus-visible:outline-2 focus-visible:outline-(--accent)"
       >
         <Search className="w-3.5 h-3.5" />
         <span className="hidden sm:inline">Search or jump to...</span>
         <span className="inline sm:hidden">Search...</span>
-        <kbd className="px-1.5 py-0.5 rounded bg-[var(--bg)] border border-[var(--line)] text-[10px] text-[var(--fg-subtle)] font-mono">
+        <kbd className="px-1.5 py-0.5 rounded bg-(--bg) border border-(--line) text-[10px] text-(--fg-subtle) font-mono">
           ⌘K
         </kbd>
       </button>
@@ -172,13 +172,13 @@ export function CommandPalette() {
       {open && (
         <div className="fixed inset-0 z-50 flex items-start justify-center pt-24 px-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150">
           <div
-            className="w-full max-w-lg bg-[var(--bg-raised)] border border-[var(--line)] rounded-xl shadow-2xl overflow-hidden font-sans"
+            className="w-full max-w-lg bg-(--bg-raised) border border-(--line) rounded-xl shadow-2xl overflow-hidden font-sans"
             role="dialog"
             aria-modal="true"
           >
             {/* Search Input - explicitly clean without border or ring */}
-            <div className="flex items-center px-4 border-b border-[var(--line)]">
-              <Search className="w-4 h-4 text-[var(--fg-muted)] shrink-0" />
+            <div className="flex items-center px-4 border-b border-(--line)">
+              <Search className="w-4 h-4 text-(--fg-muted) shrink-0" />
               <input
                 type="text"
                 data-command-input
@@ -189,13 +189,13 @@ export function CommandPalette() {
                 }}
                 placeholder="Type a command or search..."
                 autoFocus
-                className="w-full px-3 py-3.5 text-sm bg-transparent border-0 outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-[var(--fg)] placeholder:text-[var(--fg-subtle)]"
+                className="w-full px-3 py-3.5 text-sm bg-transparent border-0 outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-(--fg) placeholder:text-(--fg-subtle)"
                 style={{ outline: "none", boxShadow: "none" }}
               />
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="p-1 rounded hover:bg-[var(--surface)] text-[var(--fg-muted)]"
+                className="p-1 rounded hover:bg-(--surface) text-(--fg-muted)"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -203,11 +203,11 @@ export function CommandPalette() {
 
             {/* Results list - scrollbar suppressed */}
             <div
-              className="max-h-80 overflow-y-auto p-2 space-y-1 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0"
+              className="max-h-80 overflow-y-auto p-2 space-y-1 scrollbar-none [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden [&::-webkit-scrollbar]:w-0 [&::-webkit-scrollbar]:h-0"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {filtered.length === 0 ? (
-                <div className="p-4 text-center text-xs font-mono text-[var(--fg-muted)]">
+                <div className="p-4 text-center text-xs font-mono text-(--fg-muted)">
                   No commands found matching &quot;{query}&quot;
                 </div>
               ) : (
@@ -222,25 +222,25 @@ export function CommandPalette() {
                       onMouseEnter={() => setSelectedIndex(idx)}
                       className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition text-left ${
                         isSelected
-                          ? "bg-[var(--surface)] text-[var(--fg)] border border-[var(--line-strong)]"
-                          : "hover:bg-[var(--surface)]/70 text-[var(--fg-muted)] border border-transparent"
+                          ? "bg-(--surface) text-(--fg) border border-(--line-strong)"
+                          : "hover:bg-(--surface)/70 text-(--fg-muted) border border-transparent"
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <Icon
                           className={`w-4 h-4 shrink-0 transition-colors ${
-                            isSelected ? "text-[var(--accent)]" : "text-[var(--fg-subtle)]"
+                            isSelected ? "text-(--accent)" : "text-(--fg-subtle)"
                           }`}
                         />
                         <span
                           className={`font-medium ${
-                            isSelected ? "text-[var(--fg)]" : "text-[var(--fg-muted)]"
+                            isSelected ? "text-(--fg)" : "text-(--fg-muted)"
                           }`}
                         >
                           {cmd.title}
                         </span>
                       </div>
-                      <span className="text-[11px] font-mono uppercase text-[var(--fg-subtle)]">
+                      <span className="text-[11px] font-mono uppercase text-(--fg-subtle)">
                         {cmd.section}
                       </span>
                     </button>
@@ -250,7 +250,7 @@ export function CommandPalette() {
             </div>
 
             {/* Footer */}
-            <div className="px-4 py-2 border-t border-[var(--line)] bg-[var(--surface)]/50 flex items-center justify-between text-[11px] font-mono text-[var(--fg-muted)]">
+            <div className="px-4 py-2 border-t border-(--line) bg-(--surface)/50 flex items-center justify-between text-[11px] font-mono text-(--fg-muted)">
               <span>Press ESC to close</span>
               <span>Use arrow keys to navigate</span>
             </div>
