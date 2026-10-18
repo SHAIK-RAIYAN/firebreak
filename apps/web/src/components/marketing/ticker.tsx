@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const TICKS = [
   { time: "02:14:07", kind: "ALERT", text: "checkout /api/health 500 (Invariant failed: pricing)", tag: "danger" },
@@ -20,37 +20,41 @@ export function IncidentTicker() {
   }, []);
 
   return (
-    <div className="w-full bg-neutral-900/60 dark:bg-neutral-900/80 border border-neutral-700/40 dark:border-neutral-800 rounded-xl p-3 font-mono text-xs overflow-hidden backdrop-blur-sm shadow-sm">
-      <div className="flex items-center justify-between pb-2 mb-2 border-b border-neutral-700/40 dark:border-neutral-800 text-neutral-400 text-[11px]">
+    <div className="w-full bg-[var(--surface)]/75 dark:bg-[var(--surface)]/60 border border-[var(--line)] rounded-xl p-3 font-mono text-xs overflow-hidden backdrop-blur-md shadow-xs">
+      <div className="flex items-center justify-between pb-2 mb-2 border-b border-[var(--line)] text-[var(--fg-subtle)] text-[11px]">
         <div className="flex items-center gap-2">
           <span className="w-2 h-2 rounded-full bg-[var(--ember)] animate-pulse" />
-          <span className="font-semibold tracking-wider text-neutral-300">LIVE INCIDENT STREAM</span>
+          <span className="font-semibold tracking-wider text-[var(--fg)]">LIVE INCIDENT STREAM</span>
         </div>
-        <span className="text-[10px] uppercase tracking-wider text-neutral-400">REPLAY: INC-01</span>
       </div>
-      <div className="space-y-1.5 min-h-[96px]">
-        {TICKS.slice(0, activeCount).map((tick, idx) => {
+      {/* Fixed height container reserving exact space for all 4 rows to prevent hero layout shifts */}
+      <div className="h-28 space-y-1.5 py-2 overflow-hidden">
+        {TICKS.map((tick, idx) => {
+          const isVisible = idx < activeCount;
           const colorClass =
             tick.tag === "danger"
-              ? "text-red-400 bg-red-950/30 border-red-800/40"
+              ? "text-[var(--danger)] bg-[var(--danger)]/15 border-[var(--danger)]/30"
               : tick.tag === "warn"
-              ? "text-amber-400 bg-amber-950/30 border-amber-800/40"
-              : tick.tag === "info"
-              ? "text-sky-400 bg-sky-950/30 border-sky-800/40"
-              : "text-emerald-400 bg-emerald-950/30 border-emerald-800/40";
+                ? "text-[var(--warn)] bg-[var(--warn)]/15 border-[var(--warn)]/30"
+                : tick.tag === "info"
+                  ? "text-[var(--accent)] bg-[var(--accent)]/15 border-[var(--accent)]/30"
+                  : "text-[var(--ok)] bg-[var(--ok)]/15 border-[var(--ok)]/30";
 
           return (
             <div
               key={idx}
-              className="flex items-center gap-3 transition-all duration-300 animate-in fade-in slide-in-from-left-2"
+              className={`flex items-center gap-3 h-5 transition-all duration-300 ${isVisible
+                ? "opacity-100 translate-x-0"
+                : "opacity-0 -translate-x-2 pointer-events-none"
+                }`}
             >
-              <span className="text-neutral-500 font-mono shrink-0">{tick.time}</span>
+              <span className="text-[var(--fg-subtle)] font-mono shrink-0">{tick.time}</span>
               <span
-                className={`px-1.5 py-0.5 rounded text-[10px] font-semibold tracking-wider border shrink-0 ${colorClass}`}
+                className={`px-1.5 py-0.2 rounded text-[10px] font-semibold tracking-wider border shrink-0 ${colorClass}`}
               >
                 {tick.kind}
               </span>
-              <span className="text-neutral-200 truncate">{tick.text}</span>
+              <span className="text-[var(--fg)] truncate">{tick.text}</span>
             </div>
           );
         })}

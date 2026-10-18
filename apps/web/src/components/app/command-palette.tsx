@@ -29,30 +29,16 @@ type CommandItem = {
 export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [selectedIndex, setSelectedIndex] = useState(0);
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
 
   const toggle = useCallback(() => setOpen((prev) => !prev), []);
 
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-        e.preventDefault();
-        toggle();
-      } else if (e.key === "Escape" && open) {
-        e.preventDefault();
-        setOpen(false);
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [open, toggle]);
-
-  const navigate = (path: string) => {
+  const navigate = useCallback((path: string) => {
     setOpen(false);
     router.push(path);
-  };
+  }, [router]);
 
   const commands: CommandItem[] = [
     {
@@ -131,12 +117,47 @@ export function CommandPalette() {
       )
     : commands;
 
+  const activeIndex = Math.min(selectedIndex, Math.max(0, filtered.length - 1));
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "k") {
+        e.preventDefault();
+        toggle();
+      } else if (open) {
+        if (e.key === "Escape") {
+          e.preventDefault();
+          setOpen(false);
+        } else if (e.key === "ArrowDown") {
+          e.preventDefault();
+          setSelectedIndex((prev) => (filtered.length ? (prev + 1) % filtered.length : 0));
+        } else if (e.key === "ArrowUp") {
+          e.preventDefault();
+          setSelectedIndex((prev) =>
+            filtered.length ? (prev - 1 + filtered.length) % filtered.length : 0,
+          );
+        } else if (e.key === "Enter") {
+          e.preventDefault();
+          if (filtered[activeIndex]) {
+            filtered[activeIndex].action();
+          }
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, toggle, filtered, activeIndex]);
+
   return (
     <>
       {/* Trigger Button in TopBar */}
       <button
         type="button"
-        onClick={() => setOpen(true)}
+        onClick={() => {
+          setOpen(true);
+          setSelectedIndex(0);
+        }}
         className="flex items-center gap-2 px-3 py-1.5 text-xs font-mono rounded-lg border border-[var(--line)] bg-[var(--surface)] text-[var(--fg-muted)] hover:text-[var(--fg)] hover:border-[var(--line-strong)] transition focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
       >
         <Search className="w-3.5 h-3.5" />
@@ -155,16 +176,21 @@ export function CommandPalette() {
             role="dialog"
             aria-modal="true"
           >
-            {/* Search Input */}
+            {/* Search Input - explicitly clean without border or ring */}
             <div className="flex items-center px-4 border-b border-[var(--line)]">
               <Search className="w-4 h-4 text-[var(--fg-muted)] shrink-0" />
               <input
                 type="text"
+                data-command-input
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                  setSelectedIndex(0);
+                }}
                 placeholder="Type a command or search..."
                 autoFocus
-                className="w-full px-3 py-3.5 text-sm bg-transparent outline-none text-[var(--fg)] placeholder:text-[var(--fg-subtle)]"
+                className="w-full px-3 py-3.5 text-sm bg-transparent border-0 outline-none ring-0 shadow-none focus:outline-none focus:ring-0 focus-visible:outline-none focus-visible:ring-0 text-[var(--fg)] placeholder:text-[var(--fg-subtle)]"
+                style={{ outline: "none", boxShadow: "none" }}
               />
               <button
                 type="button"
@@ -182,18 +208,32 @@ export function CommandPalette() {
                   No commands found matching &quot;{query}&quot;
                 </div>
               ) : (
-                filtered.map((cmd) => {
+                filtered.map((cmd, idx) => {
                   const Icon = cmd.icon;
+                  const isSelected = idx === activeIndex;
                   return (
                     <button
                       key={cmd.id}
                       type="button"
                       onClick={cmd.action}
-                      className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm hover:bg-[var(--surface)] transition group text-left"
+                      onMouseEnter={() => setSelectedIndex(idx)}
+                      className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm transition text-left ${
+                        isSelected
+                          ? "bg-[var(--surface)] text-[var(--fg)] border border-[var(--line-strong)]"
+                          : "hover:bg-[var(--surface)]/70 text-[var(--fg-muted)] border border-transparent"
+                      }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className="w-4 h-4 text-[var(--accent)] shrink-0" />
-                        <span className="text-[var(--fg)] group-hover:text-[var(--accent)] font-medium">
+                        <Icon
+                          className={`w-4 h-4 shrink-0 transition-colors ${
+                            isSelected ? "text-[var(--accent)]" : "text-[var(--fg-subtle)]"
+                          }`}
+                        />
+                        <span
+                          className={`font-medium ${
+                            isSelected ? "text-[var(--fg)]" : "text-[var(--fg-muted)]"
+                          }`}
+                        >
                           {cmd.title}
                         </span>
                       </div>

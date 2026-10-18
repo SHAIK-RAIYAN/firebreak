@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
+import { getSession } from "@/lib/session";
+import { NavAuthSlot } from "@/components/marketing/nav-auth-slot";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { HeroSection } from "@/components/marketing/hero-section";
 import { ProblemSection } from "@/components/marketing/problem-section";
@@ -12,7 +14,16 @@ import { FaqSection } from "@/components/marketing/faq-section";
 import { CtaSection } from "@/components/marketing/cta-section";
 import { SmoothScroll } from "@/components/marketing/smooth-scroll";
 
-export default function HomePage() {
+export default async function HomePage() {
+  const sessionCtx = await getSession().catch(() => null);
+  const user = sessionCtx?.user
+    ? {
+        name: sessionCtx.user.name,
+        image: sessionCtx.user.image,
+        email: sessionCtx.user.email,
+      }
+    : null;
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://firebreak.dev";
 
   const organizationLd = {
@@ -118,49 +129,51 @@ export default function HomePage() {
       {/* ─────────────────────────────────────────────────────────────
           1. Sticky Navigation Bar
       ───────────────────────────────────────────────────────────── */}
-      <header className="sticky top-0 z-50 w-full border-b border-[var(--line)] bg-[var(--bg)]/80 backdrop-blur-md transition-all">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link href="/" className="flex items-center gap-2.5 group">
+      <header className="sticky top-0 z-50 w-full border-b border-[var(--line)] bg-[var(--bg)]/85 backdrop-blur-md transition-all">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-6 lg:gap-10 shrink-0">
+            <Link href="/" className="flex items-center gap-2.5 group shrink-0">
               <LogoMark className="w-6 h-6 transition-transform group-hover:scale-105" />
-              <span className="font-display font-bold text-lg tracking-tight lowercase">firebreak</span>
+              <span className="font-display font-bold text-lg tracking-tight lowercase text-[var(--fg)]">firebreak</span>
             </Link>
 
-            <nav className="hidden md:flex items-center gap-6 font-mono text-xs text-[var(--fg-muted)]">
-              <a href="#problem" className="hover:text-[var(--fg)] transition-colors">
-                [01] Problem
+            <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-left">
+              <a href="#problem" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[01]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Problem</span>
               </a>
-              <a href="#loop" className="hover:text-[var(--fg)] transition-colors">
-                [02] How It Works
+              <a href="#loop" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[02]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">The Loop</span>
               </a>
-              <a href="#evidence" className="hover:text-[var(--fg)] transition-colors">
-                [03] Evidence
+              <a href="#evidence" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[03]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Evidence</span>
               </a>
-              <a href="#mcp" className="hover:text-[var(--fg)] transition-colors">
-                [04] MCP Tools
+              <a href="#mcp" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[04]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">MCP Tools</span>
               </a>
-              <a href="#security" className="hover:text-[var(--fg)] transition-colors">
-                [05] Security
+              <a href="#security" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[05]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">Security</span>
               </a>
-              <a href="#faq" className="hover:text-[var(--fg)] transition-colors">
-                [06] FAQ
+              <a href="#faq" className="flex flex-col items-start leading-none group py-1 transition-colors">
+                <span className="font-mono text-[10px] text-[var(--accent)] tracking-wider mb-1 font-semibold group-hover:brightness-110">[06]</span>
+                <span className="font-mono text-xs text-[var(--fg-muted)] group-hover:text-[var(--fg)] transition-colors">FAQ</span>
               </a>
             </nav>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
             <ThemeToggle />
-            <Link
-              href="/login"
-              className="px-3.5 py-1.5 rounded-lg text-xs font-semibold text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface)] transition-colors"
-            >
-              Sign In
-            </Link>
+            <NavAuthSlot initialUser={user} />
             <Link
               href="/app"
-              className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-[var(--accent-solid)] text-[var(--accent-fg)] hover:brightness-110 active:scale-95 transition-all shadow-sm"
+              className="px-3.5 sm:px-4 py-1.5 rounded-lg text-xs font-mono font-semibold bg-[var(--accent-solid)] text-[var(--accent-fg)] hover:brightness-110 active:scale-95 transition-all shadow-sm whitespace-nowrap shrink-0"
             >
-              Open Console
+              <span className="hidden sm:inline">Open Console</span>
+              <span className="sm:hidden">Console</span>
             </Link>
           </div>
         </div>
@@ -219,10 +232,6 @@ export default function HomePage() {
             <p className="text-[var(--fg-muted)] text-xs font-sans">
               Autonomous diagnosis and human-in-the-loop rollback verification for web teams.
             </p>
-            <div className="flex items-center gap-2 text-[var(--ok)] text-[11px] pt-1">
-              <span className="w-2 h-2 rounded-full bg-[var(--ok)] animate-pulse" />
-              <span>All Systems Operational</span>
-            </div>
           </div>
 
           <div>

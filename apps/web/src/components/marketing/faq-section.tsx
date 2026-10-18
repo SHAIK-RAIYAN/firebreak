@@ -35,24 +35,27 @@ export function FaqSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section id="faq" className="py-24 border-t border-[var(--line)] bg-[var(--bg-raised)] relative overflow-hidden">
+    <section id="faq" className="py-16 lg:py-20 border-t border-[var(--line)] bg-[var(--bg-raised)] relative overflow-hidden">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.5 }}
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.4 }}
+          className="mb-8"
         >
-          <div className="flex items-center gap-2 mb-4 font-mono text-xs text-[var(--accent)] tracking-wider">
+          <div className="flex items-center gap-2 mb-2 font-mono text-xs text-[var(--accent)] tracking-wider">
             <span>[06]</span>
             <span>FREQUENTLY ASKED QUESTIONS</span>
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold font-display tracking-tight text-[var(--fg)] mb-4">
-            Answers to common questions.
-          </h2>
-          <p className="text-[var(--fg-muted)] text-base sm:text-lg mb-12">
-            Everything you need to know about safety, permissions, and rollback mechanics.
-          </p>
+          <div className="flex flex-col md:flex-row md:items-baseline md:justify-between gap-2">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold font-display tracking-tight text-[var(--fg)]">
+              Answers to common questions.
+            </h2>
+            <p className="text-[var(--fg-muted)] text-sm sm:text-base max-w-md">
+              Everything you need to know about safety, permissions, and rollback mechanics.
+            </p>
+          </div>
         </motion.div>
 
         <div className="space-y-3">

@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 
 export function CtaSection() {
   return (
-    <section className="py-24 border-t border-[var(--line)] bg-[var(--bg)] relative overflow-hidden">
+    <section className="py-16 lg:py-20 border-t border-[var(--line)] bg-[var(--bg)] relative overflow-hidden">
       {/* Hairline Grid Background */}
       <div
         className="absolute inset-0 pointer-events-none opacity-20"

@@ -75,9 +75,68 @@ body {
   font-family: var(--font-sans);
 }
 
+/* ==========================================================================
+   Global Scrollbar Suppression
+   Hides visible scrollbars across all browsers while fully preserving:
+   - Mouse wheel, trackpad, and touch swipe scrolling
+   - Keyboard navigation (arrows, PageUp/Down, Home/End, Space)
+   - Lenis smooth scrolling and GSAP ScrollTrigger pinning
+   - Scrollable nested containers, sidebars, dialogs, and code pre blocks
+   ========================================================================== */
+
+html,
+body,
+* {
+  scrollbar-width: none !important; /* Firefox */
+  -ms-overflow-style: none !important; /* IE 10+ and Legacy Edge */
+}
+
+*::-webkit-scrollbar {
+  display: none !important; /* Chrome, Edge, Safari, Opera */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+  -webkit-appearance: none !important;
+}
+
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-corner {
+  display: none !important;
+  background: transparent !important;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  &::-webkit-scrollbar {
+    display: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    background: transparent !important;
+  }
+}
+
+.no-scrollbar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
+}
+
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+}
+
+[data-command-input]:focus-visible,
+input[data-command-input] {
+  outline: none !important;
+  outline-offset: 0 !important;
 }
 
 html.lenis, html.lenis body {
