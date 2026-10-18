@@ -1,39 +1,50 @@
 # Dependencies
 node_modules/
+.pnp
+.pnp.js
 
 # Build outputs
 dist/
 .next/
 out/
+build/
 src/widgets/out/
 
-# Environment
+# Environment and Secrets
 .env
 .env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 !.env.example
+!apps/mcp/.env.example
+!packages/fixtures/.env.example
 
-# IDE
+# Caches and Turborepo
+.turbo/
+.cache/
+*.tsbuildinfo
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pino-*.log
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# IDE & OS
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Turbo
-.turbo/
-
-# Logs
-*.log
-pino-*.log
-
-# Test
-coverage/
-
-# Misc
-firebreak_plan/
-PROMPT.md
-backend/
-frontend/
+# Temporary / Scratch
+scratch/
+.system_generated/
