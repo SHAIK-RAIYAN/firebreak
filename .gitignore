@@ -21,6 +21,34 @@ src/widgets/out/
 !apps/mcp/.env.example
 !packages/fixtures/.env.example
 
+# Documentation & Markdown (Only root README.md is kept in Git)
+docs/
+CONTEXT.md
+PROMPT.md
+**/*.md
+!/README.md
+!/readme.md
+
+# AI Assistant & Skills folders (Antigravity, Claude, Cursor, Copilot, etc.)
+.agents/
+.antigravity/
+.claude/
+.codex/
+.copilot/
+.cursor/
+.gemini/
+.opencode/
+skills/
+**/.agents/
+**/.antigravity/
+**/.claude/
+**/.codex/
+**/.copilot/
+**/.cursor/
+**/.gemini/
+**/.opencode/
+**/skills/
+
 # Caches and Turborepo
 .turbo/
 .cache/

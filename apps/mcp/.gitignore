@@ -11,6 +11,19 @@ src/widgets/out/
 .env
 .env.local
 .env.*.local
+!.env.example
+
+# AI Assistant & Skills
+.agents/
+.antigravity/
+.claude/
+.codex/
+.copilot/
+.cursor/
+.gemini/
+.opencode/
+skills/
+*.md
 
 # IDE
 .idea/
