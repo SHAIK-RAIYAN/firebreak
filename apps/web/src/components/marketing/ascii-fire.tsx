@@ -5,9 +5,11 @@ import { useEffect, useRef } from "react";
 export function AsciiFire({
   className = "",
   intensity = 0.5,
+  delay = 1,
 }: {
   className?: string;
   intensity?: number;
+  delay?: number;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const mousePos = useRef<{ x: number; y: number } | null>(null);
@@ -20,6 +22,7 @@ export function AsciiFire({
     if (!ctx) return;
 
     let animFrame: number;
+    let delayTimeout: NodeJS.Timeout | null = null;
     let width = 0;
     let height = 0;
     const charWidth = 10;
@@ -124,16 +127,19 @@ export function AsciiFire({
 
             const char = CHARS[val] ?? CHARS.charAt(CHARS.length - 1) ?? " ";
 
-            // Elegant, organic ember palette:
-            // Hot core: bright violet / lavender
-            // Mid flame: violet
-            // Edges: smoky muted neutral gray
-            if (val > 6) {
-              ctx.fillStyle = isDark ? "#E9D5FF" : "#9333EA"; // Soft lavender ember
+            // Design-system fire palette (08_FRONTEND_DESIGN_SYSTEM.md §3)
+            // Dark:  transparent → #1E0B3A → #6D28D9 → #A855F7 → #D946EF → #F0ABFC → #FFE9FB
+            // Light: transparent → #8B5CF6 → #7C3AED → #A21CAF → #C026D3 → #4C1D95
+            if (val > 7) {
+              ctx.fillStyle = isDark ? "#FFE9FB" : "#4C1D95";
+            } else if (val > 5) {
+              ctx.fillStyle = isDark ? "#F0ABFC" : "#C026D3";
             } else if (val > 3) {
-              ctx.fillStyle = isDark ? "#A855F7" : "#7C3AED"; // Flame purple
+              ctx.fillStyle = isDark ? "#D946EF" : "#7C3AED";
+            } else if (val > 1) {
+              ctx.fillStyle = isDark ? "#A855F7" : "#8B5CF6";
             } else {
-              ctx.fillStyle = isDark ? "#52525B" : "#A1A1AA"; // Subtle neutral ash smoke
+              ctx.fillStyle = isDark ? "#6D28D9" : "#A21CAF";
             }
 
             ctx.fillText(char, x * charWidth, y * charHeight);
@@ -144,15 +150,24 @@ export function AsciiFire({
       animFrame = requestAnimationFrame(render);
     };
 
-    animFrame = requestAnimationFrame(render);
+    const startAnimation = () => {
+      animFrame = requestAnimationFrame(render);
+    };
+
+    if (delay > 0) {
+      delayTimeout = setTimeout(startAnimation, delay * 1000);
+    } else {
+      startAnimation();
+    }
 
     return () => {
-      cancelAnimationFrame(animFrame);
+      if (delayTimeout) clearTimeout(delayTimeout);
+      if (animFrame) cancelAnimationFrame(animFrame);
       window.removeEventListener("resize", resize);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener("mouseleave", handleMouseLeave);
     };
-  }, [intensity]);
+  }, [intensity, delay]);
 
   return (
     <canvas

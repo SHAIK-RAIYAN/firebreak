@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AsciiFireTransitionProvider } from "@/components/transitions/ascii-fire-transition";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -58,7 +59,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           enableSystem
           disableTransitionOnChange
         >
-          {children}
+          <AsciiFireTransitionProvider>
+            {children}
+          </AsciiFireTransitionProvider>
         </ThemeProvider>
       </body>
     </html>

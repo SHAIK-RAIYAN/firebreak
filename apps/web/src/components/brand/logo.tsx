@@ -25,7 +25,7 @@ export function LogoMark({ className = "w-6 h-6" }: { className?: string }) {
 
 export function Logo({
   collapsed = false,
-  href = "/app",
+  href = "/",
 }: {
   collapsed?: boolean;
   href?: string;
