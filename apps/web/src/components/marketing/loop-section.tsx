@@ -229,7 +229,7 @@ function StepDetailContent({ stepIndex }: { stepIndex: number }) {
             className="inline-flex items-center gap-1.5 text-[11px] font-mono text-(--accent) hover:underline pt-1 cursor-pointer"
           >
             <RotateCcw className="w-3 h-3" />
-            <span>Reset interactive demo</span>
+            <span>Reset</span>
           </button>
         </div>
       );
