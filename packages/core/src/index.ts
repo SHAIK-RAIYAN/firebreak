@@ -62,6 +62,9 @@ export * from "./views/types.js";
 // AI
 export * from "./ai/index.js";
 
+// Email & Notifications
+export * from "./email/index.js";
+
 // Repos
 export * from "./repo/workspaces.js";
 

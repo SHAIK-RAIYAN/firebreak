@@ -2,6 +2,7 @@ import Image from "next/image";
 import { requireSession } from "@/lib/session";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { SignOutButton } from "@/components/app/sign-out-button";
+import { NotificationPreferencesCard } from "@/components/app/notification-preferences-card";
 
 export const dynamic = "force-dynamic";
 
@@ -74,6 +75,9 @@ export default async function AccountSettingsPage() {
           <ThemeToggle />
         </div>
       </div>
+
+      {/* Notification Preferences Card */}
+      <NotificationPreferencesCard userEmail={user.email} />
 
       {/* Danger Zone / Session */}
       <div className="rounded-xl border border-rose-900/30 bg-(--bg-raised) p-6 space-y-4">

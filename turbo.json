@@ -6,7 +6,9 @@
     "BETTER_AUTH_URL",
     "ENCRYPTION_KEY",
     "STATE_SECRET",
-    "NODE_ENV"
+    "NODE_ENV",
+    "RESEND_API_KEY",
+    "RESEND_FROM_EMAIL"
   ],
   "tasks": {
     "build": {

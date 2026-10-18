@@ -9,6 +9,13 @@ import {
   actionExpiry,
 } from "@/inngest/functions/actions";
 import { incidentAnalysis } from "@/inngest/functions/analysis";
+import {
+  notificationWelcome,
+  notificationIncidentOpened,
+  notificationActionProposed,
+  notificationActionVerified,
+  notificationActionFailed,
+} from "@/inngest/functions/notifications";
 
 export const maxDuration = 60;
 
@@ -20,5 +27,11 @@ export const { GET, POST, PUT } = serve({
     actionExecute,
     actionExpiry,
     incidentAnalysis,
+    notificationWelcome,
+    notificationIncidentOpened,
+    notificationActionProposed,
+    notificationActionVerified,
+    notificationActionFailed,
   ],
 });
+

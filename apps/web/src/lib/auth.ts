@@ -1,7 +1,7 @@
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
-import { db, schema, workspacesRepo } from "@firebreak/core";
+import { db, schema, workspacesRepo, inngest } from "@firebreak/core";
 
 function initAuth() {
   return betterAuth({
@@ -30,6 +30,19 @@ function initAuth() {
               await workspacesRepo.bootstrapPersonalWorkspace(user.id, user.name);
             } catch (err) {
               console.error("Workspace bootstrap failed in auth hook:", err);
+            }
+
+            try {
+              await inngest.send({
+                name: "user/created",
+                data: {
+                  userId: user.id,
+                  email: user.email,
+                  name: user.name,
+                },
+              });
+            } catch (err) {
+              console.error("Failed to enqueue user/created welcome email event:", err);
             }
           },
         },

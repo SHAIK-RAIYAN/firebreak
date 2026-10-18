@@ -102,6 +102,21 @@ async function handleActionExecuteFailure({
       data: { actionId: action.id, errorCode, error: errorMessage },
     });
   }
+
+  try {
+    await inngest.send({
+      name: "action/failed",
+      data: {
+        actionId: action.id,
+        workspaceId,
+        incidentId: action.incident_id,
+        errorCode,
+        errorMessage,
+      },
+    });
+  } catch {
+    // Failure to emit notification event should not throw
+  }
 }
 
 export const actionExecute = inngest.createFunction(
@@ -142,6 +157,29 @@ export const actionExecute = inngest.createFunction(
       await finishVerification(ctx, event.data.actionId, verified);
       return { verified };
     });
+
+    if (verified) {
+      await step.sendEvent("send-action-verified", {
+        name: "action/verified",
+        data: {
+          actionId: event.data.actionId,
+          workspaceId: event.data.workspaceId,
+          incidentId: "",
+          streak: VERIFY_REQUIRED_STREAK,
+        },
+      });
+    } else {
+      await step.sendEvent("send-action-failed", {
+        name: "action/failed",
+        data: {
+          actionId: event.data.actionId,
+          workspaceId: event.data.workspaceId,
+          incidentId: "",
+          errorCode: "verification_timeout",
+          errorMessage: `Verification probe failed to reach ${VERIFY_REQUIRED_STREAK} consecutive passes`,
+        },
+      });
+    }
 
     return { ok: true, verified };
   },

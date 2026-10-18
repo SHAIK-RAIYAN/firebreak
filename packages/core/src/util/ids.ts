@@ -21,7 +21,9 @@ export type IdPrefix =
   | "evt"
   | "mck"
   | "aic"
-  | "req";
+  | "req"
+  | "eml"
+  | "np";
 
 export function newId(prefix?: IdPrefix): string {
   return prefix ? `${prefix}_${generate()}` : generate();

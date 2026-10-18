@@ -561,6 +561,59 @@ export const processed_webhooks = pgTable("processed_webhooks", {
     .defaultNow(),
 });
 
+export const email_deliveries = pgTable(
+  "email_deliveries",
+  {
+    id: text("id").primaryKey(), // eml_...
+    workspace_id: text("workspace_id").references(() => workspaces.id, { onDelete: "cascade" }),
+    user_id: text("user_id").references(() => user.id, { onDelete: "cascade" }),
+    idempotency_key: text("idempotency_key").notNull().unique(),
+    recipient_email: text("recipient_email").notNull(),
+    template: text("template").notNull(), // 'welcome' | 'incident_opened' | 'action_proposed' | 'action_verified' | 'action_failed'
+    subject: text("subject").notNull(),
+    resend_id: text("resend_id"),
+    status: text("status").notNull().default("sent"), // 'sent' | 'delivered' | 'failed' | 'skipped'
+    error: text("error"),
+    created_at: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index("email_deliveries_ws_idx").on(table.workspace_id),
+    index("email_deliveries_user_idx").on(table.user_id),
+    index("email_deliveries_created_at_idx").on(table.created_at),
+  ],
+);
+
+export const notification_preferences = pgTable(
+  "notification_preferences",
+  {
+    id: text("id").primaryKey(), // np_...
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    workspace_id: text("workspace_id")
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    email_enabled: boolean("email_enabled").notNull().default(true),
+    notify_incident_opened: boolean("notify_incident_opened").notNull().default(true),
+    notify_action_proposed: boolean("notify_action_proposed").notNull().default(true),
+    notify_action_resolved: boolean("notify_action_resolved").notNull().default(true),
+    created_at: timestamp("created_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    updated_at: timestamp("updated_at", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("notification_preferences_user_ws_idx").on(
+      table.user_id,
+      table.workspace_id,
+    ),
+  ],
+);
+
 // CamelCase aliases for convenience
 export {
   timeline_events as timelineEvents,
@@ -571,7 +624,14 @@ export {
   mcp_api_keys as mcpApiKeys,
   ai_credentials as aiCredentials,
   processed_webhooks as processedWebhooks,
+  email_deliveries as emailDeliveries,
+  notification_preferences as notificationPreferences,
 };
+
+export type EmailDelivery = typeof email_deliveries.$inferSelect;
+export type NewEmailDelivery = typeof email_deliveries.$inferInsert;
+export type NotificationPreferences = typeof notification_preferences.$inferSelect;
+export type NewNotificationPreferences = typeof notification_preferences.$inferInsert;
 
 export type AlertSeverity = "critical" | "high" | "medium" | "low";
 export type Severity = AlertSeverity;
