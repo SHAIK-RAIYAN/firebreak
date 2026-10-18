@@ -8,6 +8,13 @@
       "when": 1792236899339,
       "tag": "0000_eager_reptil",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1792334800000,
+      "tag": "0001_ai_credentials_byok",
+      "breakpoints": true
     }
   ]
 }
