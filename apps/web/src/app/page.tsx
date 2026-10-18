@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { ExternalLink } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
 import { getSession } from "@/lib/session";
 import { NavAuthSlot } from "@/components/marketing/nav-auth-slot";
@@ -12,6 +11,7 @@ import { McpSection } from "@/components/marketing/mcp-section";
 import { SecuritySection } from "@/components/marketing/security-section";
 import { FaqSection } from "@/components/marketing/faq-section";
 import { CtaSection } from "@/components/marketing/cta-section";
+import { SiteFooter } from "@/components/marketing/site-footer";
 import { SmoothScroll } from "@/components/marketing/smooth-scroll";
 
 export default async function HomePage() {
@@ -222,80 +222,7 @@ export default async function HomePage() {
       {/* ─────────────────────────────────────────────────────────────
           10. Global Footer
       ───────────────────────────────────────────────────────────── */}
-      <footer className="border-t border-(--line) bg-(--bg-raised) py-12 text-xs font-mono text-(--fg-subtle)">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2">
-              <LogoMark className="w-5 h-5" />
-              <span className="font-display font-bold text-base text-(--fg) lowercase">firebreak</span>
-            </div>
-            <p className="text-(--fg-muted) text-xs font-sans">
-              Autonomous diagnosis and human-in-the-loop rollback verification for web teams.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Product</h4>
-            <ul className="space-y-2">
-              <li>
-                <a href="#loop" className="hover:text-(--fg) transition-colors">
-                  How It Works
-                </a>
-              </li>
-              <li>
-                <a href="#evidence" className="hover:text-(--fg) transition-colors">
-                  Deterministic Evidence
-                </a>
-              </li>
-              <li>
-                <a href="#mcp" className="hover:text-(--fg) transition-colors">
-                  NitroStack MCP
-                </a>
-              </li>
-              <li>
-                <a href="#security" className="hover:text-(--fg) transition-colors">
-                  Security Architecture
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Resources</h4>
-            <ul className="space-y-2">
-              <li>
-                <Link href="/app" className="hover:text-(--fg) transition-colors">
-                  Operator Console
-                </Link>
-              </li>
-              <li>
-                <Link href="/login" className="hover:text-(--fg) transition-colors">
-                  Sign In
-                </Link>
-              </li>
-              <li>
-                <a
-                  href="https://github.com/SHAIK-RAIYAN/firebreak"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="hover:text-(--fg) transition-colors flex items-center gap-1"
-                >
-                  <span>GitHub Repository</span>
-                  <ExternalLink className="w-3 h-3" />
-                </a>
-              </li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-bold text-(--fg) mb-3 uppercase tracking-wider text-[11px]">Stack</h4>
-            <p className="text-(--fg-muted) text-[11px] leading-relaxed mb-4">
-              Built with Next.js 16, NitroStack MCP, Inngest durable workflows, and Neon Serverless Postgres.
-            </p>
-            <p className="text-[10px] text-(--fg-subtle)">© 2026 Firebreak. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
     </SmoothScroll>
   );

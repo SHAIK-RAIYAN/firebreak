@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { LogoMark } from "@/components/brand/logo";
+import { SiteFooter } from "@/components/marketing/site-footer";
 
 export const metadata: Metadata = {
   title: "Privacy Policy · Firebreak",
@@ -70,9 +71,7 @@ export default function PrivacyPage() {
         </div>
       </main>
 
-      <footer className="border-t border-(--line) py-8 text-center text-xs font-mono text-(--fg-subtle)">
-        © 2026 Firebreak Systems. All rights reserved.
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
