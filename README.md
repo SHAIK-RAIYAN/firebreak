@@ -63,26 +63,28 @@ Firebreak is an autonomous incident diagnosis and verified rollback platform for
 
 Firebreak provides a dedicated MCP server in `apps/mcp` built with the **NitroStack** framework, exposing 9 standardized tools:
 
-| Tool | Description |
-|---|---|
-| `list_incidents` | List open, investigating, and resolved incidents for the authenticated workspace. |
-| `get_incident` | Retrieve full incident room state, candidate list, and verification metrics. |
-| `rank_suspects` | Inspect deterministic scoring breakdown, file overlaps, and evidence weights. |
-| `get_diff` | Fetch per-file patch and unified git diff for a suspect commit. |
-| `propose_rollback` | Run preflight readiness and drift checks, then stage rollback proposal. |
-| `approve_action` | Record operator approval and trigger atomic Vercel alias rollback. |
-| `reject_action` | Reject proposed action with operator reason to dismiss false positive. |
-| `poll_health` | Query recent automated health probes or trigger an active probe check. |
-| `resolve_incident` | Transition incident to resolved after verified recovery streak. |
+| Tool               | Description                                                                       |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `list_incidents`   | List open, investigating, and resolved incidents for the authenticated workspace. |
+| `get_incident`     | Retrieve full incident room state, candidate list, and verification metrics.      |
+| `rank_suspects`    | Inspect deterministic scoring breakdown, file overlaps, and evidence weights.     |
+| `get_diff`         | Fetch per-file patch and unified git diff for a suspect commit.                   |
+| `propose_rollback` | Run preflight readiness and drift checks, then stage rollback proposal.           |
+| `approve_action`   | Record operator approval and trigger atomic Vercel alias rollback.                |
+| `reject_action`    | Reject proposed action with operator reason to dismiss false positive.            |
+| `poll_health`      | Query recent automated health probes or trigger an active probe check.            |
+| `resolve_incident` | Transition incident to resolved after verified recovery streak.                   |
 
 ### Connecting to AI Editors
 
 #### Claude Code CLI:
+
 ```bash
 claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_ID>
 ```
 
 #### Claude Desktop (`claude_desktop_config.json`):
+
 ```json
 {
   "mcpServers": {
@@ -98,6 +100,7 @@ claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_
 ```
 
 #### Cursor / Windsurf:
+
 - **Type:** Command
 - **Command:** `npx -y @firebreak/mcp@latest`
 - Or use the HTTP/SSE endpoint: `https://firebreak.dev/api/mcp` with `Authorization: Bearer fbk_mcp_...`
@@ -121,6 +124,7 @@ claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_
 ## Getting Started
 
 ### Prerequisites
+
 - Node.js >= 22 LTS
 - npm or pnpm
 - Inngest CLI (`npx inngest-cli@latest dev`)
@@ -128,6 +132,7 @@ claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_
 ### Setup & Local Development
 
 1. **Clone & install dependencies:**
+
    ```bash
    git clone https://github.com/SHAIK-RAIYAN/firebreak.git
    cd firebreak
@@ -144,11 +149,13 @@ claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_
    - `VERCEL_CLIENT_*` credentials
 
 3. **Run database migrations:**
+
    ```bash
    npm -w @firebreak/core run db:migrate
    ```
 
 4. **Start local servers:**
+
    ```bash
    # Terminal 1: Inngest Dev Server
    npx inngest-cli@latest dev -u http://localhost:3000/api/inngest

@@ -9,10 +9,10 @@
 ## 0. Status line (update every task)
 
 - **Current milestone:** M9 — Production Deployment & Acceptance (VERIFIED & AUDITED)
-- **Last completed task:** Firebreak web successfully deployed to Vercel at `https://firebreak-pi.vercel.app`; verified `/api/health` database ping endpoint returning 200 OK; synced 19 production environment variables; resolved GitHub App installation bug by transferring primary workspace `ws_1alsok80tozt4sqaq650` to user Shaik Raiyan; built and validated NitroStack MCP server with 9 tools and 3 widgets passing `apps/mcp/scripts/smoke.ts`; verified live Google Gemini AI structured incident analysis using `gemini-3.5-flash`; fixed all ESLint errors/warnings (0 errors, 0 warnings); verified 106 Vitest tests and typecheck across all workspaces.
-- **Next task:** Configure Northflank container hosting for MCP server and live Inngest keys for full serverless durability.
-- **Blockers:** Northflank deployment requires user credentials or manual container service creation via Dockerfile.
-- **Last green check:** 2026-10-17 (Vercel production deployment `dpl_DttNC1tQBxeqp2mLfUNUcPeDhWgY` READY; `curl https://firebreak-pi.vercel.app/api/health` 200 OK; live MCP server smoke passed 9 tools; live Gemini AI analysis passed; 106 Vitest unit tests green; typecheck 100% clean; eslint 0 errors 0 warnings).
+- **Last completed task:** Deployed Firebreak web to Vercel at `https://firebreak-pi.vercel.app` (verified database `/api/health` 200 OK); deployed NitroStack MCP server container to Render at `https://firebreak-mcp.onrender.com` (streamable HTTP 2026-07-28 verified with 9 tools, 3 widgets, and `/mcp/health` 200 OK); verified Inngest sync with 8 background functions; cleaned and scoped `.env` files across root, `packages/core/.env`, and `apps/web/.env.local`; all 106 Vitest tests passing; monorepo typecheck 100% clean; ESLint 0 errors, 0 warnings.
+- **Next task:** Complete live end-to-end acceptance loop on deployed production environment.
+- **Blockers:** None blocking core operation. Inngest Cloud app URL sync should be pointed to primary production domain `https://firebreak-pi.vercel.app/api/inngest`.
+- **Last green check:** 2026-10-18 (Vercel production URL `https://firebreak-pi.vercel.app/api/health` 200 OK; Render MCP URL `https://firebreak-mcp.onrender.com/mcp/health` 200 OK; Render POST `/mcp` tools/list 9 tools 200 OK; anonymous access guard 403 rejected; 106 Vitest unit tests green; typecheck 4/4 packages clean; eslint 0 errors 0 warnings).
 
 ## 1. Milestone checklist (copy of docs/15 milestones — tick only when its "Verify" step passed)
 
@@ -23,9 +23,9 @@
 - [x] M4 Alert intake + incident pipeline (signed alert → Inngest pipeline → GitHub diff trace → suspect ranked #1 at 80 pts → rollback proposed)
 - [x] M5 Approve → execute → verify (Verified real loop: break → fire → approve → Vercel rollback → 3x healthy probes → resolved → reset, tagged `loop-works`)
 - [x] M6 App UI + AI (app shell, incident page, settings/AI keys, MCP keys)
-- [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified)
+- [x] M7 NitroStack MCP server (tools, widgets, auth, guard verified, deployed to Render)
 - [x] M8 Marketing site & SEO (Nav, ASCII fire throttled, ticker, problem, loop, evidence diff, MCP, security, FAQ, footer, Lenis, Motion, sitemap, robots, manifest, llms.txt, OpenGraph)
-- [x] M9 Deploy (Firebreak web deployed to Vercel at https://firebreak-pi.vercel.app; DB ping /api/health 200 OK; GitHub App linked to owner; MCP Dockerfile verified; live Gemini AI verified)
+- [x] M9 Deploy (Firebreak web on Vercel at https://firebreak-pi.vercel.app; NitroStack MCP server on Render at https://firebreak-mcp.onrender.com; Inngest 8 functions synced; DB ping /api/health 200 OK)
 - [x] M10 Hardening pass (ops:reencrypt, ops:cancel-action, test:ai, README, security invariants)
 
 ## 2. Decisions (ADR log — append only)
