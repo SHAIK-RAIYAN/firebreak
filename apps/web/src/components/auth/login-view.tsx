@@ -33,7 +33,8 @@ export function LoginView({
   const searchParams = useSearchParams();
   const welcomeActive = isWelcome || searchParams.get("welcome") === "1";
   const paramName = searchParams.get("name");
-  const { triggerEntranceReveal, isTransitioning } = useAsciiFireTransition();
+  const { triggerEntranceReveal, isTransitioning, markPageReady } =
+    useAsciiFireTransition();
   const hasRevealedRef = useRef(isTransitioning || welcomeActive);
 
   // On direct visit or cold load to /login, play signature ASCII fire reveal if not already in transition
@@ -43,6 +44,16 @@ export function LoginView({
       triggerEntranceReveal();
     }
   }, [isTransitioning, triggerEntranceReveal, welcomeActive]);
+
+  // When freedom tree image is already cached / completed in browser memory, notify transition coordinator
+  useEffect(() => {
+    const img = document.querySelector(
+      'img[src*="freedom-tree"]'
+    ) as HTMLImageElement | null;
+    if (img?.complete && img.naturalWidth > 0) {
+      markPageReady();
+    }
+  }, [markPageReady]);
 
   // If returning from OAuth callback with ?welcome=1, verify session
   const { data: clientSession, isPending } = useSession();
@@ -93,6 +104,9 @@ export function LoginView({
           priority
           sizes="(min-width: 1024px) 50vw, 100vw"
           className="object-cover object-center filter saturate-[0.92] contrast-[1.04] transition-transform duration-700 hover:scale-[1.01]"
+          onLoad={() => {
+            markPageReady();
+          }}
         />
 
         {/* Subtle Edge Vignette */}

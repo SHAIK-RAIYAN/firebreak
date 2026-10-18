@@ -13,6 +13,7 @@ import { useRouter, usePathname } from "next/navigation";
 type AsciiFireTransitionContextType = {
   triggerTransition: (targetUrl: string) => void;
   triggerEntranceReveal: () => void;
+  markPageReady: () => void;
   isTransitioning: boolean;
 };
 
@@ -52,7 +53,86 @@ export function AsciiFireTransitionProvider({
   const fromPathnameRef = useRef<string>("");
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
-  const startRevealCallbackRef = useRef<(() => void) | null>(null);
+
+  // Track readiness of the destination page behind the flames
+  const pageIsReadyRef = useRef(false);
+  const triggerRevealRef = useRef<(() => void) | null>(null);
+
+  // Explicit signal from a page/component that it is totally loaded and ready
+  const markPageReady = useCallback(() => {
+    pageIsReadyRef.current = true;
+    if (triggerRevealRef.current) {
+      triggerRevealRef.current();
+    }
+  }, []);
+
+  // Automatic detector that ensures document, fonts, images, and paint are complete
+  const detectPageReady = useCallback(async () => {
+    if (typeof window === "undefined" || typeof document === "undefined") return;
+
+    try {
+      // 1. Await DOM ready if loading
+      if (document.readyState === "loading") {
+        await new Promise<void>((resolve) => {
+          document.addEventListener("DOMContentLoaded", () => resolve(), {
+            once: true,
+          });
+        });
+      }
+
+      // 2. Await web fonts
+      if ("fonts" in document) {
+        try {
+          await Promise.race([
+            document.fonts.ready,
+            new Promise((r) => setTimeout(r, 2000)),
+          ]);
+        } catch {
+          // Ignore font timeout or errors
+        }
+      }
+
+      // 3. Await all <img> elements currently in the DOM to be loaded and decoded
+      const images = Array.from(document.querySelectorAll("img"));
+      if (images.length > 0) {
+        const promises = images.map((img) => {
+          if (img.complete && img.naturalWidth > 0) {
+            if (typeof img.decode === "function") {
+              return img.decode().catch(() => {});
+            }
+            return Promise.resolve();
+          }
+          return new Promise<void>((resolve) => {
+            const onFinish = () => {
+              if (typeof img.decode === "function") {
+                img.decode().catch(() => {}).finally(resolve);
+              } else {
+                resolve();
+              }
+            };
+            img.addEventListener("load", onFinish, { once: true });
+            img.addEventListener("error", () => resolve(), { once: true });
+          });
+        });
+
+        await Promise.race([
+          Promise.all(promises),
+          new Promise((r) => setTimeout(r, 4500)), // Don't block indefinitely on missing images
+        ]);
+      }
+
+      // 4. Double requestAnimationFrame to ensure browser has committed layout & paint behind canvas
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => resolve());
+        });
+      });
+    } catch {
+      // Ignore detection errors
+    }
+
+    markPageReady();
+  }, [markPageReady]);
 
   // Trigger signature ASCII fire transition to a target URL (e.g. /app or /login)
   const triggerTransition = useCallback(
@@ -71,6 +151,7 @@ export function AsciiFireTransitionProvider({
       }
 
       isTransitioningRef.current = true;
+      pageIsReadyRef.current = false;
       targetUrlRef.current = targetUrl;
       fromPathnameRef.current = pathnameRef.current;
 
@@ -98,10 +179,14 @@ export function AsciiFireTransitionProvider({
 
     isTransitioningRef.current = true;
     isEntranceRevealRef.current = true;
+    pageIsReadyRef.current = false;
     targetUrlRef.current = null;
     fromPathnameRef.current = "";
     setIsActive(true);
-  }, []);
+
+    // Detect readiness of the current page
+    detectPageReady();
+  }, [detectPageReady]);
 
   // Intercept links navigating between marketing pages, console, and login (/app <-> / <-> /login)
   useEffect(() => {
@@ -169,6 +254,7 @@ export function AsciiFireTransitionProvider({
       if (isTransitioningRef.current) {
         if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
         isTransitioningRef.current = false;
+        pageIsReadyRef.current = false;
         targetUrlRef.current = null;
         setIsActive(false);
       }
@@ -177,18 +263,17 @@ export function AsciiFireTransitionProvider({
     return () => window.removeEventListener("popstate", handlePopState);
   }, []);
 
-  // When pathname changes after router.push, trigger the upward reveal sequence
+  // When pathname changes after router.push, run page ready detection
   useEffect(() => {
     if (
       isTransitioningRef.current &&
       fromPathnameRef.current &&
       pathname !== fromPathnameRef.current
     ) {
-      if (startRevealCallbackRef.current) {
-        startRevealCallbackRef.current();
-      }
+      pageIsReadyRef.current = false;
+      detectPageReady();
     }
-  }, [pathname]);
+  }, [pathname, detectPageReady]);
 
   // Autonomous Canvas fire simulation engine
   useEffect(() => {
@@ -206,7 +291,6 @@ export function AsciiFireTransitionProvider({
     const isMobile = width < 640;
     const charWidth = isMobile ? 10 : 13;
     const charHeight = isMobile ? 14 : 17;
-    
 
     let cols = Math.ceil(width / charWidth);
     let rows = Math.ceil(height / charHeight);
@@ -222,24 +306,45 @@ export function AsciiFireTransitionProvider({
     }
 
     type SimPhase = "igniting" | "engulfing" | "covered" | "revealing";
-    let simPhase: SimPhase = isEntrance ? "revealing" : "igniting";
+    let simPhase: SimPhase = isEntrance ? "covered" : "igniting";
 
     const igniteStartTime = performance.now();
     let engulfStartTime = 0;
-    let revealStartTime = isEntrance ? performance.now() : 0;
-    let coveredWaitTimeout: NodeJS.Timeout | null = null;
+    let coveredStartTime = isEntrance ? performance.now() : 0;
+    let revealStartTime = 0;
 
     if (isEntrance) {
       fireBuffer.fill(9);
     }
 
-    const triggerReveal = () => {
+    const attemptReveal = () => {
       if (simPhase === "covered") {
+        // Enforce brief minimum covered duration (70ms) so instant-cached pages don't flicker
+        const coveredElapsed = performance.now() - coveredStartTime;
+        const MIN_COVERED_MS = 70;
+
+        if (coveredElapsed < MIN_COVERED_MS) {
+          setTimeout(() => {
+            if (simPhase === "covered" && pageIsReadyRef.current) {
+              simPhase = "revealing";
+              revealStartTime = performance.now();
+            }
+          }, MIN_COVERED_MS - coveredElapsed);
+          return;
+        }
+
         simPhase = "revealing";
         revealStartTime = performance.now();
       }
     };
-    startRevealCallbackRef.current = triggerReveal;
+
+    triggerRevealRef.current = () => {
+      if (simPhase === "covered") {
+        attemptReveal();
+      }
+      // If still igniting or engulfing, pageIsReadyRef.current is now true,
+      // so when engulfing completes, it will automatically call attemptReveal()!
+    };
 
     const handleResize = () => {
       if (!canvas) return;
@@ -341,21 +446,22 @@ export function AsciiFireTransitionProvider({
           // Viewport completely engulfed!
           simPhase = "covered";
           fireBuffer.fill(9);
+          coveredStartTime = performance.now();
 
           // Phase 3: Navigate using Next.js App Router while screen is 100% covered
           if (targetUrlRef.current) {
             router.push(targetUrlRef.current);
           }
 
-          // Safety fallback: if route change is delayed, reveal after 650ms
-          coveredWaitTimeout = setTimeout(() => {
-            triggerReveal();
-          }, 650);
+          // If the destination page is ALREADY marked ready, proceed to reveal
+          if (pageIsReadyRef.current) {
+            attemptReveal();
+          }
         }
       }
 
       // ─────────────────────────────────────────────────────────────
-      // Phase 3: Covered (Solid boiling fire veil while destination mounts)
+      // Phase 3: Covered (Solid boiling fire veil while destination loads & paints)
       // ─────────────────────────────────────────────────────────────
       else if (simPhase === "covered") {
         for (let y = 0; y < rows; y++) {
@@ -364,10 +470,16 @@ export function AsciiFireTransitionProvider({
             fireBuffer[rowIdx + x] = Math.random() < 0.95 ? 9 : 8;
           }
         }
+
+        // Safety fallback: only if a fatal error blocks navigation for over 12 seconds
+        if (time - coveredStartTime > 12000) {
+          simPhase = "revealing";
+          revealStartTime = performance.now();
+        }
       }
 
       // ─────────────────────────────────────────────────────────────
-      // Phase 4: Reveal (Flames retreat upward off top, revealing console from bottom)
+      // Phase 4: Reveal (Flames retreat upward off top, revealing page from bottom)
       // ─────────────────────────────────────────────────────────────
       else if (simPhase === "revealing") {
         const elapsed = time - revealStartTime;
@@ -376,7 +488,7 @@ export function AsciiFireTransitionProvider({
         const ease = Math.pow(progress, 0.9);
         const retreatBase = Math.floor(rows * (1 - ease * 1.25));
 
-        // Rows below the retreat line are cleared (revealing console from bottom up)
+        // Rows below the retreat line are cleared (revealing page from bottom up)
         for (let x = 0; x < cols; x++) {
           const wave1 = Math.sin(x * 0.18 + time * 0.008) * 3;
           const wave2 = Math.cos(x * 0.35 - time * 0.012) * 2;
@@ -410,11 +522,12 @@ export function AsciiFireTransitionProvider({
         }
 
         // ───────────────────────────────────────────────────────────
-        // Phase 5: Finish (Clean unmount, console fully interactive)
+        // Phase 5: Finish (Clean unmount, page fully interactive)
         // ───────────────────────────────────────────────────────────
         if (progress >= 1) {
-          if (coveredWaitTimeout) clearTimeout(coveredWaitTimeout);
+          triggerRevealRef.current = null;
           isTransitioningRef.current = false;
+          pageIsReadyRef.current = false;
           targetUrlRef.current = null;
           setIsActive(false);
           return;
@@ -470,7 +583,7 @@ export function AsciiFireTransitionProvider({
 
     return () => {
       if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      if (coveredWaitTimeout) clearTimeout(coveredWaitTimeout);
+      triggerRevealRef.current = null;
       window.removeEventListener("resize", handleResize);
     };
   }, [isActive, router]);
@@ -480,6 +593,7 @@ export function AsciiFireTransitionProvider({
       value={{
         triggerTransition,
         triggerEntranceReveal,
+        markPageReady,
         isTransitioning: isActive,
       }}
     >
