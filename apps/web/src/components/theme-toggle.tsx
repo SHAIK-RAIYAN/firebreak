@@ -1,12 +1,15 @@
 "use client";
 
+import { MoonIcon, type MoonIconHandle } from "@/components/ui/moon";
+import { SunIcon, type SunIconHandle } from "@/components/ui/sun";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { Sun, Moon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 
 export function ThemeToggle() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const sunRef = useRef<SunIconHandle>(null);
+  const moonRef = useRef<MoonIconHandle>(null);
 
   useEffect(() => {
     const timer = setTimeout(() => setMounted(true), 0);
@@ -15,24 +18,49 @@ export function ThemeToggle() {
 
   if (!mounted) {
     return (
-      <div className="w-8 h-8 rounded border border-[var(--line)] bg-[var(--surface)] opacity-50" />
+      <div
+        aria-hidden="true"
+        className="w-8 h-8 rounded-lg border border-[var(--line)] bg-[var(--surface)] opacity-40 shrink-0"
+      />
     );
   }
 
   const isDark = resolvedTheme === "dark";
 
+  const handleToggle = () => {
+    if (isDark) {
+      sunRef.current?.startAnimation();
+      setTheme("light");
+    } else {
+      moonRef.current?.startAnimation();
+      setTheme("dark");
+    }
+  };
+
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      onClick={handleToggle}
+      onMouseEnter={() => {
+        if (isDark) sunRef.current?.startAnimation();
+        else moonRef.current?.startAnimation();
+      }}
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
-      className="p-1.5 rounded-md border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] transition-colors focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
-      title={`Current: ${theme} (click to toggle)`}
+      title={`Switch to ${isDark ? "light" : "dark"} mode`}
+      className="relative flex items-center justify-center w-8 h-8 rounded-lg border border-[var(--line)] bg-[var(--surface)] hover:bg-[var(--line)] text-[var(--fg)] hover:text-[var(--accent)] transition-all shrink-0 focus-visible:outline-2 focus-visible:outline-[var(--accent)]"
     >
       {isDark ? (
-        <Sun className="w-4 h-4 text-amber-300" strokeWidth={1.5} />
+        <SunIcon
+          ref={sunRef}
+          size={16}
+          className="text-neutral-300 hover:text-neutral-50 transition-colors"
+        />
       ) : (
-        <Moon className="w-4 h-4 text-indigo-600" strokeWidth={1.5} />
+        <MoonIcon
+          ref={moonRef}
+          size={16}
+          className="text-indigo-600 dark:text-indigo-400 transition-colors"
+        />
       )}
     </button>
   );
