@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
@@ -23,6 +23,7 @@ import {
 import { Logo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CommandPalette } from "./command-palette";
+import { authClient } from "@/lib/auth-client";
 
 type NavItem = {
   href: string;
@@ -48,9 +49,23 @@ export function AppShell({
 }) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
+  const [signingOut, setSigningOut] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const shouldReduceMotion = useReducedMotion();
+
+  // Close sign out modal on Escape key
+  useEffect(() => {
+    if (!showSignOutModal) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && !signingOut) {
+        setShowSignOutModal(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [showSignOutModal, signingOut]);
 
   const navItems: NavItem[] = [
     { href: "/app", label: "Overview", icon: Flame },
@@ -106,13 +121,24 @@ export function AppShell({
     return { url, label };
   });
 
-  const handleSignOut = async () => {
+  const handleConfirmSignOut = async () => {
     try {
-      await fetch("/api/auth/sign-out", { method: "POST" });
-      router.push("/login");
+      setSigningOut(true);
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.push("/");
+            router.refresh();
+          },
+        },
+      });
+      // Fallback in case onSuccess isn't called
+      router.push("/");
+      router.refresh();
     } catch (err) {
-      console.error(err);
-      router.push("/login");
+      console.error("Sign out error:", err);
+      router.push("/");
+      router.refresh();
     }
   };
 
@@ -277,9 +303,10 @@ export function AppShell({
               <ThemeToggle />
               <button
                 type="button"
-                onClick={handleSignOut}
-                className="p-1.5 rounded-md border border-(--line) bg-(--surface) hover:bg-rose-950/20 hover:text-rose-400 hover:border-rose-900/40 text-(--fg-muted) transition"
+                onClick={() => setShowSignOutModal(true)}
+                className="p-1.5 rounded-md border border-(--line) bg-(--surface) hover:bg-rose-950/20 hover:text-rose-400 hover:border-rose-900/40 text-(--fg-muted) transition cursor-pointer"
                 title="Sign out"
+                aria-haspopup="dialog"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -378,6 +405,125 @@ export function AppShell({
           </div>
         </main>
       </div>
+
+      {/* Sign Out Confirmation Modal */}
+      <AnimatePresence>
+        {showSignOutModal && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="signout-dialog-title"
+            aria-describedby="signout-dialog-desc"
+            onClick={(e) => {
+              if (e.target === e.currentTarget && !signingOut) {
+                setShowSignOutModal(false);
+              }
+            }}
+          >
+            <motion.div
+              initial={shouldReduceMotion ? { opacity: 1 } : { opacity: 0, scale: 0.96, y: 8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ duration: 0.18, ease: "easeOut" }}
+              className="relative w-full max-w-md rounded-xl border border-(--line) bg-(--bg-raised) p-6 shadow-2xl space-y-5"
+            >
+              {/* Header with Icon and Close Button */}
+              <div className="flex items-start justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-rose-900/40 bg-rose-950/20 text-rose-400">
+                    <LogOut className="h-5 w-5" />
+                  </div>
+                  <div>
+                    <h3 id="signout-dialog-title" className="text-base font-bold text-(--fg)">
+                      Confirm Sign Out
+                    </h3>
+                    <p className="text-xs font-mono text-(--fg-subtle)">
+                      Operator session termination
+                    </p>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setShowSignOutModal(false)}
+                  disabled={signingOut}
+                  className="rounded-lg p-1 text-(--fg-muted) hover:bg-(--surface) hover:text-(--fg) transition disabled:opacity-50 cursor-pointer"
+                  aria-label="Close dialog"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
+
+              {/* Description */}
+              <p id="signout-dialog-desc" className="text-sm text-(--fg-muted) leading-relaxed">
+                Are you sure you want to sign out of Firebreak? Your active session will be ended and you will be returned to the home screen.
+              </p>
+
+              {/* Operator details box */}
+              <div className="flex items-center gap-3 rounded-lg border border-(--line) bg-(--surface)/60 p-3">
+                {userAvatar ? (
+                  <Image
+                    src={userAvatar}
+                    alt={userName}
+                    width={32}
+                    height={32}
+                    unoptimized
+                    className="h-8 w-8 rounded-full border border-(--line) shrink-0"
+                  />
+                ) : (
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-(--line) bg-(--surface) font-mono text-xs font-bold text-(--accent)">
+                    {userName.charAt(0).toUpperCase()}
+                  </div>
+                )}
+                <div className="min-w-0 flex-1 truncate">
+                  <div className="text-xs font-semibold text-(--fg) truncate">
+                    {userName}
+                  </div>
+                  {userEmail && (
+                    <div className="text-[11px] font-mono text-(--fg-subtle) truncate">
+                      {userEmail}
+                    </div>
+                  )}
+                </div>
+                <span className="shrink-0 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-mono text-emerald-400">
+                  active
+                </span>
+              </div>
+
+              {/* Actions Footer */}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setShowSignOutModal(false)}
+                  disabled={signingOut}
+                  className="rounded-lg border border-(--line) bg-(--surface) px-4 py-2 text-xs font-medium text-(--fg) hover:bg-(--surface-hover) transition disabled:opacity-50 cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={handleConfirmSignOut}
+                  disabled={signingOut}
+                  className="inline-flex items-center gap-2 rounded-lg bg-rose-600 hover:bg-rose-500 px-4 py-2 text-xs font-semibold text-white shadow-sm transition disabled:opacity-50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
+                >
+                  {signingOut ? (
+                    <>
+                      <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+                      <span>Signing out...</span>
+                    </>
+                  ) : (
+                    <>
+                      <LogOut className="h-3.5 w-3.5" />
+                      <span>Sign Out</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

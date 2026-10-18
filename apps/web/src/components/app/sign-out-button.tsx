@@ -14,13 +14,17 @@ export function SignOutButton() {
       await authClient.signOut({
         fetchOptions: {
           onSuccess: () => {
-            router.push("/login");
+            router.push("/");
+            router.refresh();
           },
         },
       });
+      router.push("/");
+      router.refresh();
     } catch (err) {
       console.error("Sign out error:", err);
-      setLoading(false);
+      router.push("/");
+      router.refresh();
     }
   };
 
