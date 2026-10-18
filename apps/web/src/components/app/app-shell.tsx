@@ -316,7 +316,7 @@ export function AppShell({
                   {breadcrumbItems.map((item, idx) => {
                     const isLast = idx === breadcrumbItems.length - 1;
                     return (
-                      <div key={item.url} className="flex items-center gap-1.5 shrink-0">
+                      <div key={`bc-${item.url}-${idx}`} className="flex items-center gap-1.5 shrink-0">
                         {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-(--fg-subtle) shrink-0" />}
                         {isLast ? (
                           <span className="font-semibold text-(--fg) shrink-0" aria-current="page">
