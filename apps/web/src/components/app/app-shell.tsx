@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import {
   Flame,
   Layers,
@@ -49,6 +50,7 @@ export function AppShell({
   const [mobileOpen, setMobileOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const shouldReduceMotion = useReducedMotion();
 
   const navItems: NavItem[] = [
     { href: "/app", label: "Overview", icon: Flame },
@@ -65,17 +67,42 @@ export function AppShell({
     { href: "/app/settings/account", label: "Account", icon: User },
   ];
 
-  // Compute breadcrumbs from pathname
+  // Match active item accurately, supporting nested routes and dynamic IDs
+  const isItemActive = (href: string) => {
+    if (href === "/app") return pathname === "/app";
+    return pathname === href || pathname.startsWith(href + "/");
+  };
+
+  // Compute breadcrumbs from pathname with sensible labels and fallback URLs
   const pathParts = pathname.split("/").filter(Boolean);
   const breadcrumbItems = pathParts.map((part, index) => {
-    const url = "/" + pathParts.slice(0, index + 1).join("/");
+    let url = "/" + pathParts.slice(0, index + 1).join("/");
     let label = part;
-    if (part === "app") label = "Console";
-    else if (part === "incidents") label = "Incidents";
-    else if (part === "services") label = "Services";
-    else if (part === "integrations") label = "Integrations";
-    else if (part === "settings") label = "Settings";
-    else if (part.startsWith("inc_") || part.startsWith("INC-")) label = part;
+    if (part === "app") {
+      label = "Console";
+      url = "/app";
+    } else if (part === "incidents") {
+      label = "Incidents";
+    } else if (part === "services") {
+      label = "Services";
+    } else if (part === "integrations") {
+      label = "Integrations";
+    } else if (part === "settings") {
+      label = "Settings";
+      url = "/app/settings/ai";
+    } else if (part === "ai") {
+      label = "AI Keys";
+    } else if (part === "mcp") {
+      label = "MCP Client";
+    } else if (part === "account") {
+      label = "Account";
+    } else if (part === "new") {
+      label = "New Service";
+    } else if (part.startsWith("inc_") || part.startsWith("INC-")) {
+      label = part.length > 16 ? `${part.slice(0, 14)}…` : part;
+    } else if (part.startsWith("srv_")) {
+      label = part.length > 16 ? `${part.slice(0, 14)}…` : part;
+    }
     return { url, label };
   });
 
@@ -131,42 +158,64 @@ export function AppShell({
           </div>
         </div>
 
-        {/* Navigation items */}
+        {/* Navigation items with shared layout transition for active pill and purple indicator */}
         <nav className="flex-1 space-y-1 overflow-y-auto p-2.5">
           {navItems.map((item) => {
             const Icon = item.icon;
-            const isActive =
-              item.href === "/app"
-                ? pathname === "/app"
-                : pathname.startsWith(item.href);
+            const isActive = isItemActive(item.href);
 
             return (
               <Link
                 key={item.href}
                 href={item.href}
                 onClick={() => setMobileOpen(false)}
-                className={`relative flex items-center gap-3 rounded-lg px-3 py-2 text-xs font-medium transition group ${
+                className={`relative flex items-center gap-3 rounded-lg py-2 text-xs font-medium transition-colors group focus-visible:outline-2 focus-visible:outline-[var(--accent)] ${
+                  collapsed ? "justify-center px-2" : "px-3"
+                } ${
                   isActive
-                    ? "bg-[var(--surface)] text-[var(--fg)] font-semibold shadow-xs"
-                    : "text-[var(--fg-muted)] hover:bg-[var(--surface)]/60 hover:text-[var(--fg)]"
+                    ? "text-[var(--fg)] font-semibold"
+                    : "text-[var(--fg-muted)] hover:text-[var(--fg)] hover:bg-[var(--surface)]/40"
                 }`}
                 title={collapsed ? item.label : undefined}
               >
+                {/* Gliding Active Background Pill */}
                 {isActive && (
-                  <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r bg-[var(--accent)]" />
+                  <motion.div
+                    layoutId="sidebar-active-pill"
+                    className="absolute inset-0 rounded-lg bg-[var(--surface)] border border-[var(--line)] shadow-xs"
+                    transition={
+                      shouldReduceMotion
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 420, damping: 36 }
+                    }
+                  />
                 )}
+
+                {/* Gliding Left Purple Indicator Bar */}
+                {isActive && (
+                  <motion.div
+                    layoutId="sidebar-active-indicator"
+                    className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-r bg-[var(--accent)] z-10"
+                    transition={
+                      shouldReduceMotion
+                        ? { duration: 0 }
+                        : { type: "spring", stiffness: 420, damping: 36 }
+                    }
+                  />
+                )}
+
                 <Icon
-                  className={`w-4 h-4 shrink-0 transition-colors ${
+                  className={`w-4 h-4 shrink-0 transition-colors relative z-10 ${
                     isActive
                       ? "text-[var(--accent)]"
                       : "text-[var(--fg-muted)] group-hover:text-[var(--fg)]"
                   }`}
                 />
                 {!collapsed && (
-                  <span className="flex-1 truncate">{item.label}</span>
+                  <span className="flex-1 truncate relative z-10">{item.label}</span>
                 )}
                 {!collapsed && item.badge !== undefined && (
-                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 relative z-10">
                     {item.badge}
                   </span>
                 )}
@@ -252,25 +301,40 @@ export function AppShell({
               <Menu className="w-5 h-5" />
             </button>
 
-            {/* Breadcrumb */}
-            <div className="hidden sm:flex items-center gap-1.5 font-mono text-xs text-[var(--fg-muted)]">
-              {breadcrumbItems.map((item, idx) => (
-                <div key={item.url} className="flex items-center gap-1.5">
-                  {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[var(--fg-subtle)]" />}
-                  {idx === breadcrumbItems.length - 1 ? (
-                    <span className="font-semibold text-[var(--fg)]">
-                      {item.label}
-                    </span>
-                  ) : (
-                    <Link
-                      href={item.url}
-                      className="hover:text-[var(--accent)] transition"
-                    >
-                      {item.label}
-                    </Link>
-                  )}
-                </div>
-              ))}
+            {/* Breadcrumb with subtle transition in fixed-height header */}
+            <div className="hidden sm:flex items-center h-6 overflow-hidden font-mono text-xs text-[var(--fg-muted)]">
+              <AnimatePresence mode="popLayout" initial={false}>
+                <motion.nav
+                  key={pathname}
+                  aria-label="Breadcrumbs"
+                  initial={shouldReduceMotion ? false : { opacity: 0, x: -4 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={shouldReduceMotion ? undefined : { opacity: 0, x: 4 }}
+                  transition={{ duration: shouldReduceMotion ? 0 : 0.15, ease: [0.16, 1, 0.3, 1] }}
+                  className="flex items-center gap-1.5 shrink-0"
+                >
+                  {breadcrumbItems.map((item, idx) => {
+                    const isLast = idx === breadcrumbItems.length - 1;
+                    return (
+                      <div key={item.url} className="flex items-center gap-1.5 shrink-0">
+                        {idx > 0 && <ChevronRight className="w-3.5 h-3.5 text-[var(--fg-subtle)] shrink-0" />}
+                        {isLast ? (
+                          <span className="font-semibold text-[var(--fg)] shrink-0" aria-current="page">
+                            {item.label}
+                          </span>
+                        ) : (
+                          <Link
+                            href={item.url}
+                            className="hover:text-[var(--accent)] transition-colors shrink-0"
+                          >
+                            {item.label}
+                          </Link>
+                        )}
+                      </div>
+                    );
+                  })}
+                </motion.nav>
+              </AnimatePresence>
             </div>
           </div>
 
@@ -293,9 +357,25 @@ export function AppShell({
           </div>
         </header>
 
-        {/* Main Content Body */}
+        {/* Main Content Body with coordinated route transition */}
         <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
-          <div className="mx-auto max-w-7xl">{children}</div>
+          <div className="mx-auto max-w-7xl">
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={pathname}
+                initial={shouldReduceMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={shouldReduceMotion ? undefined : { opacity: 0, y: -4 }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 0.16,
+                  ease: [0.16, 1, 0.3, 1], // Firebreak --ease-out: cubic-bezier(0.16, 1, 0.3, 1)
+                }}
+                className="w-full"
+              >
+                {children}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         </main>
       </div>
     </div>
