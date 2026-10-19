@@ -1,212 +1,108 @@
-# Firebreak
+# 🔥 Firebreak
 
-> **Stop the spread. Roll back bad deploys with proof.**
+> **Stop the spread. Roll back broken production deploys with proof.**
 
-Firebreak is an autonomous incident diagnosis and verified rollback platform for teams shipping on Vercel and GitHub. When bad code reaches production, Firebreak traces the error stack to the exact breaking commit, proposes a safe rollback with drift validation, waits for human operator approval, executes the rollback, and verifies recovery through automated health probes. It exposes this entire workflow through a standardized Model Context Protocol (MCP) server built with **NitroStack**.
+Firebreak is an automated incident diagnosis and verified rollback platform for teams shipping on **GitHub** and **Vercel**, powered by the **NitroStack Model Context Protocol (MCP)** framework.
+
+When a bug crashes production, Firebreak immediately traces the error stack to the exact breaking commit, stages a drift-safe rollback, requires human approval, and verifies recovery with live health probes.
 
 ---
 
-## System Architecture
+## ✨ Key Features
+
+- 🎯 **Deterministic Culprit Ranking**: Analyzes git diffs and error stack frames to identify the exact breaking commit. Zero guessing, zero AI hallucinations.
+- 🤖 **AI Root Cause Analysis**: Leverages Google Gemini to explain what broke, why it broke, and how to fix the code.
+- 🛡️ **Human-in-the-Loop Safety**: Production rollbacks always require explicit operator approval. Preflight checks prevent rollbacks if production state has drifted.
+- ⚡ **Instant Vercel Rollback**: Rolls back production atomically in milliseconds by pointing the production domain to the last known healthy deployment.
+- 🩺 **Automated Health Probes**: Verifies recovery with live probes until 3 consecutive HTTP 200 OK responses are confirmed.
+- 🧩 **NitroStack MCP Server**: 9 tools and 3 interactive visual widgets that integrate directly with **NitroStudio**, **Claude Code**, **Cursor**, and **ChatGPT**.
+
+---
+
+## 🔄 The 6-Step Incident Lifecycle
 
 ```text
-                         ┌────────────────────────── MCP clients ──────────────────────────┐
-                         │  NitroStudio (local, stdio)   Claude Code / Cursor / Claude (HTTP) │
-                         └───────────────┬──────────────────────────────┬──────────────────┘
-                                         │ stdio (dev)                  │ Streamable HTTP  POST /mcp
-                                         │                              │ Authorization: Bearer fbk_…
-                              ┌──────────▼──────────────────────────────▼──────────┐
-                              │  apps/mcp  — NitroStack MCP server (long-running)   │
-                              │  tools · widgets (ui://widget/*.html) · McpKeyGuard │
-                              │  host: Northflank / Docker, 1 instance             │
-                              └──────────┬─────────────────────────────┬────────────┘
-                                         │ imports                     │ inngest.send()
-┌──────────────┐  HTTPS   ┌──────────────▼─────────────────────────────▼────────────┐
-│   Browser    ├─────────►│  apps/web — Next.js 16 on Vercel Hobby                   │
-│ marketing +  │◄─────────┤  • marketing pages (static, SEO, motion)                  │
-│ app (/app/*) │ polling  │  • /api/v1/* REST (session auth)                          │
-└──────────────┘          │  • /api/v1/alerts/{svc}  (HMAC)  ◄──── alert fixture CLI  │
-                          │  • /api/v1/integrations/github/webhook ◄── GitHub App     │
-                          │  • /api/inngest  (workflow functions) ◄──► Inngest Cloud  │
-                          └──────────────┬───────────────────────────────────────────┘
-                                         │ imports
-                          ┌──────────────▼───────────────────────────────────────────┐
-                          │  packages/core — ALL business logic (pure TS, tested)     │
-                          │  domain (state machines, ranking, preflight) · repo (DB)  │
-                          │  adapters (github, vercel, http-probe) · crypto · ai      │
-                          │  inngest client + event schemas                            │
-                          └───────┬───────────────┬──────────────┬───────────────────┘
-                                  │               │              │
-                           Neon Postgres     GitHub API     Vercel API      AI providers
-                           (neon-http)      (GitHub App)   (user token)     (BYOK/default)
+[1. DETECT]  ──►  [2. TRACE]  ──►  [3. RANK]  ──►  [4. PROPOSE]  ──►  [5. APPROVE]  ──►  [6. VERIFY]
+ Alert Ingest     Git History     Offending Commit   Drift-Safe         Human Operator    3x Live 200 OKs
+ HMAC Signed      Vercel Deploys  Isolated (0 AI)   Rollback Staged    Confirms Action   Service Healed
 ```
+
+1. **Detect**: Ingests alerts via secure HMAC-SHA256 signed webhooks.
+2. **Trace**: Matches the failing production deployment against the last healthy deployment.
+3. **Rank**: A deterministic algorithm scores commits by stack frame overlaps and code diffs.
+4. **Propose**: Stages a rollback proposal targeting the last known good deployment.
+5. **Approve**: An operator clicks approve in the Firebreak Console or approves via MCP tool.
+6. **Verify**: Confirms production health with automated probes before resolving the incident.
 
 ---
 
-## The 6-Step Incident Loop
+## 🛠️ NitroStack MCP Tools & Live Widgets
 
-```text
-[DETECT] ──► [TRACE] ──► [RANK] ──► [PROPOSE] ──► [APPROVE] ──► [VERIFY]
-  Alert        Git Diff     Scoring     Preflight     Human Confirms  3x 200 OK
-  HMAC         Timeline     Engine      & Drift Check & Rollback      Live Probes
-```
+Firebreak includes a full-featured MCP server with **9 tools** and **3 live interactive widgets**:
 
-1. **Detect**: Alert intake verifies signed HMAC-SHA256 signatures with timestamp replay protection.
-2. **Trace**: Correlates the broken production deployment with the last known healthy deployment via GitHub App Octokit and Vercel APIs.
-3. **Rank**: A deterministic scoring engine ranks candidate commits using stack frame overlap, diff patch hunks, risky paths (pricing, migration, auth), and author recency. Zero guessing.
-4. **Propose**: Runs preflight validation (target is `READY`, production SHA matches alert, target is within maximum rollback depth).
-5. **Approve & Execute**: Requires explicit human authorization (via Web Console or authenticated MCP tool). Swaps Vercel deployment alias atomically.
-6. **Verify**: Polls live service health endpoint until 3 consecutive HTTP 200 responses with matching deployment commit SHAs are recorded.
-
----
-
-## NitroStack Model Context Protocol (MCP) Server
-
-| Tool | Category | Widget | Description |
+| Tool | Category | Live UI Widget | Description |
 | :--- | :--- | :--- | :--- |
-| `list_services` | Services | — | List protected services (GitHub repository + Vercel project + health URL) and their active incident status. |
-| `list_incidents` | Incidents | — | List all open and active production incidents for the authenticated workspace. |
-| `get_incident` | Incidents | `incident-card` | Retrieve full incident details, comparing the bad deployment vs. last known healthy deployment with top suspect summary. |
-| `get_suspects` | Incidents | `suspect-list` | Inspect deterministic scoring breakdown, file overlaps, and evidence weights pointing to the culprit commit. |
-| `get_analysis` | Incidents | — | Retrieve AI incident diagnosis, root cause summary, and remediation suggestions. |
-| `get_timeline` | Incidents | — | Chronological audit trail of all alerts, ranking events, action proposals, approvals, and health probe verifications. |
-| `propose_rollback` | Actions | `action-status` | Run preflight safety and drift checks, then stage a verified rollback proposal to the last known healthy deployment. |
-| `get_action_status`| Actions | `action-status` | Follow real-time rollback execution status, atomic Vercel deployment alias swap, and 3x consecutive health probe recovery. |
-| `approve_action` | Actions | `action-status` | Record human operator approval and trigger immediate production rollback. Requires `actions:approve` scope. |
+| `list_services` | Services | — | List all protected repos, health endpoints, and active incident status. |
+| `list_incidents` | Incidents | — | List all open and resolved incidents for the workspace. |
+| `get_incident` | Incidents | `incident-card` | Live card showing incident status, bad vs. good deploys, and top suspect. |
+| `get_suspects` | Incidents | `suspect-list` | Live list ranking culprit commits, confidence scores, and code hunks. |
+| `get_analysis` | Incidents | — | AI root cause explanation and recommended code fixes. |
+| `get_timeline` | Incidents | — | Chronological audit trail of all alerts, actions, and approvals. |
+| `propose_rollback` | Actions | `action-status` | Stages a verified rollback proposal to the last safe deployment. |
+| `get_action_status`| Actions | `action-status` | Real-time status of rollback execution and verification probes. |
+| `approve_action` | Actions | `action-status` | Approves and executes the rollback on Vercel. Displays live recovery. |
 
-### Connecting to AI Editors
+---
 
-#### Claude Code CLI:
+## 🚀 Quick Start
+
+### 1. Clone & Install
+```bash
+git clone https://github.com/SHAIK-RAIYAN/firebreak.git
+cd firebreak
+npm install
+```
+
+### 2. Environment Setup
+Copy `.env.example` to `.env` and configure your keys:
+- `DATABASE_URL`: Neon Postgres connection string
+- `FIREBREAK_MCP_KEY`: Master MCP API key
+- `GITHUB_APP_*`: GitHub App credentials
+- `VERCEL_*`: Vercel token & project IDs
+
+### 3. Run Locally
+```bash
+# Run Next.js Web Console & API (Port 3000)
+npm run dev
+
+# Run NitroStack MCP Server (Dual STDIO + HTTP on Port 3005)
+npm run start:prod
+```
+
+---
+
+## 🧪 Live Demo Simulation (The Controlled Fire)
+
+Test the complete incident response pipeline on a real live target (`firebreak-demo` on Vercel):
 
 ```bash
-claude mcp add firebreak -- npx -y @firebreak/mcp@latest --workspace <WORKSPACE_ID>
-```
-
-#### Claude Desktop (`claude_desktop_config.json`):
-
-```json
-{
-  "mcpServers": {
-    "firebreak": {
-      "command": "npx",
-      "args": ["-y", "@firebreak/mcp@latest", "--workspace", "<WORKSPACE_ID>"],
-      "env": {
-        "FIREBREAK_MCP_KEY": "fbk_mcp_<id>_<secret>"
-      }
-    }
-  }
-}
-```
-
-#### Cursor / Windsurf:
-
-- **Type:** Command
-- **Command:** `npx -y @firebreak/mcp@latest`
-- Or use the HTTP/SSE endpoint: `https://firebreak.dev/api/mcp` with `Authorization: Bearer fbk_mcp_...`
-
----
-
-## Monorepo Layout
-
-```text
-├── apps/
-│   ├── web/           # Next.js 16 App Router (Marketing, Console, REST APIs, Inngest)
-│   └── mcp/           # NitroStack MCP server (9 tools, HTML widgets, McpKeyGuard)
-├── packages/
-│   ├── core/          # Business logic, Neon Drizzle schema, crypto, adapters, AI analyst
-│   └── fixtures/      # Incident simulation CLI (break, fire, reset)
-└── docs/              # 16 detailed architectural, security, and runbook specifications
-```
-
----
-
-## Getting Started
-
-### Prerequisites
-
-- Node.js >= 22 LTS
-- npm or pnpm
-- Inngest CLI (`npx inngest-cli@latest dev`)
-
-### Setup & Local Development
-
-1. **Clone & install dependencies:**
-
-   ```bash
-   git clone https://github.com/SHAIK-RAIYAN/firebreak.git
-   cd firebreak
-   npm install
-   ```
-
-2. **Configure environment:**
-   Copy `.env.example` to `.env` and configure:
-   - `DATABASE_URL` (Neon Postgres pooled URL)
-   - `DATABASE_URL_UNPOOLED` (Neon direct URL for migrations)
-   - `ENCRYPTION_KEY` (32-byte base64-encoded AES-256 key)
-   - `BETTER_AUTH_SECRET` & `BETTER_AUTH_URL`
-   - `GITHUB_APP_*` credentials
-   - `VERCEL_CLIENT_*` credentials
-
-3. **Run database migrations:**
-
-   ```bash
-   npm -w @firebreak/core run db:migrate
-   ```
-
-4. **Start local servers:**
-
-   ```bash
-   # Terminal 1: Inngest Dev Server
-   npx inngest-cli@latest dev -u http://localhost:3000/api/inngest
-
-   # Terminal 2: Next.js Web App
-   npm run dev
-   ```
-
-5. **Typecheck & Test:**
-   ```bash
-   npm run typecheck   # 4 packages, strict TypeScript
-   npm run test        # 106 Vitest unit tests passing
-   ```
-
----
-
-## Incident Simulation Fixtures
-
-Firebreak includes end-to-end fixtures targeting the dedicated `firebreak-demo` environment:
-
-```bash
-# 1. Introduce pricing bug and deploy broken release to Vercel
+# 1. Break production (pushes 3 real commits with a bug to GitHub; waits for 500)
 npm run fixture:break
 
-# 2. Fire signed HMAC alert to trigger Inngest diagnosis pipeline
+# 2. Fire the signed alert into Firebreak
 npm run fixture:fire
 
-# 3. Cleanly reset demo repository to verified healthy state
+# 3. Open Firebreak console or NitroStudio to inspect suspects & approve rollback
+
+# 4. Cleanly reset the demo repo back to healthy
 npm run fixture:reset
 ```
 
 ---
 
-## Operational Runbooks & Scripts
+## 🔒 Security Principles
 
-- **Cryptographic Key Rotation (`npm run ops:reencrypt`):**
-  Decrypts stored credentials with `ENCRYPTION_KEY_PREVIOUS` and re-encrypts with `ENCRYPTION_KEY` across all tenants.
-- **Cancel Stuck Action (`npm run ops:cancel-action <actionId>`):**
-  Safely transitions stuck executing actions to `failed`, transitions incident to `mitigation_failed`, and appends an audit event.
-- **AI Prompt Regression Suite (`npm run test:ai`):**
-  Validates structured output generation and sanitization across candidate LLM providers (Anthropic, OpenAI, Google Gemini, xAI).
-
----
-
-## Security & Privacy Invariants
-
-- **Human-in-the-Loop:** Production rollback mutations **strictly require explicit human authorization**. No autonomous alias swaps occur.
-- **Drift Protection:** Even after human approval, production state is re-validated milliseconds before mutation. If production has drifted, the action aborts safely.
-- **Zero-Trust Encryption:** All third-party tokens and HMAC secrets are stored with **AES-256-GCM** using workspace-derived Additional Authenticated Data (AAD) to prevent ciphertext transplant attacks.
-- **Telemetry & Isolation:** Multi-tenant workspace data is isolated at the database query layer. Source code diffs are transmitted strictly to the customer's chosen BYOK AI provider only during analysis requests.
-
----
-
-## License
-
-MIT © 2026 Firebreak Systems.
+- **Human Authorization Required**: Rollbacks never execute without human sign-off.
+- **Drift Protection**: Production state is re-verified milliseconds before any change.
+- **Zero-Trust Encryption**: All tokens and secrets are encrypted with **AES-256-GCM**.
+- **Isolated Telemetry**: Source code diffs are analyzed only on explicit demand.
