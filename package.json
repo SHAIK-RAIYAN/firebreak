@@ -9,7 +9,9 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build",
+    "build": "npm install && turbo run build --filter=@firebreak/mcp...",
+    "build:all": "turbo run build",
+    "start": "npm -w @firebreak/mcp run start:prod",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test": "turbo run test",
@@ -21,10 +23,14 @@
     "ops:cancel-action": "npx tsx --env-file=.env packages/core/scripts/ops-cancel-action.ts",
     "test:ai": "npx tsx --env-file=.env packages/core/scripts/test-ai.ts"
   },
+  "dependencies": {
+    "@nitrostack/core": "^1",
+    "@nitrostack/cli": "^1"
+  },
   "devDependencies": {
     "turbo": "^2"
   },
   "engines": {
-    "node": ">=22"
+    "node": ">=20"
   }
 }
