@@ -15,8 +15,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ||
+  (process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : "https://firebreak-pi.vercel.app");
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://firebreak.dev"),
+  metadataBase: new URL(siteUrl),
   title: { default: "Firebreak — Roll back bad deploys with proof", template: "%s · Firebreak" },
   description: "Firebreak finds the deploy that broke production, rolls it back on Vercel when you approve, and proves it recovered. With an MCP server built on NitroStack.",
   applicationName: "Firebreak",
@@ -26,13 +32,22 @@ export const metadata: Metadata = {
     type: "website",
     siteName: "Firebreak",
     url: "/",
-    title: "Firebreak — Stop the spread.",
-    description: "Find the bad deploy, roll back with approval, prove recovery.",
+    title: "Firebreak — Stop the spread. Roll back with proof.",
+    description: "Firebreak finds the deploy that broke production, stages a preflight-checked rollback, and proves recovery with automated health probes.",
+    images: [
+      {
+        url: "/images/image.png",
+        width: 1912,
+        height: 948,
+        alt: "Firebreak — Stop the spread. Roll back with proof.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Firebreak — Stop the spread.",
-    description: "Find the bad deploy, roll back with approval, prove recovery.",
+    title: "Firebreak — Stop the spread. Roll back with proof.",
+    description: "Firebreak finds the deploy that broke production, stages a preflight-checked rollback, and proves recovery with automated health probes.",
+    images: ["/images/image.png"],
   },
   robots: { index: true, follow: true },
   formatDetection: { telephone: false },
