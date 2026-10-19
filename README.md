@@ -106,3 +106,10 @@ npm run fixture:reset
 - **Drift Protection**: Production state is re-verified milliseconds before any change.
 - **Zero-Trust Encryption**: All tokens and secrets are encrypted with **AES-256-GCM**.
 - **Isolated Telemetry**: Source code diffs are analyzed only on explicit demand.
+
+---
+
+## 📄 License
+
+[MIT](LICENSE) © 2026 Shaik Raiyan and Firebreak Contributors.
+
