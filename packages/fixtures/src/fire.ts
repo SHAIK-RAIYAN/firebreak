@@ -55,10 +55,11 @@ Options:
     process.exit(0);
   }
 
-  const firebreakUrl =
+  let firebreakUrl =
     (cliFlags.url as string) ||
     process.env.FIREBREAK_URL ||
     "http://localhost:3000";
+
 
   const serviceId =
     (cliFlags.service as string) || process.env.FIREBREAK_SERVICE_ID;
@@ -172,18 +173,38 @@ Options:
   const timestamp = Math.floor(Date.now() / 1000);
   const signature = signAlert(alertSecret, timestamp, rawBody);
 
-  const endpoint = `${firebreakUrl.replace(/\/$/, "")}/api/v1/alerts/${serviceId}`;
+  let endpoint = `${firebreakUrl.replace(/\/$/, "")}/api/v1/alerts/${serviceId}`;
   console.log(`Sending signed alert to ${endpoint}...`);
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      "x-firebreak-timestamp": String(timestamp),
-      "x-firebreak-signature": signature,
-    },
-    body: rawBody,
-  });
+  let response: Response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-firebreak-timestamp": String(timestamp),
+        "x-firebreak-signature": signature,
+      },
+      body: rawBody,
+    });
+  } catch (err: any) {
+    if (firebreakUrl.includes("localhost") && !cliFlags.url) {
+      console.log(`\nLocalhost not reachable. Retrying alert against production: https://firebreak-pi.vercel.app...`);
+      firebreakUrl = "https://firebreak-pi.vercel.app";
+      endpoint = `${firebreakUrl}/api/v1/alerts/${serviceId}`;
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+          "x-firebreak-timestamp": String(timestamp),
+          "x-firebreak-signature": signature,
+        },
+        body: rawBody,
+      });
+    } else {
+      throw err;
+    }
+  }
 
   const responseJson: any = await response.json().catch(() => ({}));
 

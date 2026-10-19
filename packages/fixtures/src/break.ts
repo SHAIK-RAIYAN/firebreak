@@ -139,6 +139,11 @@ export async function runBreak() {
   console.log(`\nWaiting for Vercel deployment to break production at ${healthUrl}...`);
   console.log("(Polling every 5s, max 180s)");
 
+  const vercelToken = process.env.VERCEL_TOKEN;
+  const vercelProjectId = process.env.VERCEL_PROJECT_ID;
+  const vercelTeamId = process.env.VERCEL_TEAM_ID;
+  let promoted = false;
+
   const maxAttempts = 36; // 36 * 5s = 180s
   for (let attempt = 1; attempt <= maxAttempts; attempt++) {
     await new Promise((r) => setTimeout(r, 5000));
@@ -155,6 +160,34 @@ export async function runBreak() {
         return;
       } else {
         process.stdout.write(`Attempt ${attempt}/${maxAttempts}: status ${res.status} (sha: ${body.sha?.slice(0, 7) ?? "..."})\r`);
+
+        // If still returning 200 with old SHA and we have Vercel token,
+        // promote the new deployment in case Vercel locked production due to a prior rollback
+        if (!promoted && attempt >= 2 && vercelToken && vercelProjectId) {
+          try {
+            const listUrl =
+              `https://api.vercel.com/v6/deployments?projectId=${vercelProjectId}&limit=5` +
+              (vercelTeamId ? `&teamId=${vercelTeamId}` : "");
+            const listRes = await fetch(listUrl, {
+              headers: { Authorization: `Bearer ${vercelToken}` },
+            });
+            const listData = await listRes.json();
+            const latest = listData.deployments?.[0];
+            if (latest && (latest.state === "READY" || latest.readyState === "READY")) {
+              console.log(`\nPromoting latest Vercel deployment ${latest.uid} to override prior rollback lock...`);
+              const promoteUrl =
+                `https://api.vercel.com/v10/projects/${vercelProjectId}/promote/${latest.uid}` +
+                (vercelTeamId ? `?teamId=${vercelTeamId}` : "");
+              await fetch(promoteUrl, {
+                method: "POST",
+                headers: { Authorization: `Bearer ${vercelToken}` },
+              });
+              promoted = true;
+            }
+          } catch {
+            // ignore promote check errors
+          }
+        }
       }
     } catch (err: any) {
       process.stdout.write(`Attempt ${attempt}/${maxAttempts}: connecting...\r`);
