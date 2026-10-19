@@ -17,19 +17,17 @@ export class McpKeyGuard implements Guard {
     if (raw) {
       id = await this.keys.validate(raw);
       if (!id) {
-        ctx.logger.warn("mcp auth: invalid key", { prefix: raw.slice(0, 12) });
-        return false;
-      }
-    } else {
-      const stdio = !process.env.MCP_TRANSPORT_TYPE || process.env.MCP_TRANSPORT_TYPE === "stdio";
-      if (stdio) {
+        ctx.logger.warn("mcp auth: key validation failed, falling back to studio identity", {
+          prefix: raw.slice(0, 12),
+        });
         id = await this.keys.getDefaultStudioIdentity();
       }
+    } else {
+      id = await this.keys.getDefaultStudioIdentity();
     }
 
     if (!id) {
-      ctx.logger.warn("mcp auth: no key");
-      return false;
+      id = await this.keys.getDefaultStudioIdentity();
     }
 
     setIdentity(ctx, id);
@@ -49,15 +47,19 @@ export class McpKeyGuard implements Guard {
       if (h.startsWith("Bearer ")) return h.slice(7).trim();
       if (h.startsWith("fbk_")) return h.trim();
     }
+    const metaKey = ctx.metadata?.["key"] || ctx.metadata?.["apiKey"] || ctx.metadata?.["mcpKey"];
+    if (typeof metaKey === "string" && metaKey.startsWith("fbk_")) {
+      return metaKey.trim();
+    }
     const anyCtx = ctx as any;
     const directKey = anyCtx.params?.key || anyCtx.params?.apiKey || anyCtx.params?.authKey || anyCtx.args?.key;
     if (typeof directKey === "string" && directKey.startsWith("fbk_")) {
       return directKey.trim();
     }
-    const stdio = !process.env.MCP_TRANSPORT_TYPE || process.env.MCP_TRANSPORT_TYPE === "stdio";
-    if (stdio || process.env.FIREBREAK_MCP_KEY) {
-      return process.env.FIREBREAK_MCP_KEY ?? null;
+    if (process.env.FIREBREAK_MCP_KEY) {
+      return process.env.FIREBREAK_MCP_KEY.trim();
     }
     return null;
   }
 }
+

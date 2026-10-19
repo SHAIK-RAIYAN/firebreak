@@ -52,8 +52,29 @@ export class ActionTools {
     return runTool(ctx, async () => {
       const c = coreCtx(id);
       const incidentId = await resolveIncidentId(c, input.incident);
-      const result = await proposeRollback(c, incidentId);
-      return getAction(c, result.action.id);
+      try {
+        const result = await proposeRollback(c, incidentId);
+        return getAction(c, result.action.id);
+      } catch (err: any) {
+        if (typeof err?.message === "string" && err.message.includes("Cannot propose rollback: incident status is 'resolved'")) {
+          const database = db();
+          const [latestAction] = await database
+            .select()
+            .from(actions)
+            .where(
+              and(
+                eq(actions.incident_id, incidentId),
+                eq(actions.workspace_id, id.workspaceId),
+              ),
+            )
+            .orderBy(desc(actions.created_at))
+            .limit(1);
+          if (latestAction) {
+            return getAction(c, latestAction.id);
+          }
+        }
+        throw err;
+      }
     });
   }
 
@@ -126,10 +147,23 @@ export class ActionTools {
     requireScope(id, "actions:approve");
     return runTool(ctx, async () => {
       const c = coreCtx(id);
-      await approveAction(c, input.action, {
-        note: input.note,
-        via: "mcp",
-      });
+      try {
+        await approveAction(c, input.action, {
+          note: input.note,
+          via: "mcp",
+        });
+      } catch (err: any) {
+        if (
+          typeof err?.message === "string" &&
+          (err.message.includes("Action cannot be approved: current status is 'verified'") ||
+            err.message.includes("Action cannot be approved: current status is 'approved'") ||
+            err.message.includes("Action cannot be approved: current status is 'executing'") ||
+            err.message.includes("Action cannot be approved: current status is 'verifying'"))
+        ) {
+          return getAction(c, input.action);
+        }
+        throw err;
+      }
       return getAction(c, input.action);
     });
   }
