@@ -8,7 +8,7 @@ dist/
 .next/
 out/
 build/
-src/widgets/out/
+src/widgets/
 
 # Environment and Secrets
 .env

@@ -9,9 +9,9 @@
   ],
   "scripts": {
     "dev": "turbo run dev",
-    "build": "npm install && turbo run build --filter=@firebreak/mcp...",
+    "build": "npm install && turbo run build --filter=@firebreak/mcp... && node scripts/prepare-nitrocloud.mjs",
     "build:all": "turbo run build",
-    "start": "npm -w @firebreak/mcp run start:prod",
+    "start": "nitrostack-cli start",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test": "turbo run test",
