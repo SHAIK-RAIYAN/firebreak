@@ -24,8 +24,8 @@
     "test:ai": "npx tsx --env-file=.env packages/core/scripts/test-ai.ts"
   },
   "dependencies": {
-    "@nitrostack/core": "^1",
-    "@nitrostack/cli": "^1"
+    "@nitrostack/core": "^1.1.2",
+    "@nitrostack/cli": "^1.1.2"
   },
   "devDependencies": {
     "turbo": "^2"

@@ -1,5 +1,5 @@
 import { Injectable } from "@nitrostack/core";
-import { validateMcpKey } from "@firebreak/core";
+import { validateMcpKey, db, workspaces } from "@firebreak/core";
 import type { Identity } from "../auth/identity.js";
 import { createHash } from "node:crypto";
 
@@ -40,5 +40,21 @@ export class KeyService {
 
     this.cache.set(hash, { identity: id, expiresAt: now + 60 * 1000 });
     return id;
+  }
+
+  async getDefaultStudioIdentity(): Promise<Identity | null> {
+    try {
+      const database = db();
+      const rows = await database.select().from(workspaces).limit(1);
+      if (!rows[0]) return null;
+      return {
+        workspaceId: rows[0].id,
+        userId: rows[0].owner_user_id,
+        keyId: "local_studio_dev",
+        scopes: ["incidents:read", "actions:propose", "actions:approve"],
+      };
+    } catch {
+      return null;
+    }
   }
 }
