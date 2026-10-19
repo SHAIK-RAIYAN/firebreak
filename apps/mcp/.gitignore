@@ -23,7 +23,7 @@ src/widgets/out/
 .gemini/
 .opencode/
 skills/
-*.md
+!README.md
 
 # IDE
 .idea/

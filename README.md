@@ -61,19 +61,17 @@ Firebreak is an autonomous incident diagnosis and verified rollback platform for
 
 ## NitroStack Model Context Protocol (MCP) Server
 
-Firebreak provides a dedicated MCP server in `apps/mcp` built with the **NitroStack** framework, exposing 9 standardized tools:
-
-| Tool               | Description                                                                       |
-| ------------------ | --------------------------------------------------------------------------------- |
-| `list_incidents`   | List open, investigating, and resolved incidents for the authenticated workspace. |
-| `get_incident`     | Retrieve full incident room state, candidate list, and verification metrics.      |
-| `rank_suspects`    | Inspect deterministic scoring breakdown, file overlaps, and evidence weights.     |
-| `get_diff`         | Fetch per-file patch and unified git diff for a suspect commit.                   |
-| `propose_rollback` | Run preflight readiness and drift checks, then stage rollback proposal.           |
-| `approve_action`   | Record operator approval and trigger atomic Vercel alias rollback.                |
-| `reject_action`    | Reject proposed action with operator reason to dismiss false positive.            |
-| `poll_health`      | Query recent automated health probes or trigger an active probe check.            |
-| `resolve_incident` | Transition incident to resolved after verified recovery streak.                   |
+| Tool | Category | Widget | Description |
+| :--- | :--- | :--- | :--- |
+| `list_services` | Services | — | List protected services (GitHub repository + Vercel project + health URL) and their active incident status. |
+| `list_incidents` | Incidents | — | List all open and active production incidents for the authenticated workspace. |
+| `get_incident` | Incidents | `incident-card` | Retrieve full incident details, comparing the bad deployment vs. last known healthy deployment with top suspect summary. |
+| `get_suspects` | Incidents | `suspect-list` | Inspect deterministic scoring breakdown, file overlaps, and evidence weights pointing to the culprit commit. |
+| `get_analysis` | Incidents | — | Retrieve AI incident diagnosis, root cause summary, and remediation suggestions. |
+| `get_timeline` | Incidents | — | Chronological audit trail of all alerts, ranking events, action proposals, approvals, and health probe verifications. |
+| `propose_rollback` | Actions | `action-status` | Run preflight safety and drift checks, then stage a verified rollback proposal to the last known healthy deployment. |
+| `get_action_status`| Actions | `action-status` | Follow real-time rollback execution status, atomic Vercel deployment alias swap, and 3x consecutive health probe recovery. |
+| `approve_action` | Actions | `action-status` | Record human operator approval and trigger immediate production rollback. Requires `actions:approve` scope. |
 
 ### Connecting to AI Editors
 
