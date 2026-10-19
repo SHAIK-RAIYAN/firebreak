@@ -21,7 +21,10 @@ const rootWidgets = path.join(root, 'src', 'widgets');
 
 if (fs.existsSync(mcpWidgets)) {
   fs.mkdirSync(rootWidgets, { recursive: true });
-  fs.cpSync(mcpWidgets, rootWidgets, { recursive: true });
+  fs.cpSync(mcpWidgets, rootWidgets, {
+    recursive: true,
+    filter: (src) => !src.includes('node_modules') && !src.includes('.next'),
+  });
   console.log('✓ Synced apps/mcp/src/widgets to ./src/widgets');
 }
 

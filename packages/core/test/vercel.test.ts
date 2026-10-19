@@ -244,5 +244,34 @@ describe("Vercel adapter (vercelClient)", () => {
       await expect(client.rollback("prj_123", "dpl_target")).rejects.toThrow();
       expect(callCount).toBe(1); // Exactly 1 call, never retried!
     });
+
+    it("falls back to promote on Vercel Hobby plan limit (402)", async () => {
+      const calls: string[] = [];
+      vi.spyOn(globalThis, "fetch").mockImplementation(async (input: any) => {
+        const url = typeof input === "string" ? input : input.url;
+        calls.push(url);
+        if (url.includes("/rollback/")) {
+          return new Response(
+            JSON.stringify({
+              error: {
+                code: "plan_limit",
+                message: "To rollback further than the previous production deployment, upgrade to pro.",
+              },
+            }),
+            { status: 402 },
+          );
+        }
+        if (url.includes("/promote/")) {
+          return new Response("", { status: 201 });
+        }
+        return new Response("{}", { status: 200 });
+      });
+
+      const res = await client.rollback("prj_123", "dpl_target");
+      expect(res.status).toBe(201);
+      expect((res.body as any).promoted).toBe(true);
+      expect(calls.some((u) => u.includes("/rollback/"))).toBe(true);
+      expect(calls.some((u) => u.includes("/promote/"))).toBe(true);
+    });
   });
 });

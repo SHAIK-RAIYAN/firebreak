@@ -130,6 +130,27 @@ export default function IncidentRoomPage({
     }
   };
 
+  const handleProposeRollback = async () => {
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/v1/incidents/${id}/actions/rollback`, {
+        method: "POST",
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        alert(data.error?.message || "Failed to propose rollback");
+      } else {
+        setLiveAnnouncement("Rollback proposed and awaiting approval.");
+      }
+      queryClient.invalidateQueries({ queryKey: ["incident", id] });
+      await fetchIncident();
+    } catch (err) {
+      alert((err as Error).message);
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleReject = async (actionId: string) => {
     if (!confirm("Are you sure you want to reject this proposed rollback?")) return;
     setActionLoading(true);
@@ -841,15 +862,37 @@ export default function IncidentRoomPage({
                 action.status === "verification_failed" ||
                 action.status === "rejected" ||
                 action.status === "expired") && (
-                <div className="p-3 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs font-mono text-rose-300 space-y-1">
-                  <div className="font-bold uppercase text-[10px]">{action.status.replace("_", " ")}</div>
-                  <p className="text-[11px]">{action.message}</p>
+                <div className="p-3.5 rounded-lg bg-rose-950/20 border border-rose-900/40 text-xs font-mono text-rose-300 space-y-2.5">
+                  <div className="font-bold uppercase text-[10px] text-rose-400">{action.status.replace("_", " ")}</div>
+                  <p className="text-[11px] leading-relaxed">{action.message}</p>
+                  {(incident.status === "mitigation_failed" || incident.status === "triaged") && (
+                    <button
+                      type="button"
+                      onClick={handleProposeRollback}
+                      disabled={actionLoading}
+                      className="w-full mt-2 py-2 px-3 rounded-lg bg-rose-600/20 hover:bg-rose-600/30 border border-rose-500/40 text-xs font-mono text-rose-200 transition flex items-center justify-center gap-1.5 font-semibold shadow-sm"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${actionLoading ? "animate-spin" : ""}`} />
+                      <span>{actionLoading ? "Preparing Rollback…" : "Re-propose Rollback"}</span>
+                    </button>
+                  )}
                 </div>
               )}
             </div>
           ) : (
-            <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 text-center text-xs font-mono text-(--fg-muted)">
-              No rollback action proposed.
+            <div className="rounded-xl border border-(--line) bg-(--bg-raised) p-5 text-center text-xs font-mono text-(--fg-muted) space-y-3">
+              <p>No rollback action proposed.</p>
+              {(incident.status === "triaged" || incident.status === "mitigation_failed") && (
+                <button
+                  type="button"
+                  onClick={handleProposeRollback}
+                  disabled={actionLoading}
+                  className="py-1.5 px-3 rounded-lg bg-(--accent)/10 hover:bg-(--accent)/20 border border-(--accent)/30 text-xs font-mono text-(--accent) transition inline-flex items-center gap-1.5 font-semibold"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${actionLoading ? "animate-spin" : ""}`} />
+                  <span>{actionLoading ? "Preparing Rollback…" : "Propose Rollback"}</span>
+                </button>
+              )}
             </div>
           )}
         </aside>

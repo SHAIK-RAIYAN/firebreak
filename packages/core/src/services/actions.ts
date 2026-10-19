@@ -740,7 +740,7 @@ export async function executeAction(
   const requestedAtMs = typeof aliasJob?.requestedAt === "number" ? aliasJob.requestedAt : 0;
   if (
     aliasJob &&
-    aliasJob.type === "rollback" &&
+    (aliasJob.type === "rollback" || aliasJob.type === "promote") &&
     aliasJob.toDeploymentId === target.id &&
     requestedAtMs >=
       (action.execution_started_at?.getTime() ?? action.created_at.getTime())
@@ -757,11 +757,38 @@ export async function executeAction(
 
   // 5. Execute rollback call on Vercel
   try {
-    const result = await vercel.rollback(
-      service.vercel_project_id,
-      target.id,
-      `Firebreak INC-${incident.number}: ${incident.title}`,
-    );
+    let result: { status: number; body: unknown };
+    try {
+      result = await vercel.rollback(
+        service.vercel_project_id,
+        target.id,
+        `Firebreak INC-${incident.number}: ${incident.title}`,
+      );
+    } catch (rbErr: unknown) {
+      const error = rbErr as AppError;
+      const errorCode = error?.details?.reason ?? error?.code ?? "VERCEL_ERROR";
+      const errorMessage = String(error?.message ?? "");
+      const isPlanLimit =
+        errorCode === "VERCEL_PLAN_LIMIT" ||
+        errorMessage.includes("Vercel plan limit") ||
+        errorMessage.includes("upgrade to pro");
+
+      if (isPlanLimit) {
+        // Fallback to promote for Vercel Hobby accounts
+        const promoteRes = await vercel.promote(service.vercel_project_id, target.id);
+        result = {
+          status: promoteRes.status,
+          body: {
+            promoted: true,
+            targetDeploymentId: target.id,
+            fallback: "promote",
+            note: "Fell back to atomic promotion because project is on Vercel Hobby plan",
+          },
+        };
+      } else {
+        throw rbErr;
+      }
+    }
 
     const executedAt = now();
     await db
@@ -909,7 +936,11 @@ export async function confirmProduction(
 
     const job = await vercel.getAliasJob(service.vercel_project_id);
 
-    if (job && job.type === "rollback" && job.toDeploymentId === target.id) {
+    if (
+      job &&
+      (job.type === "rollback" || job.type === "promote") &&
+      job.toDeploymentId === target.id
+    ) {
       if (job.jobStatus === "failed") {
         await db
           .update(actions)

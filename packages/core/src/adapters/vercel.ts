@@ -318,14 +318,38 @@ export function vercelClient(opts: VercelClientOptions) {
       const endpoint = `/v1/projects/${encodeURIComponent(projectId)}/rollback/${encodeURIComponent(deploymentId)}${descQuery}`;
 
       // CRITICAL RULE: Never retry rollback() automatically inside the adapter!
-      const res = await request<unknown>(
-        endpoint,
-        {
-          method: "POST",
-        },
-        { skipRetry: true },
-      );
-      return { status: res.status, body: res.data };
+      try {
+        const res = await request<unknown>(
+          endpoint,
+          {
+            method: "POST",
+          },
+          { skipRetry: true },
+        );
+        return { status: res.status, body: res.data };
+      } catch (err: any) {
+        // Vercel Hobby accounts reject rollbacks older than 1 deployment with 402 VERCEL_PLAN_LIMIT.
+        // Fall back gracefully to POST /v10/projects/:id/promote/:deploymentId which works on all tiers!
+        const reason = err?.details?.reason ?? err?.code;
+        const msg = String(err?.message ?? "");
+        if (
+          reason === "VERCEL_PLAN_LIMIT" ||
+          msg.includes("Vercel plan limit") ||
+          msg.includes("upgrade to pro")
+        ) {
+          const promoteRes = await this.promote(projectId, deploymentId);
+          return {
+            status: promoteRes.status,
+            body: {
+              promoted: true,
+              targetDeploymentId: deploymentId,
+              fallback: "promote",
+              note: "Fell back to atomic promotion because project is on Vercel Hobby plan",
+            },
+          };
+        }
+        throw err;
+      }
     },
 
     async promote(projectId: string, deploymentId: string): Promise<{ status: number }> {
