@@ -1,0 +1,98 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 480" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgC" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#090D16"/>
+      <stop offset="100%" stop-color="#040711"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="480" rx="14" fill="url(#bgC)"/>
+  <rect x="2" y="2" width="1096" height="476" rx="12" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <text x="40" y="48" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">DIAGRAM C: THE 6-STEP INCIDENT RESPONSE LOOP</text>
+  <text x="40" y="74" font-family="system-ui, sans-serif" font-size="13" fill="#94A3B8">Automated pipeline from alert ingestion to verified canary recovery streak</text>
+
+  <!-- Step 1: DETECT -->
+  <rect x="40" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#EF4444" stroke-width="1.5"/>
+  <rect x="40" y="115" width="160" height="32" rx="8" fill="#EF4444"/>
+  <text x="50" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">1. DETECT</text>
+  <text x="52" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#FCA5A5">Alert Ingestion</text>
+  <text x="52" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Webhook POST</text>
+  <text x="52" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• HMAC verified</text>
+  <text x="52" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 15m fingerprint dedup</text>
+  <text x="52" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• SSRF guard check</text>
+  <text x="52" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Incident opened</text>
+  <text x="52" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Email alert sent</text>
+  <rect x="52" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="62" y="402" font-family="monospace" font-size="10" fill="#EF4444">status: opened</text>
+
+  <!-- Step 2: TRACE -->
+  <rect x="215" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#F97316" stroke-width="1.5"/>
+  <rect x="215" y="115" width="160" height="32" rx="8" fill="#F97316"/>
+  <text x="225" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">2. TRACE</text>
+  <text x="227" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#FDBA74">Blame Analysis</text>
+  <text x="227" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Vercel deploys diff</text>
+  <text x="227" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• GitHub commit bisect</text>
+  <text x="227" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 8-factor scoring</text>
+  <text x="227" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Top suspect flagged</text>
+  <text x="227" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Patch diff extraction</text>
+  <text x="227" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• AI root cause card</text>
+  <rect x="227" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="237" y="402" font-family="monospace" font-size="10" fill="#F97316">status: triaged</text>
+
+  <!-- Step 3: PROPOSE -->
+  <rect x="390" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#F59E0B" stroke-width="1.5"/>
+  <rect x="390" y="115" width="160" height="32" rx="8" fill="#F59E0B"/>
+  <text x="400" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">3. PROPOSE</text>
+  <text x="402" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#FDE68A">Rollback Staged</text>
+  <text x="402" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Last-good SHA found</text>
+  <text x="402" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 6 Preflight Gates</text>
+  <text x="402" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Drift validation</text>
+  <text x="402" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 15m expiration TTL</text>
+  <text x="402" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Action record created</text>
+  <text x="402" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• MCP action-status</text>
+  <rect x="402" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="412" y="402" font-family="monospace" font-size="9" fill="#F59E0B">awaiting_approval</text>
+
+  <!-- Step 4: APPROVE -->
+  <rect x="565" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="1.5"/>
+  <rect x="565" y="115" width="160" height="32" rx="8" fill="#6366F1"/>
+  <text x="575" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">4. APPROVE</text>
+  <text x="577" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#C7D2FE">Human-in-the-Loop</text>
+  <text x="577" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Hold to Confirm (UI)</text>
+  <text x="577" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Or approve_action tool</text>
+  <text x="577" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Permission check</text>
+  <text x="577" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Actor logged (U / M)</text>
+  <text x="577" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Preflight re-verified</text>
+  <text x="577" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Dispatches Inngest</text>
+  <rect x="577" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="587" y="402" font-family="monospace" font-size="10" fill="#818CF8">status: approved</text>
+
+  <!-- Step 5: EXECUTE -->
+  <rect x="740" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#38BDF8" stroke-width="1.5"/>
+  <rect x="740" y="115" width="160" height="32" rx="8" fill="#38BDF8"/>
+  <text x="750" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A">5. EXECUTE</text>
+  <text x="752" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#BAE6FD">Vercel Promotion</text>
+  <text x="752" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Call Vercel Rollback</text>
+  <text x="752" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 402 plan limit trap</text>
+  <text x="752" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Fallback: v10 promote</text>
+  <text x="752" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Atomic prod alias shift</text>
+  <text x="752" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Polls alias job 45s</text>
+  <text x="752" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Prod SHA confirmed</text>
+  <rect x="752" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="762" y="402" font-family="monospace" font-size="10" fill="#38BDF8">status: executing</text>
+
+  <!-- Step 6: VERIFY -->
+  <rect x="915" y="115" width="160" height="320" rx="8" fill="#1E293B" stroke="#10B981" stroke-width="1.5"/>
+  <rect x="915" y="115" width="160" height="32" rx="8" fill="#10B981"/>
+  <text x="925" y="137" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A">6. VERIFY</text>
+  <text x="927" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#A7F3D0">Canary Health Streak</text>
+  <text x="927" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Probes live health URL</text>
+  <text x="927" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 10s sleep between calls</text>
+  <text x="927" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Max 18 probe attempts</text>
+  <text x="927" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Streak &gt;= 3 required</text>
+  <text x="927" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Probes table persisted</text>
+  <text x="927" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Incident auto-resolves</text>
+  <rect x="927" y="380" width="136" height="35" rx="4" fill="#0F172A"/>
+  <text x="937" y="402" font-family="monospace" font-size="10" fill="#10B981">status: verified</text>
+</svg>

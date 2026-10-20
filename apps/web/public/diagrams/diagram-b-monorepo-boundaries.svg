@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 580" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgB" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B0F19"/>
+      <stop offset="100%" stop-color="#030712"/>
+    </linearGradient>
+    <linearGradient id="boxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E293B"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="580" rx="14" fill="url(#bgB)"/>
+  <rect x="2" y="2" width="1096" height="576" rx="12" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <text x="40" y="48" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">DIAGRAM B: MONOREPO BOUNDARIES &amp; WORKSPACES</text>
+  <text x="40" y="74" font-family="system-ui, sans-serif" font-size="13" fill="#94A3B8">npm workspaces + Turborepo dependency graph, package boundaries, and independent runtime processes</text>
+
+  <!-- Root Container -->
+  <rect x="40" y="105" width="1020" height="440" rx="10" fill="#0F172A" stroke="#334155" stroke-width="1.5"/>
+  <rect x="40" y="105" width="1020" height="34" rx="10" fill="#1E293B"/>
+  <text x="55" y="128" font-family="monospace" font-size="13" font-weight="700" fill="#38BDF8">firebreak/ (npm workspace root • packageManager: npm@11.6.2 • turbo.json)</text>
+
+  <!-- Shared Package: packages/core -->
+  <rect x="65" y="325" width="970" height="195" rx="8" fill="url(#boxGrad)" stroke="#10B981" stroke-width="1.8"/>
+  <text x="85" y="352" font-family="system-ui, sans-serif" font-size="15" font-weight="800" fill="#10B981">packages/core (@firebreak/core • Built with tsup ➔ node22 ESM + DTS)</text>
+  <text x="85" y="372" font-family="system-ui, sans-serif" font-size="12" fill="#94A3B8">The foundational source-of-truth library containing all business logic, database models, encryption, and adapters.</text>
+
+  <rect x="85" y="390" width="220" height="110" rx="6" fill="#0B0F19" stroke="#334155" stroke-width="1"/>
+  <text x="98" y="412" font-family="monospace" font-size="11" font-weight="700" fill="#E2E8F0">src/db/</text>
+  <text x="98" y="430" font-family="monospace" font-size="10" fill="#94A3B8">• schema.ts (17 tables)</text>
+  <text x="98" y="446" font-family="monospace" font-size="10" fill="#94A3B8">• index.ts (Drizzle + Neon)</text>
+  <text x="98" y="462" font-family="monospace" font-size="10" fill="#94A3B8">• JSONB domain types</text>
+  <text x="98" y="478" font-family="monospace" font-size="10" fill="#94A3B8">• Pooler vs Direct URLs</text>
+
+  <rect x="325" y="390" width="220" height="110" rx="6" fill="#0B0F19" stroke="#334155" stroke-width="1"/>
+  <text x="338" y="412" font-family="monospace" font-size="11" font-weight="700" fill="#E2E8F0">src/services/</text>
+  <text x="338" y="430" font-family="monospace" font-size="10" fill="#94A3B8">• incidents.ts &amp; blame.ts</text>
+  <text x="338" y="446" font-family="monospace" font-size="10" fill="#94A3B8">• actions.ts &amp; preflight.ts</text>
+  <text x="338" y="462" font-family="monospace" font-size="10" fill="#94A3B8">• ranking.ts (8 factors)</text>
+  <text x="338" y="478" font-family="monospace" font-size="10" fill="#94A3B8">• ssrf.ts &amp; workspace.ts</text>
+
+  <rect x="565" y="390" width="220" height="110" rx="6" fill="#0B0F19" stroke="#334155" stroke-width="1"/>
+  <text x="578" y="412" font-family="monospace" font-size="11" font-weight="700" fill="#E2E8F0">src/adapters/</text>
+  <text x="578" y="430" font-family="monospace" font-size="10" fill="#94A3B8">• vercel.ts (promote fallback)</text>
+  <text x="578" y="446" font-family="monospace" font-size="10" fill="#94A3B8">• github.ts (App Octokit)</text>
+  <text x="578" y="462" font-family="monospace" font-size="10" fill="#94A3B8">• ai.ts (Gemini &amp; OpenAI)</text>
+  <text x="578" y="478" font-family="monospace" font-size="10" fill="#94A3B8">• email.ts (Resend sink)</text>
+
+  <rect x="805" y="390" width="220" height="110" rx="6" fill="#0B0F19" stroke="#334155" stroke-width="1"/>
+  <text x="818" y="412" font-family="monospace" font-size="11" font-weight="700" fill="#E2E8F0">src/crypto/</text>
+  <text x="818" y="430" font-family="monospace" font-size="10" fill="#94A3B8">• AES-256-GCM tokens</text>
+  <text x="818" y="446" font-family="monospace" font-size="10" fill="#94A3B8">• Dual-key rotation</text>
+  <text x="818" y="462" font-family="monospace" font-size="10" fill="#94A3B8">• HMAC SHA-256 alerts</text>
+  <text x="818" y="478" font-family="monospace" font-size="10" fill="#94A3B8">• SHA-256 MCP key hash</text>
+
+  <!-- Applications Top Row -->
+  <!-- App 1: apps/web -->
+  <rect x="65" y="160" width="310" height="145" rx="8" fill="url(#boxGrad)" stroke="#38BDF8" stroke-width="1.8"/>
+  <text x="80" y="186" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#38BDF8">apps/web (@firebreak/web)</text>
+  <text x="80" y="204" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">Next.js 16 • React 19 • Inngest • Better Auth</text>
+  <text x="80" y="224" font-family="monospace" font-size="10" fill="#E2E8F0">• src/app/ (App Router &amp; Route Handlers)</text>
+  <text x="80" y="240" font-family="monospace" font-size="10" fill="#E2E8F0">• src/inngest/ (4 background functions)</text>
+  <text x="80" y="256" font-family="monospace" font-size="10" fill="#E2E8F0">• src/components/ (HoldToConfirm, LoopRail)</text>
+  <text x="80" y="272" font-family="monospace" font-size="10" fill="#E2E8F0">• Host: Vercel Production Web Application</text>
+
+  <!-- App 2: apps/mcp -->
+  <rect x="395" y="160" width="310" height="145" rx="8" fill="url(#boxGrad)" stroke="#818CF8" stroke-width="1.8"/>
+  <text x="410" y="186" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#818CF8">apps/mcp (@firebreak/mcp)</text>
+  <text x="410" y="204" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">NitroStack Core 1.1.2 • Universal MCP Server</text>
+  <text x="410" y="224" font-family="monospace" font-size="10" fill="#E2E8F0">• 9 Tools (Services, Incidents, Actions)</text>
+  <text x="410" y="240" font-family="monospace" font-size="10" fill="#E2E8F0">• 3 Widgets (card, suspects, action-status)</text>
+  <text x="410" y="256" font-family="monospace" font-size="10" fill="#E2E8F0">• Dual Transports: STDIO (dev) + SSE (prod)</text>
+  <text x="410" y="272" font-family="monospace" font-size="10" fill="#E2E8F0">• Host: NitroCloud / NitroStudio / CLI</text>
+
+  <!-- Package 3: packages/fixtures -->
+  <rect x="725" y="160" width="310" height="145" rx="8" fill="url(#boxGrad)" stroke="#F59E0B" stroke-width="1.8"/>
+  <text x="740" y="186" font-family="system-ui, sans-serif" font-size="14" font-weight="800" fill="#F59E0B">packages/fixtures (@firebreak/fixtures)</text>
+  <text x="740" y="204" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">End-to-end Demo &amp; Hackathon Tooling</text>
+  <text x="740" y="224" font-family="monospace" font-size="10" fill="#E2E8F0">• break.ts (pushes 3 commits, breaks health)</text>
+  <text x="740" y="240" font-family="monospace" font-size="10" fill="#E2E8F0">• fire.ts (probes health, signs HMAC alert)</text>
+  <text x="740" y="256" font-family="monospace" font-size="10" fill="#E2E8F0">• reset.ts (restores main branch)</text>
+  <text x="740" y="272" font-family="monospace" font-size="10" fill="#E2E8F0">• static-alert.json (offline test payload)</text>
+
+  <!-- Dependency Arrows to Core -->
+  <line x1="220" y1="305" x2="220" y2="325" stroke="#38BDF8" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="550" y1="305" x2="550" y2="325" stroke="#818CF8" stroke-width="3" marker-end="url(#arrow)"/>
+  <line x1="880" y1="305" x2="880" y2="325" stroke="#F59E0B" stroke-width="3" marker-end="url(#arrow)"/>
+</svg>

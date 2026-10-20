@@ -109,6 +109,20 @@ npm run fixture:reset
 
 ---
 
+## 📚 Official Project Documentation
+
+Comprehensive documentation is available live at [**firebreak-pi.vercel.app/docs**](https://firebreak-pi.vercel.app/docs):
+
+- 🚀 **[Quickstart Guide](https://firebreak-pi.vercel.app/docs/quickstart)** — Step-by-step setup and local development in 5 minutes.
+- 🏗️ **[System Architecture](https://firebreak-pi.vercel.app/docs/architecture)** — Monorepo topology, component boundaries, and the 6-step lifecycle.
+- ⚙️ **[Backend & Data Model](https://firebreak-pi.vercel.app/docs/backend)** — Drizzle PostgreSQL schema, Inngest jobs, and cloud adapters.
+- 🧩 **[MCP Tools & Live Widgets](https://firebreak-pi.vercel.app/docs/tools)** — Complete reference for all 9 operational tools and 3 interactive React widgets.
+- 🛡️ **[Operations & Security](https://firebreak-pi.vercel.app/docs/security)** — HMAC validation, AES-256 encryption, and deployment guides.
+- 🔍 **[Troubleshooting Matrix](https://firebreak-pi.vercel.app/docs/troubleshooting)** — Diagnosing Vercel 402 plan limits, connection pooling, and MCP auth.
+- 📖 **Complete Technical Handbook (PDF)** — A comprehensive 99-page architectural reference is included in [`docs/Firebreak-Complete-Project-Guide.pdf`](docs/Firebreak-Complete-Project-Guide.pdf).
+
+---
+
 ## 📄 License
 
 [MIT](LICENSE) © 2026 Shaik Raiyan and Firebreak Contributors.

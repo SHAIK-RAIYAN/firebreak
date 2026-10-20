@@ -22,12 +22,16 @@ src/widgets/
 !packages/fixtures/.env.example
 
 # Documentation & Markdown (Only root README.md is kept in Git)
-docs/
+/docs/
 CONTEXT.md
 PROMPT.md
 **/*.md
 !/README.md
 !/readme.md
+
+# PDFs and Documentation exports
+*.pdf
+**/*.pdf
 
 # AI Assistant & Skills folders (Antigravity, Claude, Cursor, Copilot, etc.)
 .agents/
@@ -64,6 +68,10 @@ pino-*.log
 # Testing & Coverage
 coverage/
 .nyc_output/
+test-results/
+playwright-report/
+blob-report/
+vitest-report/
 
 # IDE & OS
 .vscode/*
@@ -78,3 +86,6 @@ Thumbs.db
 # Temporary / Scratch
 scratch/
 .system_generated/
+tmp/
+temp/
+*.tmp

@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 520" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgF" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#050B14"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1100" height="520" rx="14" fill="url(#bgF)"/>
+  <rect x="2" y="2" width="1096" height="516" rx="12" fill="none" stroke="#334155" stroke-width="1.5"/>
+
+  <text x="40" y="48" font-family="system-ui, sans-serif" font-size="22" font-weight="800" fill="#F8FAFC">DIAGRAM F: PRODUCTION HOSTING &amp; MULTI-CLOUD DEPLOYMENT</text>
+  <text x="40" y="74" font-family="system-ui, sans-serif" font-size="13" fill="#94A3B8">Separation between Vercel Edge/Serverless Web App, NitroCloud MCP Runtime, and Neon Postgres</text>
+
+  <!-- Node 1: Vercel Production -->
+  <rect x="40" y="115" width="310" height="360" rx="8" fill="#1E293B" stroke="#000" stroke-width="1.5"/>
+  <rect x="40" y="115" width="310" height="34" rx="8" fill="#000"/>
+  <text x="55" y="138" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">▲ VERCEL (Web &amp; API Routes)</text>
+  <text x="55" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#38BDF8">firebreak-pi.vercel.app</text>
+  <text x="55" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Next.js 16 App Router SSR</text>
+  <text x="55" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• API Handlers (/api/v1/...)</text>
+  <text x="55" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Better Auth session cookies</text>
+  <text x="55" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Serverless Function instances</text>
+  <text x="55" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Inngest API serve endpoint</text>
+  <text x="55" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Automated Git Deploy on main</text>
+  <rect x="55" y="420" width="280" height="35" rx="4" fill="#0F172A"/>
+  <text x="68" y="442" font-family="monospace" font-size="10" fill="#38BDF8">Connects to Neon Pooler via SSL</text>
+
+  <!-- Node 2: NitroCloud MCP Server -->
+  <rect x="395" y="115" width="310" height="360" rx="8" fill="#1E293B" stroke="#6366F1" stroke-width="1.5"/>
+  <rect x="395" y="115" width="310" height="34" rx="8" fill="#6366F1"/>
+  <text x="410" y="138" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#FFF">NITROCLOUD (Universal MCP)</text>
+  <text x="410" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#818CF8">cloud.nitrostack.ai</text>
+  <text x="410" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Node.js 22 LTS container</text>
+  <text x="410" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• nitrostack-cli start</text>
+  <text x="410" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Dual Transport (STDIO + SSE)</text>
+  <text x="410" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• 9 Tools + 3 Bundled Widgets</text>
+  <text x="410" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Shared Studio team credits</text>
+  <text x="410" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Exposes SSE URL for ChatGPT/Claude</text>
+  <rect x="410" y="420" width="280" height="35" rx="4" fill="#0F172A"/>
+  <text x="423" y="442" font-family="monospace" font-size="10" fill="#818CF8">Connects to Neon Pooler via SSL</text>
+
+  <!-- Node 3: Neon Serverless Database -->
+  <rect x="750" y="115" width="310" height="360" rx="8" fill="#1E293B" stroke="#00E599" stroke-width="1.5"/>
+  <rect x="750" y="115" width="310" height="34" rx="8" fill="#00E599"/>
+  <text x="765" y="138" font-family="system-ui, sans-serif" font-size="13" font-weight="800" fill="#0F172A">NEON POSTGRESQL</text>
+  <text x="765" y="170" font-family="system-ui, sans-serif" font-size="12" font-weight="700" fill="#00E599">ep-tiny-cherry.aws.neon.tech</text>
+  <text x="765" y="195" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Serverless auto-scaling compute</text>
+  <text x="765" y="215" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Connection pooling port 5432 / 6432</text>
+  <text x="765" y="235" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Single shared database for web &amp; MCP</text>
+  <text x="765" y="255" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Point-in-time recovery &amp; backups</text>
+  <text x="765" y="275" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• TLS 1.3 enforced connection</text>
+  <text x="765" y="295" font-family="system-ui, sans-serif" font-size="11" fill="#94A3B8">• Drizzle migrations schema synced</text>
+  <rect x="765" y="420" width="280" height="35" rx="4" fill="#0F172A"/>
+  <text x="778" y="442" font-family="monospace" font-size="10" fill="#00E599">State persists across all instances</text>
+</svg>
