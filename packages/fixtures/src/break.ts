@@ -171,8 +171,8 @@ export async function runBreak() {
             const listRes = await fetch(listUrl, {
               headers: { Authorization: `Bearer ${vercelToken}` },
             });
-            const listData = await listRes.json();
-            const latest = listData.deployments?.[0];
+            const listData = (await listRes.json()) as any;
+            const latest = listData?.deployments?.[0];
             if (latest && (latest.state === "READY" || latest.readyState === "READY")) {
               console.log(`\nPromoting latest Vercel deployment ${latest.uid} to override prior rollback lock...`);
               const promoteUrl =
