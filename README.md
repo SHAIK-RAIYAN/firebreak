@@ -7,6 +7,14 @@ Firebreak is an automated incident diagnosis and verified rollback platform for 
 When a bug crashes production, Firebreak immediately traces the error stack to the exact breaking commit, stages a drift-safe rollback, requires human approval, and verifies recovery with live health probes.
 
 ---
+## Demo
+
+[ Watch Firebreak Demo](./video/firebreak.mp4)
+<video src="./video/firebreak.mp4" controls width="100%">
+  Your browser does not support the video tag.
+</video>
+
+---
 
 ## ✨ Key Features
 
